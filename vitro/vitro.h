@@ -26,7 +26,8 @@
 #include <juce_data_structures/juce_data_structures.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
-#include "stylesheet/vitro_Stylesheet.h"
+#include "css/vitro_Stylesheet.h"
+#include "css/vitro_CSSParser.h"
 
 #include "core/vitro_Context.h"
 #include "core/vitro_Element.h"

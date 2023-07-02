@@ -19,7 +19,8 @@
 
 using namespace juce;
 
-#include "stylesheet/vitro_Stylesheet.cpp"
+#include "css/vitro_Stylesheet.cpp"
+#include "css/vitro_CSSParser.cpp"
 
 #include "core/vitro_Context.cpp"
 #include "core/vitro_Element.cpp"
