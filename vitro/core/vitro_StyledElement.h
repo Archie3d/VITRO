@@ -24,7 +24,7 @@ public:
 
     bool isStyledElement() const override { return true; }
 
-    const Style& getStyle() const { style; }
+    const Style& getStyle() const { return style; }
 
     virtual void recalculateStyle() {}
 
