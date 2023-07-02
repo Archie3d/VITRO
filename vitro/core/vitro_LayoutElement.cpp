@@ -20,9 +20,12 @@ struct LayoutElement::Layout
 
 //==============================================================================
 
-LayoutElement::LayoutElement()
-    : layout{ std::make_unique<Layout>(*this) }
+LayoutElement::LayoutElement(const Identifier& tag, Context& ctx)
+    : StyledElement(tag, ctx),
+      layout{ std::make_unique<Layout>(*this) }
 {
+    registerStyleProperty("width");
+    registerStyleProperty("height");
 }
 
 juce::Rectangle<float> LayoutElement::getLayoutElementBounds() const
@@ -33,6 +36,13 @@ juce::Rectangle<float> LayoutElement::getLayoutElementBounds() const
         YGNodeLayoutGetWidth  (layout->node),
         YGNodeLayoutGetHeight (layout->node)
     };
+}
+
+void LayoutElement::numberOfChildrenChanged()
+{
+    StyledElement::numberOfChildrenChanged();
+
+    childrenChanged = true;
 }
 
 } // namespace vitro

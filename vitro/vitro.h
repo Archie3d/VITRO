@@ -29,6 +29,7 @@
 #include "css/vitro_Stylesheet.h"
 #include "css/vitro_CSSParser.h"
 
+#include "core/vitro_Loader.h"
 #include "core/vitro_Context.h"
 #include "core/vitro_Element.h"
 #include "core/vitro_StyledElement.h"

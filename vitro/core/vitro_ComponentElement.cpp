@@ -1,6 +1,7 @@
 namespace vitro {
 
-ComponentElement::ComponentElement()
+ComponentElement::ComponentElement(const Identifier& tag, Context& ctx)
+    : LayoutElement(tag, ctx)
 {
 }
 

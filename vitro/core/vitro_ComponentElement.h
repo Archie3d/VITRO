@@ -4,9 +4,11 @@ class ComponentElement : public LayoutElement
 {
 public:
 
-    ComponentElement();
+    ComponentElement(const juce::Identifier& tag, Context& ctx);
 
     bool isComponentElement() const { return true; }
+
+    virtual juce::Component* getComponent() = 0;
 
 private:
 
