@@ -24,7 +24,7 @@ Element* Element::getParentElement() const
     return parent;
 }
 
-Element* Element::getTopLevelElement() const
+Element* Element::getTopLevelElement()
 {
     if (parent == nullptr)
         return this;

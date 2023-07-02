@@ -29,7 +29,7 @@ public:
     juce::Identifier getTag() const;
 
     Element* getParentElement() const;
-    Element* getTopLevelElement() const;
+    Element* getTopLevelElement();
     void addChildElement(Element* element);
     void removeChildElement(Element* element, bool deleteObject);
     void removeAllChildElements();
