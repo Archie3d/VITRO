@@ -11,14 +11,18 @@ public:
 
     LayoutElement(const juce::Identifier& tag, Context& ctx);
 
-    bool isLayoutElement() const { return true; }
+    bool isLayoutElement() const override { return true; }
 
     juce::Rectangle<float> getLayoutElementBounds() const;
+
+    LayoutElement* getParentLayoutElement();
 
 protected:
 
     // vitro::Element
     void numberOfChildrenChanged() override;
+
+    void reconcileElement() override;
 
 private:
 

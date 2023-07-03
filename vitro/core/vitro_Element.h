@@ -1,5 +1,7 @@
 namespace vitro {
 
+class LayoutElement;
+
 /** UI element base class
 
     This is a base class for all the elements that compose the UI.
@@ -127,6 +129,23 @@ protected:
         from the UI layout and eventually deleted.
     */
     virtual void elementIsAboutToBeRemoved() {}
+
+    /** Reconcile elements internal tree.
+
+        This method is used to rebuild the internal elements tree.
+        For example the layout elements will need to be connected to corresponding
+        parent layout nodes (which may situate about this element).
+
+        @see reconcileElement()
+    */
+    void reconcileElementTree();
+
+    /** Reconcile this element on the internal tree.
+
+        By overriding this method a derived element can reposition itself
+        on the internal tree (layout tree or components tree).
+    */
+    virtual void reconcileElement() {}
 
     juce::ValueTree valueTree;
 

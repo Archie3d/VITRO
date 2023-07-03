@@ -33,6 +33,4 @@ void StyledElement::registerStyleProperty(const juce::Identifier& name, const va
     styleProperties.set(name, value);
 }
 
-
-
 } // namespace vitro

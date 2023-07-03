@@ -53,6 +53,8 @@ void Element::addChildElement(Element* element)
 
     valueTree.appendChild(element->valueTree, nullptr);
 
+    element->reconcileElementTree();
+
     numberOfChildrenChanged();
 }
 
@@ -66,6 +68,8 @@ void Element::removeChildElement(Element* element, bool deleteObject)
     }
 
     element->parent = nullptr;
+
+    element->reconcileElementTree();
 
     valueTree.removeChild(element->valueTree, nullptr);
 
@@ -83,6 +87,10 @@ void Element::removeAllChildElements()
         child->notifyChildrenAboutToBeRemoved();
     }
 
+    // This will delete the removed elements.
+    // @note We do not perform reconcile calls here, since the removed
+    //       elements will be deleted anyways, which will also remove them
+    //       from corresponding internal trees (layout or component).
     children.clear();
 
     numberOfChildrenChanged();
@@ -171,6 +179,15 @@ void Element::notifyChildrenAboutToBeRemoved()
     for (auto* child : children) {
         child->elementIsAboutToBeRemoved();
         child->notifyChildrenAboutToBeRemoved();
+    }
+}
+
+void Element::reconcileElementTree()
+{
+    reconcileElement();
+
+    for (auto* child : children) {
+        child->reconcileElementTree();
     }
 }
 
