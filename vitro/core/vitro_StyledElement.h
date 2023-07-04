@@ -15,6 +15,7 @@ public:
 
     StyledElement(const juce::Identifier& tag, Context& ctx);
 
+    // vitro::Element
     bool isStyledElement() const override { return true; }
 
     /** Assign style attribute value.

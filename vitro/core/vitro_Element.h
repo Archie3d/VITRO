@@ -21,23 +21,75 @@ class Element : private juce::ValueTree::Listener
 public:
 
     Element() = delete;
+
+    /** Construct an element.
+    
+        @param tag Tag to be assigned to this element.
+        @param ctx Global context reference. 
+    */
     Element(const juce::Identifier& tag, Context& ctx);
+
     virtual ~Element();
 
+    /** Tells whether this element is a styled element. */
     virtual bool isStyledElement() const { return false; }
+
+    /** Tells whether this element is a layout element. */
     virtual bool isLayoutElement() const { return false; }
+
+    /** Tells whether this element is a UI component. */
     virtual bool isComponentElement() const { return false; }
 
     /** Returns this element's tag. */
     juce::Identifier getTag() const;
 
-    /** Retruns element's id. */
+    /** Retruns element's id.
+    
+        Element's id is read from the 'id' attribute. This means
+        that id can potentially change, unline element's tag.
+    */
     juce::String getId() const;
 
+    /** Returns this element's parent.
+
+        @return Pointer to parent element or nullptr if there is no parent. 
+    */
     Element* getParentElement() const;
+
+    /** Return the top-most element on the try.
+    
+        This method will traverse the elements tree upwards
+        and return the top-most element that has no parent.
+    */
     Element* getTopLevelElement();
+
+    /** Find the first element with given id.
+    
+        This method returns the first element (among this one and its children)
+        which has a given id property value.
+
+        @return Element with given id, or nullptr if not found. 
+    */
+    Element* getElementById(const juce::String& id) const;
+
+    /** Add a child element.
+
+        @note This element takes full ownership of its children elements.
+        @param element Pointer to child element to be added. 
+    */
     void addChildElement(Element* element);
+
+    /** Remove child element.
+     
+        @param element Pointer to element to be removed.
+        @param deleteObject Flag telling that removed element's object should be deleted. 
+    */
     void removeChildElement(Element* element, bool deleteObject);
+
+    /** Remove all child elements.
+     
+        @note All the removed elements will be deleted. 
+    */
     void removeAllChildElements();
 
     /** Assign element's attribute.
@@ -80,7 +132,7 @@ public:
 
     /** Update all the children.
 
-        This method calls @ref updateElementIdNeeded() on all the children of this element.
+        This method calls @ref updateElementIfNeeded() on all the children of this element.
      */
     void updateChildren();
 
@@ -147,12 +199,18 @@ protected:
     */
     virtual void reconcileElement() {}
 
+    void forEachChild(const std::function<void(Element*)>& func, bool recursive = true);
+
+    /** Element's tag and the attributes are stored here. */
     juce::ValueTree valueTree;
 
+    /** Global context reference. */
     Context& context;
 
+    /** Pointer to the parent element. Can be nullptr for top-most element. */
     Element* parent{};
 
+    /** Array of this element's direct children. */
     juce::OwnedArray<Element> children{};
 
 private:
@@ -160,7 +218,12 @@ private:
     // juce::ValueTree::Listener
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;
 
+    /// This flag indicates that the element must be updated.
+    /// @see updateElementIfNeeded
     bool updatePending{};
+
+    // Here the list of changed attributes is stored. This list gets cleared
+    // once the element is updated.
     std::set<juce::Identifier> changedAttributes{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Element)

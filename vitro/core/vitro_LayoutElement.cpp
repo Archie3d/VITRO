@@ -306,7 +306,8 @@ struct LayoutElement::Layout final
 
     bool rebuild()
     {
-        bool changed {false};
+        bool changed{ false };
+        /*
         changed = assignProperty(yoga::direction,       yoga::directionValues,     YGNodeStyleSetDirection,      YGNodeStyleGetDirection)      || changed;
         changed = assignProperty(yoga::flex_direction,  yoga::flexDirectionValues, YGNodeStyleSetFlexDirection,  YGNodeStyleGetFlexDirection)  || changed;
         changed = assignProperty(yoga::justify_content, yoga::justifyValues,       YGNodeStyleSetJustifyContent, YGNodeStyleGetJustifyContent) || changed;
@@ -337,7 +338,7 @@ struct LayoutElement::Layout final
         changed = assignEdgeFloatPropertyWithPrefix(yoga::padding_, YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
 
         changed = assignEdgeFloatPropertyWithPrefix(yoga::border_,  YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
-
+        */
         return changed;
     }
 };
@@ -399,6 +400,44 @@ LayoutElement* LayoutElement::getParentLayoutElement()
     }
 
     return nullptr;
+}
+
+bool LayoutElement::updateLayout()
+{
+    bool changed{ layout->rebuild() };
+
+    jassert(layout != nullptr);
+    jassert(layout->node != nullptr);
+    
+    const auto numChildren{ YGNodeGetChildCount(layout->node) };
+
+    for (auto i = 0; i < numChildren; ++i) {
+        YGNodeRef childNode{ YGNodeGetChild(layout->node, i) };
+        jassert(childNode != nullptr);
+        if (LayoutElement* childLayoutElement{ reinterpret_cast<LayoutElement*>(YGNodeGetContext(layout->node)) }) {
+            // @todo Crash here when accessing layout element
+            changed = childLayoutElement->updateLayout() || changed;
+        }
+    }
+
+    return changed;
+}
+
+void LayoutElement::recalculateLayout(float width, float height)
+{
+    YGNodeCalculateLayout(layout->node, width, height, YGDirectionInherit);
+
+    if (isComponentElement()) {
+        if (auto* componentElement{ dynamic_cast<ComponentElement*>(this) })
+            componentElement->updateComponentBoundsToLayoutNode();
+    }
+
+    forEachChild([](Element* child) {
+        if (child->isComponentElement()) {
+            if (auto* componentElement{ dynamic_cast<ComponentElement*>(child) })
+                componentElement->updateComponentBoundsToLayoutNode();
+        }
+    }, true);
 }
 
 void LayoutElement::numberOfChildrenChanged()

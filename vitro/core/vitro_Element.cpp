@@ -2,15 +2,6 @@
 
 namespace vitro {
 
-// List of the frequently used attributes
-namespace attr {
-
-const Identifier id("id");
-const Identifier style("style");
-const Identifier src("src");
-
-} // namespace attr
-
 //==============================================================================
 
 Element::Element(const juce::Identifier& tag, Context& ctx)
@@ -42,6 +33,19 @@ Element* Element::getTopLevelElement()
         return this;
 
     return parent->getTopLevelElement();
+}
+
+Element* Element::getElementById(const juce::String& id) const
+{
+    if (getId() == id)
+        return const_cast<Element*>(this);
+
+    for (auto* child : children) {
+        if (auto* elem{ child->getElementById(id) })
+            return elem;
+    }
+
+    return nullptr;
 }
 
 void Element::addChildElement(Element* element)
@@ -188,6 +192,19 @@ void Element::reconcileElementTree()
 
     for (auto* child : children) {
         child->reconcileElementTree();
+    }
+}
+
+void Element::forEachChild(const std::function<void(Element*)>& func, bool recursive)
+{
+    for (auto* child : children) {
+        func(child);
+    }
+
+    if (recursive) {
+        for (auto* child : children) {
+            child->forEachChild(func, true);
+        }
     }
 }
 
