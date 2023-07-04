@@ -307,7 +307,7 @@ struct LayoutElement::Layout final
     bool rebuild()
     {
         bool changed{ false };
-        /*
+
         changed = assignProperty(yoga::direction,       yoga::directionValues,     YGNodeStyleSetDirection,      YGNodeStyleGetDirection)      || changed;
         changed = assignProperty(yoga::flex_direction,  yoga::flexDirectionValues, YGNodeStyleSetFlexDirection,  YGNodeStyleGetFlexDirection)  || changed;
         changed = assignProperty(yoga::justify_content, yoga::justifyValues,       YGNodeStyleSetJustifyContent, YGNodeStyleGetJustifyContent) || changed;
@@ -338,7 +338,7 @@ struct LayoutElement::Layout final
         changed = assignEdgeFloatPropertyWithPrefix(yoga::padding_, YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
 
         changed = assignEdgeFloatPropertyWithPrefix(yoga::border_,  YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
-        */
+
         return changed;
     }
 };
@@ -414,10 +414,9 @@ bool LayoutElement::updateLayout()
     for (auto i = 0; i < numChildren; ++i) {
         YGNodeRef childNode{ YGNodeGetChild(layout->node, i) };
         jassert(childNode != nullptr);
-        if (LayoutElement* childLayoutElement{ reinterpret_cast<LayoutElement*>(YGNodeGetContext(layout->node)) }) {
-            // @todo Crash here when accessing layout element
+
+        if (LayoutElement* childLayoutElement{ reinterpret_cast<LayoutElement*>(YGNodeGetContext(childNode)) })
             changed = childLayoutElement->updateLayout() || changed;
-        }
     }
 
     return changed;

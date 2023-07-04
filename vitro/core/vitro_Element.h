@@ -23,9 +23,9 @@ public:
     Element() = delete;
 
     /** Construct an element.
-    
+
         @param tag Tag to be assigned to this element.
-        @param ctx Global context reference. 
+        @param ctx Global context reference.
     */
     Element(const juce::Identifier& tag, Context& ctx);
 
@@ -44,7 +44,7 @@ public:
     juce::Identifier getTag() const;
 
     /** Retruns element's id.
-    
+
         Element's id is read from the 'id' attribute. This means
         that id can potentially change, unline element's tag.
     */
@@ -52,43 +52,43 @@ public:
 
     /** Returns this element's parent.
 
-        @return Pointer to parent element or nullptr if there is no parent. 
+        @return Pointer to parent element or nullptr if there is no parent.
     */
     Element* getParentElement() const;
 
     /** Return the top-most element on the try.
-    
+
         This method will traverse the elements tree upwards
         and return the top-most element that has no parent.
     */
     Element* getTopLevelElement();
 
     /** Find the first element with given id.
-    
+
         This method returns the first element (among this one and its children)
         which has a given id property value.
 
-        @return Element with given id, or nullptr if not found. 
+        @return Element with given id, or nullptr if not found.
     */
     Element* getElementById(const juce::String& id) const;
 
     /** Add a child element.
 
         @note This element takes full ownership of its children elements.
-        @param element Pointer to child element to be added. 
+        @param element Pointer to child element to be added.
     */
     void addChildElement(Element* element);
 
     /** Remove child element.
-     
+
         @param element Pointer to element to be removed.
-        @param deleteObject Flag telling that removed element's object should be deleted. 
+        @param deleteObject Flag telling that removed element's object should be deleted.
     */
     void removeChildElement(Element* element, bool deleteObject);
 
     /** Remove all child elements.
-     
-        @note All the removed elements will be deleted. 
+
+        @note All the removed elements will be deleted.
     */
     void removeAllChildElements();
 
