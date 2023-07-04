@@ -12,18 +12,25 @@ public:
     /** Return component of this element.
 
         Derived elements must return the pointer to the component that
-        represent this element. 
+        represent this element.
     */
     virtual juce::Component* getComponent() = 0;
 
+    ComponentElement* getParentComponentElement();
+
     /** Update comonent bounds to the layout.
-    
+
         This will reposition this component to the layout bounds calculated.
 
         @see LayoutElement::updateLayout
         @see LayoutElement::recalculateLayout
     */
     void updateComponentBoundsToLayoutNode();
+
+protected:
+
+    // vitro::Element
+    void reconcileElement() override;
 
 private:
 

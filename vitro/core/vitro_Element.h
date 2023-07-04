@@ -153,16 +153,6 @@ protected:
     */
     virtual void numberOfChildrenChanged() {}
 
-    /** Assign the source attribute.
-
-        The default implementation loads the source as XML and
-        populates the current element with children of the loaded XML.
-        All the current children of the element get deleted first.
-
-        Specialised implementation may interpret the src attribute differently.
-    */
-    virtual void setSrcAttribute(const juce::String& src);
-
     /** Returns element's attribute and whether it's been changed since the last update.
 
         Upon the change the attribute's identifier gets stored.

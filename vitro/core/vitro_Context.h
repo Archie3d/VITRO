@@ -1,5 +1,8 @@
 namespace vitro {
 
+class ElementsFactory;
+class Loader;
+
 /** UI Context.
 
     UI Context aggregates global UI functionalityes like
@@ -16,6 +19,11 @@ public:
 
     const Stylesheet& getStylesheet() const;
     Stylesheet& getStylesheet();
+
+    const ElementsFactory& getElementsFactory() const;
+    ElementsFactory& getElementsFactory();
+
+    void initialize();
 
     void reset();
 

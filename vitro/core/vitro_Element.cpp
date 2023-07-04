@@ -105,8 +105,6 @@ void Element::setAttribute(const Identifier& name, const var& value, bool notify
     if (isStyledElement() && name == attr::style) {
         if (auto* styledElement{ dynamic_cast<StyledElement*>(this) })
             styledElement->setStyleAttribute(value);
-    } else if (name == attr::src) {
-        setSrcAttribute(value.toString());
     }
 
     if (notify) {
@@ -134,6 +132,11 @@ bool Element::hasAttribute (const Identifier& name) const
 void Element::updateElementIfNeeded()
 {
     if (updatePending) {
+        if (isStyledElement()) {
+            if (auto* styleElement{ dynamic_cast<StyledElement*>(this) })
+                styleElement->updateStyleProperties();
+        }
+
         update();
         updatePending = false;
 
@@ -153,22 +156,6 @@ void Element::updateChildren()
 {
     for (auto* child : children)
         child->updateElementIfNeeded();
-}
-
-void Element::setSrcAttribute(const String& src)
-{
-    if (getAttribute(attr::src).toString() != src) {
-        removeAllChildElements();
-
-        /*
-        @todo Initialize element from XML
-
-        if (auto xml{ getContext().getLoader().loadXML (src) } ) {
-            copyAttributesFromXmlElement (*xml);
-            createChildrenFromXmlElement (*xml);
-        }
-        */
-    }
 }
 
 std::pair<bool, const var&> Element::getAttributeChanged(const Identifier& attr) const

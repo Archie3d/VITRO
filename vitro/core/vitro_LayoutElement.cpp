@@ -116,7 +116,7 @@ const static std::map<String, YGWrap> wrapValues {
     gets properly deleted. Otherwise a memmory leak gets reported
     on applicatiom termination.
 */
-struct DefaultConfigDeleter
+struct DefaultConfigDeleter final
 {
     ~DefaultConfigDeleter()
     {
@@ -408,7 +408,7 @@ bool LayoutElement::updateLayout()
 
     jassert(layout != nullptr);
     jassert(layout->node != nullptr);
-    
+
     const auto numChildren{ YGNodeGetChildCount(layout->node) };
 
     for (auto i = 0; i < numChildren; ++i) {

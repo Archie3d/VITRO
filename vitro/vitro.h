@@ -32,6 +32,8 @@
 #include "core/vitro_Loader.h"
 #include "core/vitro_Context.h"
 #include "core/vitro_Element.h"
+#include "core/vitro_ElementsFactory.h"
 #include "core/vitro_StyledElement.h"
 #include "core/vitro_LayoutElement.h"
 #include "core/vitro_ComponentElement.h"
+#include "core/vitro_View.h"
