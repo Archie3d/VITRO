@@ -378,6 +378,8 @@ LayoutElement::LayoutElement(const Identifier& tag, Context& ctx)
     }
 }
 
+LayoutElement::~LayoutElement() = default;
+
 juce::Rectangle<float> LayoutElement::getLayoutElementBounds() const
 {
     return {
@@ -388,13 +390,13 @@ juce::Rectangle<float> LayoutElement::getLayoutElementBounds() const
     };
 }
 
-LayoutElement* LayoutElement::getParentLayoutElement()
+LayoutElement::Ptr LayoutElement::getParentLayoutElement()
 {
-    Element* p{ parent };
+    Element::Ptr p{ parent.lock() };
 
     while (p != nullptr) {
         if (p->isLayoutElement())
-            return dynamic_cast<LayoutElement*>(p);
+            return std::dynamic_pointer_cast<LayoutElement>(p);
 
         p = p->getParentElement();
     }
@@ -431,9 +433,9 @@ void LayoutElement::recalculateLayout(float width, float height)
             componentElement->updateComponentBoundsToLayoutNode();
     }
 
-    forEachChild([](Element* child) {
+    forEachChild([](const Element::Ptr& child) {
         if (child->isComponentElement()) {
-            if (auto* componentElement{ dynamic_cast<ComponentElement*>(child) })
+            if (auto componentElement{ std::dynamic_pointer_cast<ComponentElement>(child) })
                 componentElement->updateComponentBoundsToLayoutNode();
         }
     }, true);
@@ -448,13 +450,13 @@ void LayoutElement::numberOfChildrenChanged()
 
 void LayoutElement::reconcileElement()
 {
-    if (parent == nullptr) {
+    if (parent.lock() == nullptr) {
         if (auto* owner{ layout->node->getOwner() }) {
             YGNodeRemoveChild(owner, layout->node);
         }
     } else {
         if (layout->node->getOwner() == nullptr) {
-            if (auto* parentLayoutElement{ getParentLayoutElement() }) {
+            if (auto parentLayoutElement{ getParentLayoutElement() }) {
                 const auto count{ YGNodeGetChildCount(parentLayoutElement->layout->node) };
                 YGNodeInsertChild(parentLayoutElement->layout->node, layout->node, count);
             }

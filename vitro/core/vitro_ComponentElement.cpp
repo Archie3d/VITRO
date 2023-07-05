@@ -5,13 +5,13 @@ ComponentElement::ComponentElement(const Identifier& tag, Context& ctx)
 {
 }
 
-ComponentElement* ComponentElement::getParentComponentElement()
+ComponentElement::Ptr ComponentElement::getParentComponentElement()
 {
-    Element* p{ parent };
+    Element::Ptr p{ parent.lock() };
 
     while (p != nullptr) {
         if (p->isComponentElement())
-            return dynamic_cast<ComponentElement*>(p);
+            return std::dynamic_pointer_cast<ComponentElement>(p);
 
         p = p->getParentElement();
     }
@@ -35,12 +35,12 @@ void ComponentElement::reconcileElement()
     juce::Component* thisComponent{ getComponent() };
     jassert(thisComponent != nullptr);
 
-    if (parent == nullptr) {
-        if (auto* owner{ thisComponent->getParentComponent() })
+    if (parent.lock() == nullptr) {
+        if (auto owner{ thisComponent->getParentComponent() })
             owner->removeChildComponent(thisComponent);
     } else {
         if (thisComponent->getParentComponent() == nullptr) {
-            if (auto* parentComponentElement{ getParentComponentElement() })
+            if (auto parentComponentElement{ getParentComponentElement() })
                 parentComponentElement->getComponent()->addAndMakeVisible(thisComponent);
         }
     }

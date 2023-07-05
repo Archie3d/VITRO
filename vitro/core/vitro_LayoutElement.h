@@ -9,7 +9,11 @@ class LayoutElement : public StyledElement
 {
 public:
 
+    using Ptr = std::shared_ptr<LayoutElement>;
+
     LayoutElement(const juce::Identifier& tag, Context& ctx);
+
+    ~LayoutElement();
 
     // vitro::Element
     bool isLayoutElement() const override { return true; }
@@ -30,7 +34,7 @@ public:
               is not yet connected throught the layout nodes tree. It iis used precisely
               to establish this connection.
     */
-    LayoutElement* getParentLayoutElement();
+    LayoutElement::Ptr getParentLayoutElement();
 
     /** Call the layout update on the elements tree.
 

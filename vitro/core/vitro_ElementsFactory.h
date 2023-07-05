@@ -27,7 +27,7 @@ public:
     template <class T>
     void registerElement()
     {
-        creators[T::tag] = [this](){ return std::make_unique<T>(context); };
+        creators[T::tag] = [this](){ return std::make_shared<T>(context); };
     }
 
     /** Reset the factory.
@@ -55,13 +55,13 @@ public:
 
         @returns Pointer to created element.
     */
-    std::unique_ptr<Element> createElement(const juce::Identifier& tag);
+    Element::Ptr createElement(const juce::Identifier& tag);
 
 private:
 
     Context& context;
 
-    using CreateFunc = std::function<std::unique_ptr<Element>()>;
+    using CreateFunc = std::function<Element::Ptr()>;
     std::map<juce::Identifier, CreateFunc> creators{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ElementsFactory)

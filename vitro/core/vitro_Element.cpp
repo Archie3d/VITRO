@@ -22,38 +22,40 @@ String Element::getId() const
     return valueTree.getProperty(attr::id);
 }
 
-Element* Element::getParentElement() const
+Element::Ptr Element::getParentElement() const
 {
-    return parent;
+    return parent.lock();
 }
 
-Element* Element::getTopLevelElement()
+Element::Ptr Element::getTopLevelElement()
 {
-    if (parent == nullptr)
-        return this;
+    auto parentPtr{ parent.lock() };
 
-    return parent->getTopLevelElement();
+    if (parentPtr == nullptr)
+        return shared_from_this();
+
+    return parentPtr->getTopLevelElement();
 }
 
-Element* Element::getElementById(const juce::String& id) const
+Element::Ptr Element::getElementById(const juce::String& id)
 {
     if (getId() == id)
-        return const_cast<Element*>(this);
+        return shared_from_this();
 
-    for (auto* child : children) {
-        if (auto* elem{ child->getElementById(id) })
+    for (auto&& child : children) {
+        if (auto elem{ child->getElementById(id) })
             return elem;
     }
 
     return nullptr;
 }
 
-void Element::addChildElement(Element* element)
+void Element::addChildElement(const Element::Ptr& element)
 {
     jassert(element != nullptr);
 
-    element->parent = this;
-    children.add(element);
+    element->parent = shared_from_this();
+    children.push_back(element);
 
     valueTree.appendChild(element->valueTree, nullptr);
 
@@ -62,22 +64,20 @@ void Element::addChildElement(Element* element)
     numberOfChildrenChanged();
 }
 
-void Element::removeChildElement(Element* element, bool deleteObject)
+void Element::removeChildElement(const Element::Ptr& element)
 {
     jassert(element != nullptr);
 
-    if (deleteObject) {
-        element->elementIsAboutToBeRemoved();
-        element->notifyChildrenAboutToBeRemoved();
-    }
+    element->elementIsAboutToBeRemoved();
+    element->notifyChildrenAboutToBeRemoved();
 
-    element->parent = nullptr;
+    element->parent.reset();
 
     element->reconcileElementTree();
 
     valueTree.removeChild(element->valueTree, nullptr);
 
-    children.removeObject(element, deleteObject);
+    children.erase(std::remove(children.begin(), children.end(), element), children.end());
 
     numberOfChildrenChanged();
 }
@@ -86,7 +86,7 @@ void Element::removeAllChildElements()
 {
     valueTree.removeAllChildren(nullptr);
 
-    for (auto* child : children) {
+    for (auto&& child : children) {
         child->elementIsAboutToBeRemoved();
         child->notifyChildrenAboutToBeRemoved();
     }
@@ -154,7 +154,7 @@ void Element::forceUpdate()
 
 void Element::updateChildren()
 {
-    for (auto* child : children)
+    for (auto&& child : children)
         child->updateElementIfNeeded();
 }
 
@@ -167,7 +167,7 @@ std::pair<bool, const var&> Element::getAttributeChanged(const Identifier& attr)
 
 void Element::notifyChildrenAboutToBeRemoved()
 {
-    for (auto* child : children) {
+    for (auto&& child : children) {
         child->elementIsAboutToBeRemoved();
         child->notifyChildrenAboutToBeRemoved();
     }
@@ -177,19 +177,19 @@ void Element::reconcileElementTree()
 {
     reconcileElement();
 
-    for (auto* child : children) {
+    for (auto&& child : children) {
         child->reconcileElementTree();
     }
 }
 
-void Element::forEachChild(const std::function<void(Element*)>& func, bool recursive)
+void Element::forEachChild(const std::function<void(const Element::Ptr&)>& func, bool recursive)
 {
-    for (auto* child : children) {
+    for (auto&& child : children) {
         func(child);
     }
 
     if (recursive) {
-        for (auto* child : children) {
+        for (auto&& child : children) {
             child->forEachChild(func, true);
         }
     }
@@ -201,7 +201,7 @@ void Element::valueTreePropertyChanged(ValueTree&, const Identifier& changedAttr
     changedAttributes.insert(changedAttr);
 
     // Trigger update on the root element.
-    if (auto* root{ getTopLevelElement() })
+    if (auto root{ getTopLevelElement() })
         root->update();
 }
 

@@ -9,6 +9,8 @@ class ComponentElement : public LayoutElement
 {
 public:
 
+    using Ptr = std::shared_ptr<ComponentElement>;
+
     ComponentElement(const juce::Identifier& tag, Context& ctx);
 
     // vitro::Element
@@ -26,7 +28,7 @@ public:
         This method travels the elements tree up from this element
         and returns the first component element found.
     */
-    ComponentElement* getParentComponentElement();
+    ComponentElement::Ptr getParentComponentElement();
 
     /** Update comonent bounds to the layout.
 

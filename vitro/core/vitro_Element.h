@@ -16,9 +16,13 @@ class LayoutElement;
     @see LayoutElement
     @see ComponentElement
 */
-class Element : private juce::ValueTree::Listener
+class Element : public std::enable_shared_from_this<Element>,
+                private juce::ValueTree::Listener
 {
 public:
+
+    using Ptr = std::shared_ptr<Element>;
+    using WeakPtr = std::weak_ptr<Element>;
 
     Element() = delete;
 
@@ -54,14 +58,14 @@ public:
 
         @return Pointer to parent element or nullptr if there is no parent.
     */
-    Element* getParentElement() const;
+    Element::Ptr getParentElement() const;
 
     /** Return the top-most element on the try.
 
         This method will traverse the elements tree upwards
         and return the top-most element that has no parent.
     */
-    Element* getTopLevelElement();
+    Element::Ptr getTopLevelElement();
 
     /** Find the first element with given id.
 
@@ -70,21 +74,20 @@ public:
 
         @return Element with given id, or nullptr if not found.
     */
-    Element* getElementById(const juce::String& id) const;
+    Element::Ptr getElementById(const juce::String& id);
 
     /** Add a child element.
 
         @note This element takes full ownership of its children elements.
         @param element Pointer to child element to be added.
     */
-    void addChildElement(Element* element);
+    void addChildElement(const Element::Ptr& element);
 
     /** Remove child element.
 
         @param element Pointer to element to be removed.
-        @param deleteObject Flag telling that removed element's object should be deleted.
     */
-    void removeChildElement(Element* element, bool deleteObject);
+    void removeChildElement(const Element::Ptr& element);
 
     /** Remove all child elements.
 
@@ -189,7 +192,7 @@ protected:
     */
     virtual void reconcileElement() {}
 
-    void forEachChild(const std::function<void(Element*)>& func, bool recursive = true);
+    void forEachChild(const std::function<void(const Element::Ptr&)>& func, bool recursive = true);
 
     /** Element's tag and the attributes are stored here. */
     juce::ValueTree valueTree;
@@ -198,10 +201,10 @@ protected:
     Context& context;
 
     /** Pointer to the parent element. Can be nullptr for top-most element. */
-    Element* parent{};
+    Element::WeakPtr parent{};
 
     /** Array of this element's direct children. */
-    juce::OwnedArray<Element> children{};
+    std::vector<Element::Ptr> children{};
 
 private:
 
