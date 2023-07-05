@@ -1,5 +1,10 @@
 namespace vitro {
 
+/** Base class for Components based elements
+
+    This is a base class for all the elements which are also
+    UI Components.
+*/
 class ComponentElement : public LayoutElement
 {
 public:
@@ -16,6 +21,11 @@ public:
     */
     virtual juce::Component* getComponent() = 0;
 
+    /** Return parent component element from the tree.
+
+        This method travels the elements tree up from this element
+        and returns the first component element found.
+    */
     ComponentElement* getParentComponentElement();
 
     /** Update comonent bounds to the layout.

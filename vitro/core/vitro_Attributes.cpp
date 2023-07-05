@@ -1,6 +1,8 @@
 namespace vitro {
 
-// List of the frequently used attributes
+// List of the frequently used attributes. These include the attributes
+// that can be assigned to the elements' value tree, and also
+// the stylesheet property names.
 
 namespace attr {
 
@@ -8,6 +10,22 @@ const Identifier id    ("id");
 const Identifier clazz ("class");
 const Identifier style ("style");
 const Identifier src   ("src");
+
+//==============================================================================
+namespace css {
+
+const Identifier background_color ("background-color");
+
+const Identifier border_color     ("border_color");
+const Identifier border_radius    ("border_radius");
+const Identifier border_width     ("border_width");
+
+const Identifier shadow_color     ("shadow-color");
+const Identifier shadow_radius    ("shadow-radius");
+const Identifier shadow_offset_x  ("shadow-offset-x");
+const Identifier shadow_offset_y  ("shadow-offset-y");
+
+} // namespace css
 
 } // namespace attr
 

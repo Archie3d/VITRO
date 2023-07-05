@@ -13,13 +13,22 @@ void StyledElement::setStyleAttribute(const var& value)
 
 void StyledElement::updateStyleProperties()
 {
+    changedStyleProperties.clear();
+
     for (int i = 0; i < styleProperties.size(); ++i) {
         const auto name{ styleProperties.getName(i) };
 
+        var value{};
+
         if (auto& local{ localStylesheet.getProperty(name, valueTree) }; !local.isVoid())
-            styleProperties.set(name, local);
+            value = local;
         else
-            styleProperties.set(name, context.getStylesheet().getProperty(name, valueTree));
+            value = context.getStylesheet().getProperty(name, valueTree);
+
+        if (styleProperties.set(name, value)) {
+            // Style property has changed - register it
+            changedStyleProperties.insert(name);
+        }
     }
 }
 
@@ -28,9 +37,20 @@ const var& StyledElement::getStyleProperty(const Identifier& name) const
     return styleProperties[name];
 }
 
+std::pair<bool, const juce::var&> StyledElement::getStylePropertyChanged(const juce::Identifier& name) const
+{
+    return { isStylePropertyChanged(name), styleProperties[name] };
+}
+
 void StyledElement::registerStyleProperty(const juce::Identifier& name, const var& value)
 {
     styleProperties.set(name, value);
+}
+
+bool StyledElement::isStylePropertyChanged(const juce::Identifier& name) const
+{
+    const auto it{ changedStyleProperties.find(name) };
+    return it != changedStyleProperties.cend();
 }
 
 } // namespace vitro

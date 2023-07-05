@@ -42,6 +42,13 @@ public:
     */
     const juce::var& getStyleProperty(const juce::Identifier& name) const;
 
+    /** Return style property value and its change flag.
+
+        This is a helper method that tells whether a style property has changed
+        since the last update, along with the current value itself.
+    */
+    std::pair<bool, const juce::var&> getStylePropertyChanged(const juce::Identifier& name) const;
+
 protected:
 
     /** Register element's style property.
@@ -52,6 +59,15 @@ protected:
     */
     void registerStyleProperty(const juce::Identifier& name, const juce::var& value = {});
 
+    /** Tell whether a style property has changed since the last update.
+
+        This method queries a set of changed properties since the last update
+        and tells whether a given one is on the list. The set of changed properties gets
+        cleared before each update, and then it gets repopulated by comparing the stylesheet
+        with the locally stored style properties.
+    */
+    bool isStylePropertyChanged(const juce::Identifier& name) const;
+
 private:
 
     // Local stylesheet applicable to this element only.
@@ -59,6 +75,9 @@ private:
 
     // List of style properties this element cares about.
     juce::NamedValueSet styleProperties{};
+
+    // List of style properties changes since the last update.
+    std::set<juce::Identifier> changedStyleProperties{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StyledElement)
 };

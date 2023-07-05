@@ -15,7 +15,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::View>();
 }
 
-std::unique_ptr<Element> ElementsFactory::createElement (const Identifier& tag)
+std::unique_ptr<Element> ElementsFactory::createElement(const Identifier& tag)
 {
     auto it{ creators.find(tag) };
 
@@ -26,13 +26,11 @@ std::unique_ptr<Element> ElementsFactory::createElement (const Identifier& tag)
         return nullptr;
     }
 
-    // @todo Creating a default comonent element with unknown tag
-
-    //if (auto elem{ std::make_unique<vitro::widget::Component>(tag, context) })
-    //    return elem;
+    // Creating a default component element with unknown tag
+    if (auto elem{ std::make_unique<vitro::Component>(tag, context) })
+        return elem;
 
     return nullptr;
 }
-
 
 } // namespace vitro

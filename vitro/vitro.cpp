@@ -22,6 +22,7 @@ using namespace juce;
 #include "css/vitro_Stylesheet.cpp"
 #include "css/vitro_CSSParser.cpp"
 
+#include "core/vitro_Utils.cpp"
 #include "core/vitro_Loader.cpp"
 #include "core/vitro_Context.cpp"
 #include "core/vitro_Attributes.cpp"
@@ -31,3 +32,5 @@ using namespace juce;
 #include "core/vitro_LayoutElement.cpp"
 #include "core/vitro_ComponentElement.cpp"
 #include "core/vitro_View.cpp"
+
+#include "widgets/vitro_Component.cpp"

@@ -32,7 +32,7 @@ void ComponentElement::reconcileElement()
 {
     LayoutElement::reconcileElement();
 
-    Component* thisComponent{ getComponent() };
+    juce::Component* thisComponent{ getComponent() };
     jassert(thisComponent != nullptr);
 
     if (parent == nullptr) {
