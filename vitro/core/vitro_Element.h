@@ -1,5 +1,6 @@
 namespace vitro {
 
+class Context;
 class LayoutElement;
 
 /** UI element base class
@@ -24,6 +25,11 @@ public:
     using Ptr = std::shared_ptr<Element>;
     using WeakPtr = std::weak_ptr<Element>;
 
+    /** Weak reference to the element stored in JS object.
+
+        This structure is used to store a native weak reference to this
+        element inside the JavaScript object that represents this element.
+    */
     struct JSObjectRef final
     {
         Element::WeakPtr element{};
@@ -153,6 +159,12 @@ public:
 
     static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 
+    /** Store this element in factory's stash. */
+    void stash();
+
+    /** Remove this element from factory's stash. */
+    void unstash();
+
 protected:
 
     /** Update this element.
@@ -220,9 +232,15 @@ protected:
     /** Array of this element's direct children. */
     std::vector<Element::Ptr> children{};
 
+    /** JavaScript object associated with this element. */
     JSValue jsValue{ JS_UNINITIALIZED };
 
 private:
+
+    friend class ElementsFactory;
+    friend struct JSObjectRef;
+
+    void initJSValue();
 
     // juce::ValueTree::Listener
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;

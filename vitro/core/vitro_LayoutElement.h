@@ -20,7 +20,7 @@ public:
     // vitro::Element
     bool isLayoutElement() const override { return true; }
 
-    virtual JSClassID getJSClassID() const { return LayoutElement::jsClassID; }
+    JSClassID getJSClassID() const override { return LayoutElement::jsClassID; }
 
     /** Returns the layout element bounds.
 

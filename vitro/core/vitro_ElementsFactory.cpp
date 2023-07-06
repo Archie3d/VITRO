@@ -19,18 +19,30 @@ Element::Ptr ElementsFactory::createElement(const Identifier& tag)
 {
     auto it{ creators.find(tag) };
 
-    if (it != creators.end()) {
-        if (auto elem{ it->second() })
-            return elem;
+    Element::Ptr element{};
 
-        return nullptr;
+    if (it != creators.end())
+        element = it->second();
+
+    if (element == nullptr) {
+        // Creating a default element with unknown tag
+        element = std::make_shared<vitro::Element>(tag, context);
     }
 
-    // Creating a default component element with unknown tag
-    if (auto elem{ std::make_shared<vitro::Component>(tag, context) })
-        return elem;
+    if (element != nullptr)
+        element->initJSValue();
 
-    return nullptr;
+    return element;
+}
+
+void ElementsFactory::stashElement(const Element::Ptr& element)
+{
+    stashedElements.push_back(element);
+}
+
+void ElementsFactory::removeStashedElement(const Element::Ptr& element)
+{
+    stashedElements.erase(std::remove(stashedElements.begin(), stashedElements.end(), element), stashedElements.end());
 }
 
 } // namespace vitro

@@ -1,7 +1,11 @@
 namespace vitro {
 
-Component::Component(const Identifier& tag, Context& ctx)
-    : ComponentElement(tag, ctx),
+JSClassID Component::jsClassID = 0;
+
+const Identifier Component::tag("Component");
+
+Component::Component(Context& ctx)
+    : ComponentElement(Component::tag, ctx),
       juce::Component()
 {
     registerStyleProperty(attr::css::background_color);

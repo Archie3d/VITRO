@@ -4,7 +4,14 @@ class Component : public vitro::ComponentElement,
                   public juce::Component
 {
 public:
-    Component(const juce::Identifier& tag, Context& ctx);
+
+    const static juce::Identifier tag;  // <Component>
+
+    static JSClassID jsClassID;
+
+    Component(Context& ctx);
+
+    JSClassID getJSClassID() const override { return vitro::Component::jsClassID; }
 
     juce::Component* getComponent() override { return this; }
 

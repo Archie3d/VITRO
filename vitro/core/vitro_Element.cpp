@@ -10,7 +10,7 @@ Element::JSObjectRef::JSObjectRef(const Element::Ptr& el)
 Element::JSObjectRef::~JSObjectRef()
 {
     if (auto el{ element.lock() }) {
-        // @todo Remove element from stash
+        el->context.getElementsFactory().removeStashedElement(el);
     }
 }
 
@@ -24,7 +24,11 @@ Element::Element(const juce::Identifier& tag, Context& ctx)
 {
 }
 
-Element::~Element() = default;
+Element::~Element()
+{
+    if (jsValue != JS_UNINITIALIZED)
+        JS_FreeValue(context.getJSContext(), jsValue);
+};
 
 juce::Identifier Element::getTag() const
 {
@@ -177,6 +181,16 @@ void Element::registerJSPrototype(JSContext* ctx, JSValue prototype)
     // @todo
 }
 
+void Element::stash()
+{
+    context.getElementsFactory().stashElement(shared_from_this());
+}
+
+void Element::unstash()
+{
+    context.getElementsFactory().removeStashedElement(shared_from_this());
+}
+
 std::pair<bool, const var&> Element::getAttributeChanged(const Identifier& attr) const
 {
     const bool changed{ changedAttributes.find(attr) != changedAttributes.end() };
@@ -212,6 +226,12 @@ void Element::forEachChild(const std::function<void(const Element::Ptr&)>& func,
             child->forEachChild(func, true);
         }
     }
+}
+
+void Element::initJSValue()
+{
+    jsValue = JS_NewObjectClass(context.getJSContext(), getJSClassID());
+    JS_SetOpaque(jsValue, new JSObjectRef(shared_from_this()));
 }
 
 void Element::valueTreePropertyChanged(ValueTree&, const Identifier& changedAttr)

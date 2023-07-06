@@ -18,7 +18,7 @@ public:
     // vitro::Element
     bool isComponentElement() const { return true; }
 
-    virtual JSClassID getJSClassID() const { return ComponentElement::jsClassID; }
+    JSClassID getJSClassID() const override { return ComponentElement::jsClassID; }
 
     /** Return component of this element.
 

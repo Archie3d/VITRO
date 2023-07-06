@@ -20,7 +20,7 @@ public:
     // vitro::Element
     bool isStyledElement() const override { return true; }
 
-    virtual JSClassID getJSClassID() const { return StyledElement::jsClassID; }
+    JSClassID getJSClassID() const override { return StyledElement::jsClassID; }
 
     /** Assign style attribute value.
 

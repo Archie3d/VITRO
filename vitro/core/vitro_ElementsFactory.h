@@ -58,12 +58,17 @@ public:
     */
     Element::Ptr createElement(const juce::Identifier& tag);
 
+    void stashElement(const Element::Ptr& element);
+    void removeStashedElement(const Element::Ptr& element);
+
 private:
 
     Context& context;
 
     using CreateFunc = std::function<Element::Ptr()>;
     std::map<juce::Identifier, CreateFunc> creators{};
+
+    std::vector<Element::Ptr> stashedElements{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ElementsFactory)
 };

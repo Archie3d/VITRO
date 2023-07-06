@@ -1,6 +1,3 @@
-extern "C" {
-#include "quickjs.h"
-}
 namespace vitro {
 
 class ElementsFactory;
@@ -39,7 +36,7 @@ public:
             const JSClassDef def {
                 className,
                 [](JSRuntime*, JSValue value) {
-                    if (auto* ref{ static_cast<typename T::JSObjectRef*>(JS_GetOpaque(value, T::jsClassID)) })
+                    if (auto* ref{ static_cast<typename Element::JSObjectRef*>(JS_GetOpaque(value, T::jsClassID)) })
                         delete ref;
                 },
                 nullptr,
@@ -60,13 +57,13 @@ public:
 
     /** Returns inner reference object. */
     template<class T>
-    static typename T::JSObjectRef* getJSObjectRef(JSValue obj)
+    static typename Element::JSObjectRef* getJSObjectRef(JSValue obj)
     {
         void* opaque{ nullptr };
         const JSClassID classID{ JS_GetClassID(obj, &opaque) };
 
         if (classID == T::jsClassID && opaque != nullptr)
-            return static_cast<typename T::JSObjectRef*>(opaque);
+            return static_cast<typename Element::JSObjectRef*>(opaque);
 
         return nullptr;
     }
@@ -81,10 +78,13 @@ public:
     /** Evaluate JavaScript with a given object context. */
     JSValue evalThis(JSValue thisObj, juce::StringRef script, juce::StringRef fileName);
 
+    /** Returns global JavaScript object (scope). */
     JSValue getGlobalJSObject();
 
+    /** Store a native pointer in JS global scope. */
     void setGlobalJSNative(juce::StringRef name, void* ptr);
 
+    /** Retrieve a native pointer from JS global scope. */
     void* getGlobalJSNative(juce::StringRef name);
 
     /** Reset the context.
