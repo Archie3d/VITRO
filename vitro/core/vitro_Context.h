@@ -1,3 +1,6 @@
+extern "C" {
+#include "quickjs.h"
+}
 namespace vitro {
 
 class ElementsFactory;
@@ -23,8 +26,71 @@ public:
     const ElementsFactory& getElementsFactory() const;
     ElementsFactory& getElementsFactory();
 
-    void initialize();
+    JSRuntime* getJSRuntime();
+    JSContext* getJSContext();
 
+    template<class T>
+    void registerJSClass(const char* className)
+    {
+        if (T::jsClassID == 0)
+            JS_NewClassID(&T::jsClassID);
+
+        if (!JS_IsRegisteredClass(getJSRuntime(), T::jsClassID)) {
+            const JSClassDef def {
+                className,
+                [](JSRuntime*, JSValue value) {
+                    if (auto* ref{ static_cast<typename T::JSObjectRef*>(JS_GetOpaque(value, T::jsClassID)) })
+                        delete ref;
+                },
+                nullptr,
+                nullptr,
+                nullptr
+            };
+
+            [[maybe_unused]] const auto res = JS_NewClass(getJSRuntime(), T::jsClassID, &def);
+            jassert (res == 0);
+        }
+
+        auto* ctx{ getJSContext() };
+
+        auto proto{ JS_NewObject(ctx) };
+        T::registerJSPrototype(ctx, proto);
+        JS_SetClassProto(ctx, T::jsClassID, proto);
+    }
+
+    /** Returns inner reference object. */
+    template<class T>
+    static typename T::JSObjectRef* getJSObjectRef(JSValue obj)
+    {
+        void* opaque{ nullptr };
+        const JSClassID classID{ JS_GetClassID(obj, &opaque) };
+
+        if (classID == T::jsClassID && opaque != nullptr)
+            return static_cast<typename T::JSObjectRef*>(opaque);
+
+        return nullptr;
+    }
+
+    /** Evaluate JavaScript code.
+
+        This method evaluates the passed JavaScript code string.
+        The returned value is the result of evaluation (if applicable).
+    */
+    JSValue eval(juce::StringRef script, juce::StringRef fileName = "");
+
+    /** Evaluate JavaScript with a given object context. */
+    JSValue evalThis(JSValue thisObj, juce::StringRef script, juce::StringRef fileName);
+
+    JSValue getGlobalJSObject();
+
+    void setGlobalJSNative(juce::StringRef name, void* ptr);
+
+    void* getGlobalJSNative(juce::StringRef name);
+
+    /** Reset the context.
+
+        This will the script context.
+    */
     void reset();
 
 private:

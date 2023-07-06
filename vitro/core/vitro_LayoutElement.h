@@ -11,12 +11,16 @@ public:
 
     using Ptr = std::shared_ptr<LayoutElement>;
 
+    static JSClassID jsClassID;
+
     LayoutElement(const juce::Identifier& tag, Context& ctx);
 
     ~LayoutElement();
 
     // vitro::Element
     bool isLayoutElement() const override { return true; }
+
+    virtual JSClassID getJSClassID() const { return LayoutElement::jsClassID; }
 
     /** Returns the layout element bounds.
 
@@ -56,6 +60,8 @@ public:
         This is a method to be called when resizing the top UI container.
     */
     void recalculateLayout(float width, float height);
+
+    static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 
 protected:
 

@@ -129,6 +129,8 @@ const static DefaultConfigDeleter defaultConfigDeleter;
 
 //==============================================================================
 
+JSClassID LayoutElement::jsClassID = 0;
+
 struct LayoutElement::Layout final
 {
     LayoutElement& self;
@@ -256,7 +258,7 @@ struct LayoutElement::Layout final
 
         for (const auto& [edgeName, edgeEnum] : yoga::edgeValues) {
             const auto propertyName{ prefix + edgeName };
-            const auto& val{ self.getStyleProperty (propertyName) };
+            const auto& val{ self.getStyleProperty(propertyName) };
 
             if (!val.isVoid()) {
                 const float floatValue{ val };
@@ -439,6 +441,11 @@ void LayoutElement::recalculateLayout(float width, float height)
                 componentElement->updateComponentBoundsToLayoutNode();
         }
     }, true);
+}
+
+void LayoutElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
+{
+    StyledElement::registerJSPrototype(ctx, prototype);
 }
 
 void LayoutElement::numberOfChildrenChanged()

@@ -28,6 +28,7 @@ public:
     void registerElement()
     {
         creators[T::tag] = [this](){ return std::make_shared<T>(context); };
+        context.registerJSClass<T>(T::tag.toString().toRawUTF8());
     }
 
     /** Reset the factory.

@@ -13,10 +13,14 @@ class StyledElement : public Element
 {
 public:
 
+    static JSClassID jsClassID;
+
     StyledElement(const juce::Identifier& tag, Context& ctx);
 
     // vitro::Element
     bool isStyledElement() const override { return true; }
+
+    virtual JSClassID getJSClassID() const { return StyledElement::jsClassID; }
 
     /** Assign style attribute value.
 
@@ -48,6 +52,8 @@ public:
         since the last update, along with the current value itself.
     */
     std::pair<bool, const juce::var&> getStylePropertyChanged(const juce::Identifier& name) const;
+
+    static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 
 protected:
 

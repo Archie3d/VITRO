@@ -1,5 +1,7 @@
 namespace vitro {
 
+JSClassID ComponentElement::jsClassID = 0;
+
 ComponentElement::ComponentElement(const Identifier& tag, Context& ctx)
     : LayoutElement(tag, ctx)
 {
@@ -26,6 +28,11 @@ void ComponentElement::updateComponentBoundsToLayoutNode()
 
         component->setBounds(targetBounds);
     }
+}
+
+void ComponentElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
+{
+    LayoutElement::registerJSPrototype(ctx, prototype);
 }
 
 void ComponentElement::reconcileElement()

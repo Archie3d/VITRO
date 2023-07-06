@@ -18,6 +18,13 @@ public:
 
     juce::Component* getComponent() override { return this; }
 
+    void populateFromXml(const juce::XmlElement& xmlElement);
+
+    void populateFromXmlString(const juce::String& xmlString);
+
+    void populateFromXmlResource(const juce::String& location);
+
+
     // juce::Component
     void resized() override;
 

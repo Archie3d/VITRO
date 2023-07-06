@@ -11,10 +11,14 @@ public:
 
     using Ptr = std::shared_ptr<ComponentElement>;
 
+    static JSClassID jsClassID;
+
     ComponentElement(const juce::Identifier& tag, Context& ctx);
 
     // vitro::Element
     bool isComponentElement() const { return true; }
+
+    virtual JSClassID getJSClassID() const { return ComponentElement::jsClassID; }
 
     /** Return component of this element.
 
@@ -38,6 +42,8 @@ public:
         @see LayoutElement::recalculateLayout
     */
     void updateComponentBoundsToLayoutNode();
+
+    static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 
 protected:
 

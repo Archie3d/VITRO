@@ -24,6 +24,15 @@ public:
     using Ptr = std::shared_ptr<Element>;
     using WeakPtr = std::weak_ptr<Element>;
 
+    struct JSObjectRef final
+    {
+        Element::WeakPtr element{};
+        JSObjectRef(const Element::Ptr& el);
+        ~JSObjectRef();
+    };
+
+    static JSClassID jsClassID;
+
     Element() = delete;
 
     /** Construct an element.
@@ -46,6 +55,9 @@ public:
 
     /** Returns this element's tag. */
     juce::Identifier getTag() const;
+
+    /** Returns JS prototype class ID. */
+    virtual JSClassID getJSClassID() const { return Element::jsClassID; }
 
     /** Retruns element's id.
 
@@ -139,6 +151,8 @@ public:
      */
     void updateChildren();
 
+    static void registerJSPrototype(JSContext* ctx, JSValue prototype);
+
 protected:
 
     /** Update this element.
@@ -205,6 +219,8 @@ protected:
 
     /** Array of this element's direct children. */
     std::vector<Element::Ptr> children{};
+
+    JSValue jsValue{ JS_UNINITIALIZED };
 
 private:
 

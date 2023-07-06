@@ -2,7 +2,21 @@
 
 namespace vitro {
 
+Element::JSObjectRef::JSObjectRef(const Element::Ptr& el)
+    : element{ el }
+{
+}
+
+Element::JSObjectRef::~JSObjectRef()
+{
+    if (auto el{ element.lock() }) {
+        // @todo Remove element from stash
+    }
+}
+
 //==============================================================================
+
+JSClassID Element::jsClassID = 0;
 
 Element::Element(const juce::Identifier& tag, Context& ctx)
     : valueTree(tag),
@@ -156,6 +170,11 @@ void Element::updateChildren()
 {
     for (auto&& child : children)
         child->updateElementIfNeeded();
+}
+
+void Element::registerJSPrototype(JSContext* ctx, JSValue prototype)
+{
+    // @todo
 }
 
 std::pair<bool, const var&> Element::getAttributeChanged(const Identifier& attr) const
