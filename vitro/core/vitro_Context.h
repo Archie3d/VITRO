@@ -78,6 +78,8 @@ public:
     /** Evaluate JavaScript with a given object context. */
     JSValue evalThis(JSValue thisObj, juce::StringRef script, juce::StringRef fileName);
 
+    void dumpError();
+
     /** Returns global JavaScript object (scope). */
     JSValue getGlobalJSObject();
 

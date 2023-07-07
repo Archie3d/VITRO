@@ -1,5 +1,42 @@
 namespace vitro {
 
+// Print JavaScript object as string to stderr
+static void jsDumpObj(JSContext* ctx, JSValueConst val)
+{
+    if (const char* str = JS_ToCString(ctx, val)) {
+        std::cerr << str << '\n';
+        JS_FreeCString(ctx, str);
+    } else {
+        std::cerr << "[exception]\n";
+    }
+}
+
+// Helper function used to dump JavaScript error trace to stderr.
+static void jsDumpError(JSContext* ctx, JSValueConst exception)
+{
+    if (JS_IsError(ctx, exception)) {
+        auto message = JS_GetPropertyStr(ctx, exception, "message");
+
+        if (!JS_IsUndefined(message)) {
+            if (auto* str = JS_ToCString(ctx, message)) {
+                std::cerr << str << '\n';
+                JS_FreeCString(ctx, str);
+            }
+        }
+
+        JS_FreeValue(ctx, message);
+
+        auto stack{ JS_GetPropertyStr(ctx, exception, "stack") };
+
+        if (!JS_IsUndefined(stack))
+            jsDumpObj(ctx, stack);
+
+        JS_FreeValue(ctx, stack);
+    }
+}
+
+//==============================================================================
+
 struct Context::Impl
 {
     Context& self;
@@ -17,7 +54,6 @@ struct Context::Impl
           jsRuntime(JS_NewRuntime(), JS_FreeRuntime),
           jsContext(JS_NewContext(jsRuntime.get()), JS_FreeContext)
     {
-        initialize();
     }
 
     void initialize()
@@ -52,6 +88,15 @@ struct Context::Impl
         const int evalFlags{ JS_EVAL_TYPE_GLOBAL };
 
         return JS_EvalThis(jsContext.get(), thisObj, script, script.length(), fileName, evalFlags);
+    }
+
+    void dumpError()
+    {
+        auto* ctx{ jsContext.get() };
+
+        JSValue exception{ JS_GetException(ctx) };
+        jsDumpError(ctx, exception);
+        JS_FreeValue(ctx, exception);
     }
 
     JSValue getGlobalJSObject()
@@ -151,6 +196,11 @@ JSValue Context::eval(StringRef script, StringRef fileName)
 JSValue Context::evalThis(JSValue thisObj, StringRef script, StringRef fileName)
 {
     return d->evalThis(thisObj, script, fileName);
+}
+
+void Context::dumpError()
+{
+    d->dumpError();
 }
 
 JSValue Context::getGlobalJSObject()
