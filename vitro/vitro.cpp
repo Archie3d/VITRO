@@ -33,4 +33,4 @@ using namespace juce;
 #include "core/vitro_ComponentElement.cpp"
 #include "core/vitro_View.cpp"
 
-#include "widgets/vitro_Component.cpp"
+#include "widgets/vitro_Panel.cpp"

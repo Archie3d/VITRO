@@ -1,11 +1,11 @@
 namespace vitro {
 
-JSClassID Component::jsClassID = 0;
+JSClassID Panel::jsClassID = 0;
 
-const Identifier Component::tag("Component");
+const Identifier Panel::tag("Panel");
 
-Component::Component(Context& ctx)
-    : ComponentElement(Component::tag, ctx),
+Panel::Panel(Context& ctx)
+    : ComponentElement(Panel::tag, ctx),
       juce::Component()
 {
     registerStyleProperty(attr::css::background_color);
@@ -14,13 +14,13 @@ Component::Component(Context& ctx)
     registerStyleProperty(attr::css::border_width);
 }
 
-void Component::resized()
+void Panel::resized()
 {
     if (gradient)
         colourGradient = gradient->getColourGradient(getWidth(), getHeight());
 }
 
-void Component::paint(Graphics& g)
+void Panel::paint(Graphics& g)
 {
     if (gradient)
         g.setGradientFill(colourGradient);
@@ -48,7 +48,7 @@ void Component::paint(Graphics& g)
     }
 }
 
-void Component::update()
+void Panel::update()
 {
     // background-color
     if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::background_color) }; changed) {

@@ -1,17 +1,29 @@
 namespace vitro {
 
-class Component : public vitro::ComponentElement,
-                  public juce::Component
+/** A simple panel widgets.
+
+
+    Panel widget corresponds directly to juce::Component. It can
+    be used to group other widgets and can be decorated with a background colour.
+
+    Style attributes:
+        background-color
+        border-color
+        border-width
+        border-radius
+*/
+class Panel : public vitro::ComponentElement,
+              public juce::Component
 {
 public:
 
-    const static juce::Identifier tag;  // <Component>
+    const static juce::Identifier tag;  // <Panel>
 
     static JSClassID jsClassID;
 
-    Component(Context& ctx);
+    Panel(Context& ctx);
 
-    JSClassID getJSClassID() const override { return vitro::Component::jsClassID; }
+    JSClassID getJSClassID() const override { return vitro::Panel::jsClassID; }
 
     juce::Component* getComponent() override { return this; }
 

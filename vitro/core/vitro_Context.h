@@ -11,6 +11,7 @@ class Loader;
 class Context
 {
 public:
+
     Context();
     virtual ~Context();
 
@@ -94,6 +95,17 @@ public:
         This will the script context.
     */
     void reset();
+
+    /** Invoke a function after a delay.
+
+        This method implements a function delayed invocation by
+        starting a timer. This is used to implement the setTimeout
+        global function.
+    */
+    void callAfterDelay(int milliseconds, const std::function<void()>& f);
+
+    /** Retrieve the this Context object from the JSContext. */
+    static Context* getContextFromJSContext(JSContext* ctx);
 
 private:
 
