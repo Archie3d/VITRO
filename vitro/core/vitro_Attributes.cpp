@@ -16,9 +16,9 @@ namespace css {
 
 const Identifier background_color ("background-color");
 
-const Identifier border_color     ("border_color");
-const Identifier border_radius    ("border_radius");
-const Identifier border_width     ("border_width");
+const Identifier border_color     ("border-color");
+const Identifier border_radius    ("border-radius");
+const Identifier border_width     ("border-width");
 
 const Identifier shadow_color     ("shadow-color");
 const Identifier shadow_radius    ("shadow-radius");
