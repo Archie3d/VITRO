@@ -13,6 +13,7 @@ void ElementsFactory::reset()
 void ElementsFactory::registerDefaultElements()
 {
     registerElement<vitro::View>();
+    registerElement<vitro::Component>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

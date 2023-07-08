@@ -17,10 +17,10 @@ static void populateChildElementsFromXml(Context& ctx, const Element::Ptr& eleme
     jassert(element != nullptr);
 
     for (auto* child : xmlElement.getChildIterator()) {
-        copyElementAttributesFromXml(element, xmlElement);
-
         if (auto childElement{ createElementFromXml(ctx, *child) })
             element->addChildElement(childElement);
+        else
+            DBG("Unable to create element for <" << child->getTagName() << ">");
     }
 }
 
@@ -33,8 +33,10 @@ static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElem
 
     auto element{ ctx.getElementsFactory().createElement(tag) };
 
-    if (element != nullptr)
+    if (element != nullptr) {
+        copyElementAttributesFromXml(element, xmlElement);
         populateChildElementsFromXml(ctx, element, xmlElement);
+    }
 
     return element;
 }
@@ -66,6 +68,10 @@ void View::populateFromXml(const XmlElement& xmlElement)
         return;
 
     populateChildElementsFromXml(context, shared_from_this(), xmlElement);
+
+    // Trigger the elements tree update
+    forceUpdate();
+    //update();
 }
 
 void View::populateFromXmlString(const String& xmlString)
@@ -103,6 +109,8 @@ void View::updateEverything()
 {
     if (updateLayout())
         recalculateLayoutToCurrentBounds();
+
+    updateElementIfNeeded();
 
     updateChildren();
 

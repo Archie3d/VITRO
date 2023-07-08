@@ -26,6 +26,9 @@ void ComponentElement::updateComponentBoundsToLayoutNode()
     if (auto* component{ getComponent() }) {
         auto targetBounds{ getLayoutElementBounds().toNearestInt() };
 
+        DBG("<" << getTag() << "> (" << targetBounds.getX() << ", " << targetBounds.getY() << ", " <<
+            targetBounds.getWidth() << ", " << targetBounds.getHeight() << ")");
+
         component->setBounds(targetBounds);
     }
 }

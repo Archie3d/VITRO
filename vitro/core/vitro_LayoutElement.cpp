@@ -423,6 +423,12 @@ bool LayoutElement::updateLayout()
             changed = childLayoutElement->updateLayout() || changed;
     }
 
+    if (childrenChanged) {
+        // Changing the number of children may affect the layout
+        childrenChanged = false;
+        changed = true;
+    }
+
     return changed;
 }
 

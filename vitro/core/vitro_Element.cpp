@@ -22,6 +22,7 @@ Element::Element(const juce::Identifier& tag, Context& ctx)
     : valueTree(tag),
       context{ ctx }
 {
+    updatePending = true;
 }
 
 Element::~Element()
