@@ -4,6 +4,16 @@ namespace vitro {
 
     This is a base class for all the elements which are also
     UI Components.
+
+    @note JUCE shadow works properly only for rectangular components.
+          When using rounded corners the shadow will not paint properly.
+
+    Style properties:
+        cursor
+        shadow-color
+        shadow-radius
+        shadow-offset-x
+        shadow-offset-y
 */
 class ComponentElement : public LayoutElement
 {
@@ -75,8 +85,19 @@ public:
 
 protected:
 
+    /** Helper to set component's colour from a style property. */
+    void setColourFromStyleProperty(juce::Component& component, int colourId, const juce::Identifier& propertyName);
+    void setColourFromStyleProperty(int colourId, const juce::Identifier& propertyName);
+
+    /** Helper to set component's font from style property. */
+    void populateFontFromStyleProperties(juce::Font& font);
+
+    /** Helper to update component's mouse curtsor. */
+    void setMouseCursorFromStyleProperties();
+
     // vitro::Element
     void initialize() override;
+    void update() override;
     void reconcileElement() override;
 
     // Mouse events forwarded to this component.
@@ -89,6 +110,10 @@ private:
 
     // Proxy to intercept mouse events and forward them to this component element.
     std::unique_ptr<MouseEventsProxy> mouseEventsProxy{};
+
+    // Shadow effect.
+    juce::DropShadow shadow{};
+    std::unique_ptr<juce::DropShadower> dropShadower{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ComponentElement)
 };

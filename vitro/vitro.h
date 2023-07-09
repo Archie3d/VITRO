@@ -44,3 +44,4 @@ extern "C" {
 #include "core/vitro_View.h"
 
 #include "widgets/vitro_Panel.h"
+#include "widgets/vitro_Label.h"

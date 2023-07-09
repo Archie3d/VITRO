@@ -123,7 +123,7 @@ bool Selector::match(const ValueTree& tree) const
     const auto& cl{ tree.getProperty(attr_class) };
 
     if (cl.isString()) {
-        treeClasses.add(cl.toString());
+        treeClasses.addTokens(cl.toString(), " ", "");
     } else if (cl.isArray()) {
         for (int i = 0; i < cl.size(); ++i)
             treeClasses.add(cl[i].toString());
@@ -220,7 +220,7 @@ bool Style::match(const String& tag, const StringArray& classes, const String& i
 bool Style::match(const ValueTree& tree) const
 {
     for (const auto& selector : selectors) {
-        if (selector.match (tree))
+        if (selector.match(tree))
             return true;
     }
 

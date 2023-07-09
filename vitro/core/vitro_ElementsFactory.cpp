@@ -14,6 +14,7 @@ void ElementsFactory::registerDefaultElements()
 {
     registerElement<vitro::View>();
     registerElement<vitro::Panel>();
+    registerElement<vitro::Label>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

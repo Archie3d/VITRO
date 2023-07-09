@@ -50,6 +50,8 @@ void Panel::paint(Graphics& g)
 
 void Panel::update()
 {
+    ComponentElement::update();
+
     // background-color
     if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::background_color) }; changed) {
         if (prop.isVoid()) {

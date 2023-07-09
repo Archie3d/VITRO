@@ -227,6 +227,7 @@ protected:
     */
     virtual void reconcileElement() {}
 
+    /** Children elements iterator. */
     void forEachChild(const std::function<void(const Element::Ptr&)>& func, bool recursive = true);
 
     /** Element's tag and the attributes are stored here. */

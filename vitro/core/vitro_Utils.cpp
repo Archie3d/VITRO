@@ -35,7 +35,7 @@ Justification parseJustificationFromString(const String& str)
         { "justify", Justification::horizontallyJustified }
     };
 
-    const auto it = justMap.find(str);
+    const auto it = justMap.find(str.trim().toLowerCase());
 
     if (it == justMap.end())
         return Justification(Justification::left);

@@ -2,7 +2,6 @@ namespace vitro {
 
 /** A simple panel widgets.
 
-
     Panel widget corresponds directly to juce::Component. It can
     be used to group other widgets and can be decorated with a background colour.
 
