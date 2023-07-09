@@ -6,10 +6,13 @@ namespace vitro {
 
 namespace attr {
 
-const Identifier id    ("id");
-const Identifier clazz ("class");
-const Identifier style ("style");
-const Identifier src   ("src");
+const Identifier id     ("id");
+const Identifier clazz  ("class");
+const Identifier style  ("style");
+const Identifier src    ("src");
+
+const Identifier hover  ("hover");
+const Identifier active ("active");
 
 //==============================================================================
 namespace css {

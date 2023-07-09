@@ -2,6 +2,41 @@ namespace vitro {
 
 JSClassID ComponentElement::jsClassID = 0;
 
+//==============================================================================
+
+ComponentElement::MouseEventsProxy::MouseEventsProxy(ComponentElement& el)
+    : element {el}
+{
+    if (auto* component{ element.getComponent() })
+        component->addMouseListener(this, true);
+}
+
+void ComponentElement::MouseEventsProxy::mouseEnter(const MouseEvent& event)
+{
+    element.setAttribute(attr::hover, true);
+    element.handleMouseEnter(event);
+}
+
+void ComponentElement::MouseEventsProxy::mouseExit(const MouseEvent& event)
+{
+    element.setAttribute(attr::hover, false);
+    element.handleMouseExit(event);
+}
+
+void ComponentElement::MouseEventsProxy::mouseDown (const MouseEvent& event)
+{
+    element.setAttribute(attr::active, true);
+    element.handleMouseDown(event);
+}
+
+void ComponentElement::MouseEventsProxy::mouseUp (const MouseEvent& event)
+{
+    element.setAttribute (attr::active, false);
+    element.handleMouseUp(event);
+}
+
+//==============================================================================
+
 ComponentElement::ComponentElement(const Identifier& tag, Context& ctx)
     : LayoutElement(tag, ctx)
 {
@@ -36,6 +71,13 @@ void ComponentElement::updateComponentBoundsToLayoutNode()
 void ComponentElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
 {
     LayoutElement::registerJSPrototype(ctx, prototype);
+}
+
+void ComponentElement::initialize()
+{
+    LayoutElement::initialize();
+
+    mouseEventsProxy = std::make_unique<MouseEventsProxy>(*this);
 }
 
 void ComponentElement::reconcileElement()

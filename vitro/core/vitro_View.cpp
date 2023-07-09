@@ -10,7 +10,7 @@ static void copyElementAttributesFromXml(const Element::Ptr& element, const XmlE
     }
 }
 
-Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElement);
+static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElement);
 
 static void populateChildElementsFromXml(Context& ctx, const Element::Ptr& element, const XmlElement& xmlElement)
 {

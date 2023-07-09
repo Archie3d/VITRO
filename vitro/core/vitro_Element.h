@@ -167,6 +167,15 @@ public:
 
 protected:
 
+    /** Perform element initialization.
+
+        This method is called by the factory immediately after being constructed.
+        The default implementation initializes the internal JSValue of the element.
+
+        @note Overriding methods must make sure to call initialize of the parent class.
+     */
+    virtual void initialize();
+
     /** Update this element.
 
         Elements will override this method to perform an update of the inner state.

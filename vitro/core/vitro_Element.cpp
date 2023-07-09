@@ -23,6 +23,7 @@ Element::Element(const juce::Identifier& tag, Context& ctx)
       context{ ctx }
 {
     updatePending = true;
+    valueTree.addListener(this);
 }
 
 Element::~Element()
@@ -190,6 +191,11 @@ void Element::stash()
 void Element::unstash()
 {
     context.getElementsFactory().removeStashedElement(shared_from_this());
+}
+
+void Element::initialize()
+{
+    initJSValue();
 }
 
 std::pair<bool, const var&> Element::getAttributeChanged(const Identifier& attr) const

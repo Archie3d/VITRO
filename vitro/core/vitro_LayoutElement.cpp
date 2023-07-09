@@ -286,8 +286,8 @@ struct LayoutElement::Layout final
             const auto& val{ self.getStyleProperty(propertyName) };
 
             if (!val.isVoid()) {
-                const float floatValue{ val };
                 const auto currentValue{ getter(node, edgeEnum) };
+                const float floatValue{ val };
 
                 if (val.toString().endsWithChar('%')) {
                     if (currentValue.unit != YGUnitPercent || currentValue.value != floatValue) {
