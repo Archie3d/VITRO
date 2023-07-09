@@ -77,7 +77,7 @@ void ComponentElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
 
 void ComponentElement::setColourFromStyleProperty(juce::Component& component, int colourId, const Identifier& propertyName)
 {
-    if (const auto&& [changed, colour] = getStylePropertyChanged(propertyName); changed && ! colour.isVoid())
+    if (const auto&& [changed, colour]{ getStylePropertyChanged(propertyName) }; changed && !colour.isVoid())
         component.setColour(colourId, parseColourFromString (colour.toString()));
     else if (colour.isVoid())
         component.removeColour(colourId);
@@ -173,26 +173,26 @@ void ComponentElement::update()
     bool createShadow{ false };
 
     // shadow-color
-    if (const auto&& [changed, val]{ getStylePropertyChanged(attr::css::shadow_color)}; changed) {
-        if (val.isVoid()) {
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::shadow_color) }; changed) {
+        if (prop.isVoid()) {
             dropShadower.reset();
         } else {
             createShadow = true;
-            shadow.colour = parseColourFromString(val.toString());
+            shadow.colour = parseColourFromString(prop.toString());
         }
     }
 
     // shadow-radius
-    if (const auto&& [changed, val]{ getStylePropertyChanged(attr::css::shadow_radius) }; changed)
-        shadow.radius = val.isVoid() ? 4 : int(val);
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::shadow_radius) }; changed)
+        shadow.radius = prop.isVoid() ? 4 : int(prop);
 
     // shadow-offset-x
-    if (const auto&& [changed, val]{ getStylePropertyChanged(attr::css::shadow_offset_x) }; changed)
-        shadow.offset.setX(val.isVoid() ? 0 : int(val));
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::shadow_offset_x) }; changed)
+        shadow.offset.setX(prop.isVoid() ? 0 : int(prop));
 
     // shadow-offset-y
-    if (const auto&& [changed, val]{ getStylePropertyChanged(attr::css::shadow_offset_y) }; changed)
-        shadow.offset.setY(val.isVoid() ? 0 : int(val));
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::shadow_offset_y) }; changed)
+        shadow.offset.setY(prop.isVoid() ? 0 : int(prop));
 
     if (createShadow && dropShadower == nullptr) {
         dropShadower = std::make_unique<DropShadower>(shadow);

@@ -9,6 +9,7 @@ Panel::Panel(Context& ctx)
       juce::Component()
 {
     registerStyleProperty(attr::css::background_color);
+    registerStyleProperty(attr::css::background_image);
     registerStyleProperty(attr::css::border_color);
     registerStyleProperty(attr::css::border_radius);
     registerStyleProperty(attr::css::border_width);
@@ -22,11 +23,24 @@ void Panel::resized()
 
 void Panel::paint(Graphics& g)
 {
-    if (gradient)
+    if (backgroundImage.isValid()) {
+        if (borderRadius > 0) {
+            g.saveState();
+            Path path{};
+            path.addRoundedRectangle(0.0f, 0.0f, (float)getWidth(), (float)getHeight(), borderRadius);
+            g.reduceClipRegion(path);
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(),
+                                         0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
+            g.restoreState();
+        } else {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(),
+                                         0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
+        }
+    } else if (gradient) {
         g.setGradientFill(colourGradient);
-    else if (backgroundColour)
+    } else if (backgroundColour) {
         g.setColour(*backgroundColour);
-
+    }
 
     if (borderRadius > 0.0f)
         g.fillRoundedRectangle(0.0f, 0.0f, (float)getWidth(), (float)getHeight(), borderRadius);
@@ -71,6 +85,12 @@ void Panel::update()
                 gradient.reset();
             }
         }
+    }
+
+    // background-image
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::background_image) }; changed) {
+            backgroundImage = prop.isVoid() ? juce::Image()
+                                            : context.getLoader().loadImage(prop.toString());
     }
 
     // border-color

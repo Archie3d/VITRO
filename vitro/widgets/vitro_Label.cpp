@@ -32,9 +32,9 @@ void Label::update()
     populateFontFromStyleProperties( labelFont );
     setFont(labelFont);
 
-    if (const auto&& [changed, align]{ getStylePropertyChanged(attr::css::text_align) }; changed) {
-        juce::Label::setJustificationType(align.isVoid() ? Justification::left
-                                                         : parseJustificationFromString(align.toString()));
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::text_align) }; changed) {
+        juce::Label::setJustificationType(prop.isVoid() ? Justification::left
+                                                        : parseJustificationFromString(prop.toString()));
     }
 }
 

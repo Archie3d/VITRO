@@ -5,8 +5,11 @@ namespace vitro {
     Panel widget corresponds directly to juce::Component. It can
     be used to group other widgets and can be decorated with a background colour.
 
+    @note Currently when background-image is set it will override the background-color property.
+
     Style attributes:
         background-color
+        background-image
         border-color
         border-width
         border-radius
@@ -36,6 +39,8 @@ protected:
     void update() override;
 
 private:
+
+    juce::Image backgroundImage{};
 
     std::optional<juce::Colour> backgroundColour{};
 

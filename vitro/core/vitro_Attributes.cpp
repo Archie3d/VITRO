@@ -21,6 +21,7 @@ namespace css {
 
 const Identifier color            ("color");
 const Identifier background_color ("background-color");
+const Identifier background_image ("background-image");
 
 const Identifier border_color     ("border-color");
 const Identifier border_radius    ("border-radius");
