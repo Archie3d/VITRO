@@ -35,6 +35,7 @@ extern "C" {
 
 #include "core/vitro_Utils.h"
 #include "core/vitro_Loader.h"
+#include "core/vitro_Attributes.h"
 #include "core/vitro_Element.h"
 #include "core/vitro_Context.h"
 #include "core/vitro_ElementsFactory.h"
@@ -45,3 +46,4 @@ extern "C" {
 
 #include "widgets/vitro_Panel.h"
 #include "widgets/vitro_Label.h"
+#include "widgets/vitro_Button.h"
