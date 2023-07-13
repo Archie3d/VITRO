@@ -35,4 +35,27 @@ void TextButton::update()
     setColourFromStyleProperty(juce::ComboBox::outlineColourId,    attr::css::border_color);
 }
 
+//==============================================================================
+
+JSClassID ToggleButton::jsClassID = 0;
+
+const Identifier ToggleButton::tag("ToggleButton");
+
+ToggleButton::ToggleButton(Context& ctx)
+    : ButtonBase(ToggleButton::tag, ctx)
+{
+    registerStyleProperty(attr::css::color);
+    registerStyleProperty(attr::css::tick_color);
+    registerStyleProperty(attr::css::tick_disabled_color);
+}
+
+void ToggleButton::update()
+{
+    ButtonBase::update();
+
+    setColourFromStyleProperty(juce::ToggleButton::textColourId,         attr::css::color);
+    setColourFromStyleProperty(juce::ToggleButton::tickColourId,         attr::css::tick_color);
+    setColourFromStyleProperty(juce::ToggleButton::tickDisabledColourId, attr::css::tick_disabled_color);
+}
+
 } // namespace vitro

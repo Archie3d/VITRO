@@ -59,6 +59,15 @@ public:
     /** Tells whether this element is a UI component. */
     virtual bool isComponentElement() const { return false; }
 
+    /** Tells whether this element consumes the inner XML tags.
+
+        If this method returnes true the inner XML elements parsing will
+        be delegated to the element, instead of being added to the elements tree.
+
+        @see forwardXmlElement
+    */
+    virtual bool hasInnerXml() const { return false; }
+
     /** Returns this element's tag. */
     juce::Identifier getTag() const;
 
@@ -156,6 +165,8 @@ public:
         This method calls @ref updateElementIfNeeded() on all the children of this element.
      */
     void updateChildren();
+
+    void forwardXmlElement(const juce::XmlElement&) {};
 
     static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 

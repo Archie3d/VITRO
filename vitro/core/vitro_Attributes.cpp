@@ -11,6 +11,9 @@ const Identifier clazz  ("class");
 const Identifier style  ("style");
 const Identifier src    ("src");
 
+const Identifier enabled ("enabled");
+const Identifier visible ("visible");
+
 const Identifier text   ("text");
 
 const Identifier hover  ("hover");
@@ -22,6 +25,7 @@ const Identifier radiogroup ("radiogroup");
 namespace css {
 
 const Identifier color               ("color");
+const Identifier alpha               ("alpha");
 const Identifier background_color    ("background-color");
 const Identifier background_color_on ("background-color-on");
 const Identifier background_image    ("background-image");
@@ -40,6 +44,9 @@ const Identifier text_color          ("text-color");
 const Identifier text_color_on       ("text-color-on");
 const Identifier text_color_off      ("text-color-off");
 
+const Identifier tick_color          ("tick-color");
+const Identifier tick_disabled_color ("tick-disabled-color");
+
 const Identifier font_family         ("font-family");
 const Identifier font_style          ("font-style");
 const Identifier font_size           ("font-size");
@@ -49,6 +56,7 @@ const Identifier cursor              ("cursor");
 
 const Identifier toggle              ("toggle");
 const Identifier trigger_down        ("trigger-down");
+const Identifier click_through       ("click-through");
 
 } // namespace css
 

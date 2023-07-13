@@ -84,4 +84,31 @@ public:
     void update() override;
 };
 
+//==============================================================================
+
+/** Toggle button.
+
+    This element is a toggle button, which is equivalent to juce::ToggleButton.
+
+    Style properties:
+        color
+        tick-color
+        tick-disabled-color
+*/
+
+class ToggleButton : public vitro::Button<juce::ToggleButton>
+{
+public:
+    using ButtonBase = vitro::Button<juce::ToggleButton>;
+
+    const static juce::Identifier tag;  // <ToggleButton>
+
+    static JSClassID jsClassID;
+
+    ToggleButton(Context& ctx);
+
+    // juce::Element
+    void update() override;
+};
+
 } // namespace vitro

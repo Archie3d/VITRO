@@ -8,7 +8,13 @@ namespace vitro {
     @note JUCE shadow works properly only for rectangular components.
           When using rounded corners the shadow will not paint properly.
 
+    Attributes:
+        visible
+        enabled
+
     Style properties:
+        alpha
+        click-through
         cursor
         shadow-color
         shadow-radius

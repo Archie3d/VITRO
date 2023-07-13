@@ -16,6 +16,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::Panel>();
     registerElement<vitro::Label>();
     registerElement<vitro::TextButton>();
+    registerElement<vitro::ToggleButton>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

@@ -35,7 +35,14 @@ static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElem
 
     if (element != nullptr) {
         copyElementAttributesFromXml(element, xmlElement);
-        populateChildElementsFromXml(ctx, element, xmlElement);
+
+        if (element->hasInnerXml()) {
+            // This element manages its inner XML. We don't need to parse the XML tree
+            // further but forward the current node to the element.
+            element->forwardXmlElement(xmlElement);
+        } else {
+            populateChildElementsFromXml(ctx, element, xmlElement);
+        }
     }
 
     return element;

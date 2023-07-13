@@ -40,6 +40,8 @@ void ComponentElement::MouseEventsProxy::mouseUp (const MouseEvent& event)
 ComponentElement::ComponentElement(const Identifier& tag, Context& ctx)
     : LayoutElement(tag, ctx)
 {
+    registerStyleProperty(attr::css::alpha);
+    registerStyleProperty(attr::css::click_through);
     registerStyleProperty(attr::css::cursor);
     registerStyleProperty(attr::css::shadow_color);
     registerStyleProperty(attr::css::shadow_radius);
@@ -167,6 +169,20 @@ void ComponentElement::initialize()
 
 void ComponentElement::update()
 {
+    if (auto* comp{ getComponent() }) {
+        if (const auto&& [changed, val]{ getAttributeChanged(attr::enabled) }; changed && !val.isVoid())
+            comp->setEnabled(val);
+
+        if (const auto&& [changed, val]{ getAttributeChanged(attr::visible) }; changed && !val.isVoid())
+            comp->setVisible(val);
+
+        if (const auto&& [changed, val]{getStylePropertyChanged(attr::css::alpha) }; changed)
+            comp->setAlpha(val.isVoid() ? 1.0f : float(val));
+
+        if (const auto&& [changed, val]{ getStylePropertyChanged(attr::css::click_through) }; changed)
+            comp->setInterceptsMouseClicks(val.isVoid() ? true : bool(val), false);
+    }
+
     // cursor
     setMouseCursorFromStyleProperties();
 
