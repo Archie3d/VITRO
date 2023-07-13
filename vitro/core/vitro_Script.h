@@ -18,6 +18,8 @@ public:
     Script(Context& ctx);
 
     // vitro::Element
+    JSClassID getJSClassID() const override { return vitro::Script::jsClassID; }
+
     bool hasInnerXml() const override { return true; }
 
     void forwardXmlElement(const juce::XmlElement& xml) override;

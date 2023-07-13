@@ -18,6 +18,8 @@ public:
     View(Context& ctx);
     ~View();
 
+    JSClassID getJSClassID() const override { return vitro::View::jsClassID; }
+
     juce::Component* getComponent() override { return this; }
 
     void populateFromXml(const juce::XmlElement& xmlElement);

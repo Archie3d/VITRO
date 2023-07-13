@@ -28,8 +28,11 @@ Element::Element(const juce::Identifier& tag, Context& ctx)
 
 Element::~Element()
 {
-    if (jsValue != JS_UNINITIALIZED)
+    if (jsValue != JS_UNINITIALIZED) {
+        const auto classID{ JS_GetClassID(jsValue, nullptr) };
+
         JS_FreeValue(context.getJSContext(), jsValue);
+    }
 };
 
 juce::Identifier Element::getTag() const

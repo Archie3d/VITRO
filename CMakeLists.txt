@@ -37,3 +37,10 @@ target_link_libraries(vitro
     INTERFACE
         quickjs
 )
+
+file(GLOB_RECURSE vitro_src
+    ${CMAKE_CURRENT_SOURCE_DIR}/vitro/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/vitro/*.cpp
+)
+
+add_custom_target(VITRO SOURCES ${vitro_src})

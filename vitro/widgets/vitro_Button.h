@@ -81,6 +81,8 @@ public:
     TextButton(Context& ctx);
 
     // juce::Element
+    JSClassID getJSClassID() const override { return vitro::TextButton::jsClassID; }
+
     void update() override;
 };
 
@@ -108,6 +110,8 @@ public:
     ToggleButton(Context& ctx);
 
     // juce::Element
+    JSClassID getJSClassID() const override { return vitro::ToggleButton::jsClassID; }
+
     void update() override;
 };
 
@@ -155,6 +159,8 @@ public:
     DrawableButton(Context& ctx);
 
     // juce::Element
+    JSClassID getJSClassID() const override { return vitro::DrawableButton::jsClassID; }
+
     void update() override;
 
 private:

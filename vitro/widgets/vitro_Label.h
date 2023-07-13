@@ -28,6 +28,8 @@ public:
 
     Label(Context& ctx);
 
+    JSClassID getJSClassID() const override { return vitro::Label::jsClassID; }
+
     juce::Component* getComponent() override { return this; }
 
 protected:
