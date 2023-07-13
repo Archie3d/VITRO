@@ -169,7 +169,11 @@ public:
     /** Populate this element from XML. */
     virtual void forwardXmlElement(const juce::XmlElement&) {};
 
-    static void registerJSPrototype(JSContext* ctx, JSValue prototype);
+    // @internal
+    // This method gets called upon class registration with the factory.
+    // It must create the element's JS prototype object with all the
+    // properties and methods exposed.
+    static void registerJSPrototype(JSContext* jsCtx, JSValue prototype);
 
     /** Store this element in factory's stash. */
     void stash();
@@ -242,6 +246,15 @@ protected:
     /** Children elements iterator. */
     void forEachChild(const std::function<void(const Element::Ptr&)>& func, bool recursive = true);
 
+    // The following are helper functions to register
+    // element's JavaScript prototype object.
+    using JSGetter = JSValue(*)(JSContext*, JSValueConst);
+    using JSSetter = JSValue(*)(JSContext*, JSValueConst, JSValueConst);
+
+    static void registerConstructor(JSContext* jsCtx, JSValue proto, juce::StringRef name, JSCFunction func, int numArgs);
+    static void registerJSMethod(JSContext* jsCtx, JSValue proto, juce::StringRef name, JSCFunction func);
+    static void registerJSProperty(JSContext* jsCtx, JSValue proto, juce::StringRef name, JSGetter getter, JSSetter setter = nullptr);
+
     /** Element's tag and the attributes are stored here. */
     juce::ValueTree valueTree;
 
@@ -262,10 +275,14 @@ private:
     friend class ElementsFactory;
     friend struct JSObjectRef;
 
+    // Initialize the internal JS object
     void initJSValue();
 
     // juce::ValueTree::Listener
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;
+
+    // JavaScript methods and properties
+    static JSValue js_getTagName(JSContext* jsCtx, JSValueConst self);
 
     /// This flag indicates that the element must be updated.
     /// @see updateElementIfNeeded

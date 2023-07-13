@@ -181,9 +181,9 @@ void Element::updateChildren()
         child->updateElementIfNeeded();
 }
 
-void Element::registerJSPrototype(JSContext* ctx, JSValue prototype)
+void Element::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
 {
-    // @todo
+    registerJSProperty(jsCtx, prototype, "tagName", &js_getTagName);
 }
 
 void Element::stash()
@@ -238,6 +238,46 @@ void Element::forEachChild(const std::function<void(const Element::Ptr&)>& func,
     }
 }
 
+void Element::registerConstructor(JSContext* jsCtx, JSValue proto, StringRef name, JSCFunction func, int numArgs)
+{
+    JSValue clazz{ JS_NewCFunction2(jsCtx, func, name.text, numArgs, JS_CFUNC_constructor, 0) };
+
+    auto global{ JS_GetGlobalObject(jsCtx) };
+    JS_DefinePropertyValueStr(jsCtx, global, name.text, JS_DupValue(jsCtx, clazz),
+                              JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+    JS_SetConstructor(jsCtx, clazz, proto);
+    JS_FreeValue(jsCtx, global);
+    JS_FreeValue(jsCtx, clazz);
+}
+
+void Element::registerJSMethod(JSContext* jsCtx, JSValue proto, StringRef name, JSCFunction func)
+{
+    JS_SetPropertyStr(jsCtx, proto, name.text, JS_NewCFunction(jsCtx, func, name, 0));
+}
+
+void Element::registerJSProperty(JSContext* jsCtx, JSValue proto, StringRef name, JSGetter getter, JSSetter setter)
+{
+    auto aProperty{ JS_NewAtom(jsCtx, name.text) };
+    int flags{ JS_PROP_CONFIGURABLE };
+
+    if (getter != nullptr)
+        flags |= JS_PROP_ENUMERABLE;
+
+    if (setter != nullptr)
+        flags |= JS_PROP_WRITABLE;
+
+    auto get{ getter != nullptr ? JS_NewCFunction2(jsCtx, (JSCFunction*)getter, "<get>", 0, JS_CFUNC_getter, 0) : JS_UNDEFINED };
+    auto set{ setter != nullptr ? JS_NewCFunction2(jsCtx, (JSCFunction*)setter, "<set>", 1, JS_CFUNC_setter, 0) : JS_UNDEFINED };
+
+    JS_DefinePropertyGetSet(jsCtx, proto, aProperty,
+        get,
+        set,
+        flags
+    );
+
+    JS_FreeAtom(jsCtx, aProperty);
+}
+
 void Element::initJSValue()
 {
     jsValue = JS_NewObjectClass(context.getJSContext(), getJSClassID());
@@ -252,6 +292,16 @@ void Element::valueTreePropertyChanged(ValueTree&, const Identifier& changedAttr
     // Trigger update on the root element.
     if (auto root{ getTopLevelElement() })
         root->update();
+}
+
+JSValue Element::js_getTagName(JSContext* jsCtx, JSValueConst self)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        const auto tag{ element->getTag().toString() };
+        return JS_NewStringLen(jsCtx, tag.toRawUTF8(), tag.length());
+    }
+
+    return JS_UNDEFINED;
 }
 
 } // namespace vitro

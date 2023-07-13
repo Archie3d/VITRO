@@ -22,12 +22,21 @@ public:
 
     juce::Component* getComponent() override { return this; }
 
+    void initialize() override;
+
     void populateFromXml(const juce::XmlElement& xmlElement);
 
     void populateFromXmlString(const juce::String& xmlString);
 
     void populateFromXmlResource(const juce::String& location);
 
+    /** Inject the view into JS global scope
+
+        The view will be accessible as global `view` object.
+    */
+    void exposeToJS();
+
+    static void registerJSPrototype(JSContext* jsCtx, JSValue prototype);
 
     // juce::Component
     void resized() override;

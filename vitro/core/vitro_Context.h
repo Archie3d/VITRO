@@ -63,8 +63,22 @@ public:
         void* opaque{ nullptr };
         const JSClassID classID{ JS_GetClassID(obj, &opaque) };
 
-        if (classID == T::jsClassID && opaque != nullptr)
+        // @todo We have to check that classID is among registered ones
+
+        if (/* classID == T::jsClassID && */opaque != nullptr)
             return static_cast<typename Element::JSObjectRef*>(opaque);
+
+        return nullptr;
+    }
+
+    template<class T>
+    static typename std::shared_ptr<T> getJSNativeObject(JSValue obj)
+    {
+        if (auto* ref{ getJSObjectRef<T>(obj) }) {
+            if (auto elementPtr{ ref->element.lock() }) {
+                return std::dynamic_pointer_cast<T>(elementPtr);
+            }
+        }
 
         return nullptr;
     }

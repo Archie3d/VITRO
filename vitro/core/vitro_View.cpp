@@ -67,6 +67,13 @@ View::~View()
     removeAllChildElements();
 }
 
+void View::initialize()
+{
+    ComponentElement::initialize();
+
+    exposeToJS();
+}
+
 void View::populateFromXml(const XmlElement& xmlElement)
 {
     removeAllChildElements();
@@ -80,7 +87,6 @@ void View::populateFromXml(const XmlElement& xmlElement)
 
     // Trigger the elements tree update
     forceUpdate();
-    //update();
 }
 
 void View::populateFromXmlString(const String& xmlString)
@@ -97,6 +103,19 @@ void View::populateFromXmlResource(const String& location)
         populateFromXml(*xml);
     else
         removeAllChildElements();
+}
+
+void View::exposeToJS()
+{
+    auto jsCtx{ context.getJSContext() };
+    auto global{ JS_GetGlobalObject(jsCtx) };
+    JS_SetPropertyStr(jsCtx, global, "view", JS_DupValue(jsCtx, jsValue));
+    JS_FreeValue(jsCtx, global);
+}
+
+void View::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
+{
+    ComponentElement::registerJSPrototype(jsCtx, prototype);
 }
 
 void View::resized()
