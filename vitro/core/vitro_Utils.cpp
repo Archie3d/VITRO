@@ -45,6 +45,28 @@ Justification parseJustificationFromString(const String& str)
 
 //==============================================================================
 
+juce::DrawableButton::ButtonStyle parseDrawableButtonStyle(const String& str)
+{
+    const static std::map<String, juce::DrawableButton::ButtonStyle> styleMap {
+        { "fitted",     juce::DrawableButton::ButtonStyle::ImageFitted },
+        { "raw",        juce::DrawableButton::ButtonStyle::ImageRaw},
+        { "default",    juce::DrawableButton::ButtonStyle::ImageRaw},
+        { "above",      juce::DrawableButton::ButtonStyle::ImageAboveTextLabel },
+        { "background", juce::DrawableButton::ButtonStyle::ImageOnButtonBackground },
+        { "original",   juce::DrawableButton::ButtonStyle::ImageOnButtonBackgroundOriginalSize },
+        { "stretched",  juce::DrawableButton::ButtonStyle::ImageStretched }
+    };
+
+    const auto it = styleMap.find(str.trim().toLowerCase());
+
+    if (it == styleMap.end())
+        return juce::DrawableButton::ButtonStyle::ImageRaw;
+
+    return it->second;
+}
+
+//==============================================================================
+
 class GradientParser
 {
 public:

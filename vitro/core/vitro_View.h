@@ -13,6 +13,8 @@ public:
 
     const static juce::Identifier tag;  // <View>
 
+    static JSClassID jsClassID;
+
     View(Context& ctx);
     ~View();
 

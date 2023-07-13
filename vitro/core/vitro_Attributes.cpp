@@ -58,6 +58,17 @@ const Identifier toggle              ("toggle");
 const Identifier trigger_down        ("trigger-down");
 const Identifier click_through       ("click-through");
 
+const Identifier button_style        ("button-style");
+
+const Identifier image_normal        ("image-normal");
+const Identifier image_over          ("image-over");
+const Identifier image_down          ("image-down");
+const Identifier image_disabled      ("image-disabled");
+const Identifier image_normal_on     ("image-normal-on");
+const Identifier image_over_on       ("image-over-on");
+const Identifier image_down_on       ("image-down-on");
+const Identifier image_disabled_on   ("image-disabled-on");
+
 } // namespace css
 
 } // namespace attr

@@ -111,4 +111,54 @@ public:
     void update() override;
 };
 
+//==============================================================================
+
+// @internal
+// Shim class to align DrawableButton constructor with other Button types.
+class JuceDrawableButton : public juce::DrawableButton
+{
+public:
+    JuceDrawableButton(const juce::String& buttonName)
+        : juce::DrawableButton(buttonName, juce::DrawableButton::ButtonStyle::ImageRaw)
+    {}
+};
+
+/** Drawable button.
+
+    This element is a drawable button defined by a set of SVG images.
+    It is equivalent to juce::DrawableButton.
+
+    Style properties:
+        color
+        text-color-on
+        background-color
+        background-color-on
+        button-style
+        image-normal
+        image-over
+        image-down
+        image-disabled
+        image-normal-on
+        image-over-on
+        image-down-on
+        image-disabled-on
+*/
+class DrawableButton : public vitro::Button<JuceDrawableButton>
+{
+public:
+    using ButtonBase = vitro::Button<JuceDrawableButton>;
+
+    const static juce::Identifier tag;  // <DrawableButton>
+
+    static JSClassID jsClassID;
+
+    DrawableButton(Context& ctx);
+
+    // juce::Element
+    void update() override;
+
+private:
+    static std::unique_ptr<juce::Drawable> loadDrawable(Loader& loader, const juce::String& location);
+};
+
 } // namespace vitro

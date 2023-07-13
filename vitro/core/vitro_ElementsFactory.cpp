@@ -12,11 +12,13 @@ void ElementsFactory::reset()
 
 void ElementsFactory::registerDefaultElements()
 {
+    registerElement<vitro::Script>();
     registerElement<vitro::View>();
     registerElement<vitro::Panel>();
     registerElement<vitro::Label>();
     registerElement<vitro::TextButton>();
     registerElement<vitro::ToggleButton>();
+    registerElement<vitro::DrawableButton>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

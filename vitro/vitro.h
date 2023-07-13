@@ -38,6 +38,7 @@ extern "C" {
 #include "core/vitro_Attributes.h"
 #include "core/vitro_Element.h"
 #include "core/vitro_Context.h"
+#include "core/vitro_Script.h"
 #include "core/vitro_ElementsFactory.h"
 #include "core/vitro_StyledElement.h"
 #include "core/vitro_LayoutElement.h"

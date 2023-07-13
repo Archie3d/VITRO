@@ -166,7 +166,8 @@ public:
      */
     void updateChildren();
 
-    void forwardXmlElement(const juce::XmlElement&) {};
+    /** Populate this element from XML. */
+    virtual void forwardXmlElement(const juce::XmlElement&) {};
 
     static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 

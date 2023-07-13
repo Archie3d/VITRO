@@ -52,6 +52,8 @@ static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElem
 
 const Identifier View::tag("View");
 
+JSClassID View::jsClassID = 0;
+
 View::View(Context& ctx)
     : ComponentElement(View::tag, ctx)
 {
