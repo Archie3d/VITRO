@@ -84,7 +84,7 @@ const Identifier text_box_background_color ("text-box-background-color");
 const Identifier text_box_highlight_color  ("text-box-highlight-color");
 const Identifier text_box_border_color     ("text-box-border-color");
 const Identifier popup_color               ("popup-color");
-const Identifier text_box_position   ("text-box_position");
+const Identifier text_box_position   ("text-box-position");
 const Identifier text_box_read_only  ("text-box-read-only");
 const Identifier text_box_width      ("text-box-width");
 const Identifier text_box_height     ("text-box-height");

@@ -44,6 +44,12 @@ void Slider::update()
     updateStyle();
     updateTextBox();
     updateRange();
+
+    if (auto&& [changed, val]{ getAttributeChanged(attr::decimals) }; changed)
+        setNumDecimalPlacesToDisplay(val.isVoid() ? 7 : (int)val);
+
+    if (auto&& [changed, val]{ getAttributeChanged(attr::value) }; changed && !val.isVoid())
+        juce::Slider::setValue(val, juce::dontSendNotification);
 }
 
 void Slider::sliderValueChanged(juce::Slider*)
