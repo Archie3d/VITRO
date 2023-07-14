@@ -66,4 +66,74 @@ private:
     std::vector<ColourPoint> colourPoints{};
 };
 
+//==============================================================================
+
+namespace js {
+
+/** Convert JSValue to juce::var */
+juce::var JSValueToVar(JSContext* ctx, JSValueConst val);
+
+/** Convert juce::var to JSValue */
+JSValue varToJSValue(JSContext* ctx, const juce::var& val);
+
+/** JavaScript function wrapper.
+
+    This is a JS function wrapper so that functions can be
+    stored in juce::var (and hence in Element attributes ValueTree).
+*/
+class Function final : public juce::ReferenceCountedObject
+{
+public:
+    Function(JSContext* ctx, JSValueConst val);
+    ~Function();
+
+    JSValue getJSValue() { return jsFunc; }
+
+    template <typename ...Ts>
+    juce::var call(Ts&&... args)
+    {
+        std::vector<JSValue> jsArgs;
+
+        ([this, &jsArgs](auto& arg) {
+            juce::var v(arg);
+            jsArgs.push_back(varToJSValue(jsCtx, v));
+        } (args), ...);
+
+        auto ret{ JS_Call(jsCtx, jsFunc, JS_NULL, int(jsArgs.size()), jsArgs.data()) };
+        juce::var retVar{ JSValueToVar(jsCtx, ret) };
+        JS_FreeValue(jsCtx, ret);
+
+        for (auto& jsArg : jsArgs)
+            JS_FreeValue(jsCtx, jsArg);
+
+        return retVar;
+    }
+
+    template <typename ...Ts>
+    juce::var callThis(JSValue thisObj, Ts&&... args)
+    {
+        std::vector<JSValue> jsArgs;
+
+        ([this, &jsArgs](auto& arg) {
+            juce::var v(arg);
+            jsArgs.push_back(varToJSValue(jsCtx, v));
+        } (args), ...);
+
+        auto ret{ JS_Call(jsCtx, jsFunc, thisObj, int(jsArgs.size()), jsArgs.data()) };
+        juce::var retVar{ JSValueToVar(jsCtx, ret) };
+        JS_FreeValue(jsCtx, ret);
+
+        for (auto& jsArg : jsArgs)
+            JS_FreeValue(jsCtx, jsArg);
+
+        return retVar;
+    }
+
+private:
+    JSContext* jsCtx{};
+    JSValue jsFunc{ JS_UNDEFINED };
+};
+
+} // namespace js
+
 } // namespace vitro

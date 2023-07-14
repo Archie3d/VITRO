@@ -45,12 +45,29 @@ Element::Ptr ElementsFactory::createElement(const Identifier& tag)
 
 void ElementsFactory::stashElement(const Element::Ptr& element)
 {
-    stashedElements.push_back(element);
+    if (std::find(stashedElements.begin(), stashedElements.end(), element) == stashedElements.end()) {
+        stashedElements.push_back(element);
+    }
 }
 
 void ElementsFactory::removeStashedElement(const Element::Ptr& element)
 {
     stashedElements.erase(std::remove(stashedElements.begin(), stashedElements.end(), element), stashedElements.end());
+}
+
+void ElementsFactory::clearUnreferencedStashedElements()
+{
+    auto it{ stashedElements.begin() };
+
+    while (it != stashedElements.end()) {
+        auto& ptr{ *it };
+
+        if (ptr.use_count() == 1 && ptr->getJSValueRefCount() == 1) {
+            it = stashedElements.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }
 
 } // namespace vitro

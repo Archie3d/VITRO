@@ -45,6 +45,11 @@ String Element::getId() const
     return valueTree.getProperty(attr::id);
 }
 
+void Element::setId(const String& id)
+{
+    setAttribute(attr::id, id);
+}
+
 Element::Ptr Element::getParentElement() const
 {
     return parent.lock();
@@ -83,6 +88,7 @@ void Element::addChildElement(const Element::Ptr& element)
     valueTree.appendChild(element->valueTree, nullptr);
 
     element->reconcileElementTree();
+    element->unstash();
 
     numberOfChildrenChanged();
 }
@@ -101,6 +107,11 @@ void Element::removeChildElement(const Element::Ptr& element)
     valueTree.removeChild(element->valueTree, nullptr);
 
     children.erase(std::remove(children.begin(), children.end(), element), children.end());
+
+    // @note When we remove an element it is still possible for a JS object to
+    //       keep a reference to it. We stash the element to let it be removed later
+    //       when there are no more references to it.
+    element->stash();
 
     numberOfChildrenChanged();
 }
@@ -184,6 +195,8 @@ void Element::updateChildren()
 void Element::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
 {
     registerJSProperty(jsCtx, prototype, "tagName", &js_getTagName);
+    registerJSProperty(jsCtx, prototype, "id",      &js_getId,    &js_setId);
+    registerJSProperty(jsCtx, prototype, "style",   &js_getStyle, &js_setStyle);
 }
 
 void Element::stash()
@@ -194,6 +207,16 @@ void Element::stash()
 void Element::unstash()
 {
     context.getElementsFactory().removeStashedElement(shared_from_this());
+}
+
+int Element::getJSValueRefCount() const
+{
+    if (JS_VALUE_HAS_REF_COUNT(jsValue)) {
+        JSRefCountHeader *p = (JSRefCountHeader *)JS_VALUE_GET_PTR(jsValue);
+        return p->ref_count;
+    }
+
+    return -1;
 }
 
 void Element::initialize()
@@ -294,11 +317,59 @@ void Element::valueTreePropertyChanged(ValueTree&, const Identifier& changedAttr
         root->update();
 }
 
+//==============================================================================
+
 JSValue Element::js_getTagName(JSContext* jsCtx, JSValueConst self)
 {
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         const auto tag{ element->getTag().toString() };
         return JS_NewStringLen(jsCtx, tag.toRawUTF8(), tag.length());
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getId(JSContext* jsCtx, JSValueConst self)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        const auto id{ element->getId() };
+        return JS_NewStringLen(jsCtx, id.toRawUTF8(), id.length());
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_setId(JSContext* jsCtx, JSValueConst self, JSValueConst val)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (JS_IsString(val)) {
+            const auto* str{ JS_ToCString(jsCtx, val) };
+            element->setId(String::fromUTF8(str));
+            JS_FreeCString(jsCtx, str);
+        }
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getStyle(JSContext* jsCtx, JSValueConst self)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        const auto style{ element->getAttribute(attr::style).toString() };
+        return JS_NewStringLen(jsCtx, style.toRawUTF8(), style.length());
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst val)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (JS_IsString(val)) {
+            const auto* str{ JS_ToCString(jsCtx, val) };
+            element->setAttribute(attr::style, String::fromUTF8(str));
+            JS_FreeCString(jsCtx, str);
+        }
     }
 
     return JS_UNDEFINED;

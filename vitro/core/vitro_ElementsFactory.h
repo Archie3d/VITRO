@@ -61,6 +61,8 @@ public:
     void stashElement(const Element::Ptr& element);
     void removeStashedElement(const Element::Ptr& element);
 
+    void clearUnreferencedStashedElements();
+
 private:
 
     Context& context;

@@ -142,6 +142,9 @@ void View::updateEverything()
 
     updateChildren();
 
+    // Housekeeping: removing unreferenced elements from the stash.
+    context.getElementsFactory().clearUnreferencedStashedElements();
+
     repaint();
 }
 

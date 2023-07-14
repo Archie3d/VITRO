@@ -81,6 +81,9 @@ public:
     */
     juce::String getId() const;
 
+    /** Assign ID of this element. */
+    void setId(const juce::String& id);
+
     /** Returns this element's parent.
 
         @return Pointer to parent element or nullptr if there is no parent.
@@ -180,6 +183,9 @@ public:
 
     /** Remove this element from factory's stash. */
     void unstash();
+
+    /** Returns the JS object reference counter. */
+    int getJSValueRefCount() const;
 
 protected:
 
@@ -283,6 +289,10 @@ private:
 
     // JavaScript methods and properties
     static JSValue js_getTagName(JSContext* jsCtx, JSValueConst self);
+    static JSValue js_getId(JSContext* jsCtx, JSValueConst self);
+    static JSValue js_setId(JSContext* jsCtx, JSValueConst self, JSValueConst val);
+    static JSValue js_getStyle(JSContext* jsCtx, JSValueConst self);
+    static JSValue js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst val);
 
     /// This flag indicates that the element must be updated.
     /// @see updateElementIfNeeded

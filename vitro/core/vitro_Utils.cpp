@@ -308,4 +308,142 @@ Gradient Gradient::fromString(const String& str)
     return gradient;
 }
 
+//==============================================================================
+
+namespace js {
+
+var JSValueToVar(JSContext* ctx, JSValueConst val)
+{
+    const auto tag{ JS_VALUE_GET_TAG (val) };
+
+    switch(tag) {
+    case JS_TAG_NULL:
+        return {};
+    case JS_TAG_UNDEFINED:
+        return var::undefined();
+    case JS_TAG_BOOL:
+        return JS_ToBool(ctx, val) != 0;
+    case JS_TAG_INT: {
+        int64_t x;
+        JS_ToInt64(ctx, &x, val);
+        return x;
+    }
+    case JS_TAG_FLOAT64: {
+        double x{};
+        JS_ToFloat64(ctx, &x, val);
+        return x;
+    }
+    case JS_TAG_STRING: {
+        if (const char* s{ JS_ToCString (ctx, val) }) {
+            const auto str{ String::fromUTF8 (s) };
+            JS_FreeCString(ctx, s);
+            return str;
+        }
+        break;
+    }
+    case JS_TAG_OBJECT: {
+        if (JS_IsFunction(ctx, val))
+            return var (new js::Function(ctx, val));
+
+        if (JS_IsArray(ctx, val)) {
+            Array<var> arr{};
+            int length{};
+
+            JS_ToInt32(ctx, &length, JS_GetPropertyStr (ctx, val, "length"));
+
+            for (int i = 0; i < length; ++i) {
+                auto item{ JS_GetPropertyUint32(ctx, val, static_cast<uint32_t>(i)) };
+                arr.add(JSValueToVar(ctx, item));
+                JS_FreeValue(ctx, item);
+            }
+
+            return arr;
+        }
+
+        auto* obj{ new DynamicObject() };
+
+        JSPropertyEnum* props{};
+        uint32_t numProps{};
+
+        if (JS_GetOwnPropertyNames(ctx, &props, &numProps, val, JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) == 0) {
+            for (uint32_t i = 0; i < numProps; ++i) {
+                auto propKey{ JS_AtomToCString (ctx, props[i].atom) };
+                auto propVal{ JS_GetProperty (ctx, val, props[i].atom) };
+                obj->setProperty(propKey, JSValueToVar(ctx, propVal));
+
+                JS_FreeValue(ctx, propVal);
+                JS_FreeCString(ctx, propKey);
+            }
+
+            js_free_prop_enum(ctx, props, numProps);
+        }
+
+        return obj;
+    }
+    default:
+        break;
+    }
+
+
+    return {};
+}
+
+JSValue varToJSValue(JSContext* ctx, const var& val)
+{
+    if (val.isVoid())
+        return JS_NULL;
+    if (val.isUndefined())
+        return JS_UNDEFINED;
+    if (val.isBool())
+        return (bool)val ? JS_TRUE : JS_FALSE;
+    if (val.isInt())
+        return JS_NewInt32(ctx, int32_t(val));
+    if (val.isInt64())
+        return JS_NewInt64(ctx, int64_t(val));
+    if (val.isDouble())
+        return JS_NewFloat64(ctx, double(val));
+    if (val.isString())
+        return JS_NewString(ctx, val.toString().toRawUTF8());
+    if (val.isArray()) {
+        auto jsArr{ JS_NewArray (ctx) };
+        int i{};
+
+        for (auto& item : *val.getArray())
+            JS_SetPropertyUint32(ctx, jsArr, i++, varToJSValue(ctx, item));
+
+        return jsArr;
+    }
+
+    if (val.isObject()) {
+        if (auto* func{ dynamic_cast<Function*>(val.getObject()) }) {
+            return JS_DupValue(ctx, func->getJSValue());
+        }
+
+        if (auto* obj{ val.getDynamicObject()} ) {
+            auto jsObj{ JS_NewObject(ctx) };
+
+            for (auto& prop : obj->getProperties())
+                JS_SetPropertyStr(ctx, jsObj, prop.name.toString().toRawUTF8(), varToJSValue(ctx, prop.value));
+
+            return jsObj;
+        }
+    }
+
+    return JS_UNDEFINED;
+}
+
+Function::Function(JSContext* ctx, JSValueConst val)
+    : jsCtx{ ctx },
+      jsFunc{ JS_DupValue(ctx, val) }
+{
+    jassert(JS_IsFunction(ctx, val));
+}
+
+Function::~Function()
+{
+    JS_FreeValue(jsCtx, jsFunc);
+}
+
+} // namespace js
+
 } // namespace vitro
