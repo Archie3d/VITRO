@@ -14,6 +14,20 @@ juce::Colour parseColourFromString(const juce::String& str);
 */
 juce::Justification parseJustificationFromString(const juce::String& str);
 
+/** Parse string as a drawable button style.
+
+    This function accepts the following strings:
+        fitted, raw, default, above, background, original, stretched
+*/
+juce::DrawableButton::ButtonStyle parseDrawableButtonStyleFromString(const juce::String& str);
+
+/** Parse string as slider's text box position.
+
+    Acceptable values:
+        none, left, right, above, below
+*/
+juce::Slider::TextEntryBoxPosition parseSliderTextBoxPositionFromString(const juce::String& str);
+
 /** Linear or radial gradient.
 
     This class hold a gradient description and provides means

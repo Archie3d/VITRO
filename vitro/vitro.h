@@ -48,3 +48,4 @@ extern "C" {
 #include "widgets/vitro_Panel.h"
 #include "widgets/vitro_Label.h"
 #include "widgets/vitro_Button.h"
+#include "widgets/vitro_Slider.h"

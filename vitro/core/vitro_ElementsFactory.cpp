@@ -19,6 +19,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::TextButton>();
     registerElement<vitro::ToggleButton>();
     registerElement<vitro::DrawableButton>();
+    registerElement<vitro::Slider>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

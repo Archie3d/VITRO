@@ -14,7 +14,12 @@ const Identifier src    ("src");
 const Identifier enabled ("enabled");
 const Identifier visible ("visible");
 
-const Identifier text   ("text");
+const Identifier text     ("text");
+const Identifier value    ("value");
+const Identifier decimals ("decimals");
+const Identifier min      ("min");
+const Identifier max      ("max");
+const Identifier step     ("step");
 
 const Identifier hover  ("hover");
 const Identifier active ("active");
@@ -68,6 +73,21 @@ const Identifier image_normal_on     ("image-normal-on");
 const Identifier image_over_on       ("image-over-on");
 const Identifier image_down_on       ("image-down-on");
 const Identifier image_disabled_on   ("image-disabled-on");
+
+const Identifier slider_style        ("slider-style");
+
+const Identifier thumb_color               ("thumb-color");
+const Identifier track_color               ("track-color");
+const Identifier fill_color                ("fill-color");
+const Identifier text_box_color            ("text-box-color");
+const Identifier text_box_background_color ("text-box-background-color");
+const Identifier text_box_highlight_color  ("text-box-highlight-color");
+const Identifier text_box_border_color     ("text-box-border-color");
+const Identifier popup_color               ("popup-color");
+const Identifier text_box_position   ("text-box_position");
+const Identifier text_box_read_only  ("text-box-read-only");
+const Identifier text_box_width      ("text-box-width");
+const Identifier text_box_height     ("text-box-height");
 
 } // namespace css
 

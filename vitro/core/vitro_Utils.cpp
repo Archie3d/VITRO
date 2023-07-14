@@ -22,8 +22,6 @@ Colour parseColourFromString(const String& str) {
     return {};
 }
 
-//==============================================================================
-
 Justification parseJustificationFromString(const String& str)
 {
     const static std::map<String, Justification::Flags> justMap {
@@ -43,9 +41,7 @@ Justification parseJustificationFromString(const String& str)
     return Justification(it->second);
 }
 
-//==============================================================================
-
-juce::DrawableButton::ButtonStyle parseDrawableButtonStyle(const String& str)
+juce::DrawableButton::ButtonStyle parseDrawableButtonStyleFromString(const String& str)
 {
     const static std::map<String, juce::DrawableButton::ButtonStyle> styleMap {
         { "fitted",     juce::DrawableButton::ButtonStyle::ImageFitted },
@@ -61,6 +57,24 @@ juce::DrawableButton::ButtonStyle parseDrawableButtonStyle(const String& str)
 
     if (it == styleMap.end())
         return juce::DrawableButton::ButtonStyle::ImageRaw;
+
+    return it->second;
+}
+
+juce::Slider::TextEntryBoxPosition parseSliderTextBoxPositionFromString(const String& str)
+{
+    const static std::map<String, juce::Slider::TextEntryBoxPosition> textPosMap {
+        { "none",  juce::Slider::NoTextBox },
+        { "left",  juce::Slider::TextBoxLeft },
+        { "right", juce::Slider::TextBoxRight },
+        { "above", juce::Slider::TextBoxAbove },
+        { "below", juce::Slider::TextBoxBelow }
+    };
+
+    const auto it = textPosMap.find(str.trim().toLowerCase());
+
+    if (it == textPosMap.end())
+        return juce::Slider::NoTextBox;
 
     return it->second;
 }

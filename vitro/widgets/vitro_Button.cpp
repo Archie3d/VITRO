@@ -104,7 +104,7 @@ void DrawableButton::update()
 
     if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::button_style) }; changed) {
         juce::DrawableButton::setButtonStyle(prop.isVoid() ? juce::DrawableButton::ButtonStyle::ImageRaw
-                                                           : parseDrawableButtonStyle(prop.toString()));
+                                                           : parseDrawableButtonStyleFromString(prop.toString()));
     }
 
     std::unique_ptr<juce::Drawable> normal{};
