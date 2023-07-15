@@ -55,6 +55,11 @@ void ElementsFactory::removeStashedElement(const Element::Ptr& element)
     stashedElements.erase(std::remove(stashedElements.begin(), stashedElements.end(), element), stashedElements.end());
 }
 
+void ElementsFactory::clearStashedElements()
+{
+    stashedElements.clear();
+}
+
 void ElementsFactory::clearUnreferencedStashedElements()
 {
     auto it{ stashedElements.begin() };

@@ -353,7 +353,13 @@ Context::Context()
     d->initialize();
 }
 
-Context::~Context() = default;
+Context::~Context()
+{
+    // We must clear all the stashed elements before deleting the
+    // context implementation, since the elements deletion will
+    // attempt to access the context (freeing JSValues).
+    d->elementsFactory.clearStashedElements();
+}
 
 const Loader& Context::getLoader() const
 {

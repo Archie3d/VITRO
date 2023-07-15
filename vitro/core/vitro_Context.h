@@ -8,12 +8,22 @@ class Loader;
     UI Context aggregates global UI functionalityes like
     the stylesheet, elements factory, resources loader.
 */
-class Context
+class Context final
 {
 public:
 
+    /** Construct the context.
+
+        This will initialize the new elements factory, stylesheet and JavaScript context.
+    */
     Context();
-    virtual ~Context();
+
+    /** Destroy the context.
+
+        @note When deleting the context there must not be any elements left, otherwise
+              they may attemp to access the deleted context.
+    */
+    ~Context();
 
     const Loader& getLoader() const;
     Loader& getLoader();
@@ -27,6 +37,11 @@ public:
     JSRuntime* getJSRuntime();
     JSContext* getJSContext();
 
+    /** Register JavaScript class prototype for the elements.
+
+        The class must have a static member jsClassID, which will be
+        set to the new class ID value by this class.
+    */
     template<class T>
     void registerJSClass(const char* className)
     {
