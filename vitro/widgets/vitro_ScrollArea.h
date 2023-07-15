@@ -7,6 +7,12 @@ namespace vitro {
 
     @note This element may have only one direct child,
           all other children will be ignored.
+
+    Style properties:
+        thumb-color
+        vertical-scrollbar
+        horizontal-scrollbar
+        scrollbar-thickness
 */
 class ScrollArea : public vitro::ComponentElement,
                    public juce::Viewport

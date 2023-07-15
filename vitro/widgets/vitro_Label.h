@@ -36,6 +36,7 @@ protected:
 
     // vitro::Element
     void update() override;
+
 };
 
 } // namespace vitro

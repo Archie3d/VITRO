@@ -23,15 +23,15 @@ void ComponentElement::MouseEventsProxy::mouseExit(const MouseEvent& event)
     element.handleMouseExit(event);
 }
 
-void ComponentElement::MouseEventsProxy::mouseDown (const MouseEvent& event)
+void ComponentElement::MouseEventsProxy::mouseDown(const MouseEvent& event)
 {
     element.setAttribute(attr::active, true);
     element.handleMouseDown(event);
 }
 
-void ComponentElement::MouseEventsProxy::mouseUp (const MouseEvent& event)
+void ComponentElement::MouseEventsProxy::mouseUp(const MouseEvent& event)
 {
-    element.setAttribute (attr::active, false);
+    element.setAttribute(attr::active, false);
     element.handleMouseUp(event);
 }
 

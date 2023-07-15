@@ -201,6 +201,27 @@ struct LayoutElement::Layout final
         const auto& val{ self.getStyleProperty(name) };
 
         if (!val.isVoid()) {
+            // Special case handling auto width or height
+            if (val.isString() && val.toString() == "auto") {
+                if (name == yoga::width) {
+                    const auto w{ YGNodeStyleGetWidth(node) };
+                    if (w.unit != YGUnitAuto) {
+                        YGNodeStyleSetWidthAuto(node);
+                        return true;
+                    }
+                    return false;
+                }
+                
+                if (name == yoga::height) {
+                    const auto h{ YGNodeStyleGetHeight(node) };
+                    if (h.unit != YGUnitAuto) {
+                        YGNodeStyleSetHeightAuto(node);
+                        return true;
+                    }
+                    return false;
+                }
+            }
+
             const float floatValue{ val };
             const auto currentValue{ getter(node) };
 

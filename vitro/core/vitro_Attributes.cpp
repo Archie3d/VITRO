@@ -104,6 +104,10 @@ const Identifier text_box_read_only        ("text-box-read-only");
 const Identifier text_box_width            ("text-box-width");
 const Identifier text_box_height           ("text-box-height");
 
+const Identifier vertical_scrollbar        ("vertical-scrollbar");
+const Identifier horizontal_scrollbar      ("horizontal-scrollbar");
+const Identifier scrollbar_thickness       ("scrollbar-thickness");
+
 } // namespace css
 
 } // namespace attr
