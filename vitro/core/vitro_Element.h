@@ -293,6 +293,14 @@ private:
     static JSValue js_setId(JSContext* jsCtx, JSValueConst self, JSValueConst val);
     static JSValue js_getStyle(JSContext* jsCtx, JSValueConst self);
     static JSValue js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst val);
+    static JSValue js_getAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_setAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_hasAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_getParentElement(JSContext* ctx, JSValueConst self);
+    static JSValue js_getChildren(JSContext* ctx, JSValueConst self);
+    static JSValue js_getElementById(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_appendChild(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_removeChild(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
 
     /// This flag indicates that the element must be updated.
     /// @see updateElementIfNeeded

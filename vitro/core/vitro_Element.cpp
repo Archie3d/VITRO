@@ -194,9 +194,18 @@ void Element::updateChildren()
 
 void Element::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
 {
-    registerJSProperty(jsCtx, prototype, "tagName", &js_getTagName);
-    registerJSProperty(jsCtx, prototype, "id",      &js_getId,    &js_setId);
-    registerJSProperty(jsCtx, prototype, "style",   &js_getStyle, &js_setStyle);
+    registerJSProperty(jsCtx, prototype, "tagName",       &js_getTagName);
+    registerJSProperty(jsCtx, prototype, "id",            &js_getId, &js_setId);
+    registerJSProperty(jsCtx, prototype, "style",         &js_getStyle, &js_setStyle);
+    registerJSProperty(jsCtx, prototype, "parentElement", &js_getParentElement);
+    registerJSProperty(jsCtx, prototype, "children",      &js_getChildren);
+
+    registerJSMethod(jsCtx, prototype, "getAttribute",   &js_getAttribute);
+    registerJSMethod(jsCtx, prototype, "setAttribute",   &js_setAttribute);
+    registerJSMethod(jsCtx, prototype, "hasAttribute",   &js_hasAttribute);
+    registerJSMethod(jsCtx, prototype, "getElementById", &js_getElementById);
+    registerJSMethod(jsCtx, prototype, "appendChild",    &js_appendChild);
+    registerJSMethod(jsCtx, prototype, "removeChild",    &js_removeChild);
 }
 
 void Element::stash()
@@ -370,6 +379,129 @@ JSValue Element::js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst v
             element->setAttribute(attr::style, String::fromUTF8(str));
             JS_FreeCString(jsCtx, str);
         }
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc != 1)
+        return JS_EXCEPTION;
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        const auto* str{ JS_ToCString(ctx, arg[0]) };
+        const auto attrName{ String::fromUTF8(str) };
+        JS_FreeCString(ctx, str);
+        const juce::var& val{ element->getAttribute(attrName) };
+        return js::varToJSValue(ctx, val);
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_setAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc != 2)
+        return JS_EXCEPTION;
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        const auto* str{ JS_ToCString(ctx, arg[0]) };
+        const auto attrName{ String::fromUTF8(str) };
+        JS_FreeCString(ctx, str);
+        const auto val{ js::JSValueToVar(ctx, arg[1]) };
+        element->setAttribute(attrName, val);
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_hasAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc != 1)
+        return JS_EXCEPTION;
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        const auto* str{ JS_ToCString(ctx, arg[0]) };
+        const auto name{ String::fromUTF8(str) };
+        JS_FreeCString(ctx, str);
+
+        if (element->hasAttribute(name))
+            return JS_TRUE;
+
+        return JS_FALSE;
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getParentElement(JSContext* ctx, JSValueConst self)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (auto parent{ element->getParentElement() })
+            return JS_DupValue(ctx, parent->jsValue);
+
+        return JS_NULL;
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getChildren(JSContext* ctx, JSValueConst self)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        auto jsArr{ JS_NewArray(ctx) };
+
+        int index{ 0 };
+
+        element->forEachChild([&](const Element::Ptr& child) {
+            JS_SetPropertyUint32(ctx, jsArr, index++, JS_DupValue(ctx, child->jsValue));
+        }, false);
+
+        return jsArr;
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getElementById(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc != 1)
+        return JS_EXCEPTION;
+
+    if (auto element{ Context::getJSNativeObject<Element>(self)}) {
+        const auto* str{ JS_ToCString(ctx, arg[0]) };
+        const auto id{ String::fromUTF8(str) };
+        JS_FreeCString(ctx, str);
+
+        if (auto elementWithId{ element->getElementById(id) })
+            return JS_DupValue(ctx, elementWithId->jsValue);
+    }
+
+    return JS_NULL;
+}
+
+JSValue Element::js_appendChild([[maybe_unused]] JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc != 1)
+        return JS_EXCEPTION;
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (auto childElem{ Context::getJSNativeObject<Element>(arg[0]) })
+            element->addChildElement(childElem);
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_removeChild ([[maybe_unused]] JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc != 1)
+        return JS_EXCEPTION;
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (auto childElem{ Context::getJSNativeObject<Element>(arg[0]) })
+            element->removeChildElement(childElem);
     }
 
     return JS_UNDEFINED;
