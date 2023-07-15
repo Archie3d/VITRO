@@ -190,6 +190,9 @@ public:
     /** Returns the JS object reference counter. */
     int getJSValueRefCount() const;
 
+    /** Evaluate onload attribute script.*/
+    void evaluateOnLoadScript();
+
 protected:
 
     /** Perform element initialization.

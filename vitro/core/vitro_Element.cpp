@@ -234,6 +234,11 @@ int Element::getJSValueRefCount() const
     return -1;
 }
 
+void Element::evaluateOnLoadScript()
+{
+    evaluateAttributeScript(attr::onload);
+}
+
 void Element::initialize()
 {
     initJSValue();

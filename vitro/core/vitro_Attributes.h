@@ -9,6 +9,8 @@ extern const juce::Identifier toggle;
 extern const juce::Identifier active;
 extern const juce::Identifier radiogroup;
 
+extern const juce::Identifier onclick;
+
 } // namespace attr
 
 } // namespace vitro

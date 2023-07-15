@@ -54,9 +54,9 @@ void Slider::update()
 
 void Slider::sliderValueChanged(juce::Slider*)
 {
-    setAttribute(attr::value, juce::Slider::getValue());
-
-    // @todo Evaluate JS onvaluechange
+    const juce::var value{ juce::Slider::getValue() };
+    setAttribute(attr::value, value);
+    evaluateAttributeScript(attr::onchange, value);
 }
 
 void Slider::updateStyle()

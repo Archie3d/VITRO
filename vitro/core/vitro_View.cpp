@@ -43,6 +43,10 @@ static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElem
         } else {
             populateChildElementsFromXml(ctx, element, xmlElement);
         }
+
+        // Call element's onload script.
+        // @note The element is not yet attached to its parent at this point
+        element->evaluateOnLoadScript();
     }
 
     return element;

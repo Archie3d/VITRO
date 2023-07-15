@@ -9,6 +9,9 @@ namespace vitro {
         text
         toggle
         radiogroup
+
+    Callback attributes:
+        onclick
 */
 template <class ButtonClass>
 class Button : public vitro::ComponentElement,
@@ -44,7 +47,7 @@ public:
     // juce::Button::Listener
     void buttonClicked(juce::Button*) override
     {
-        // @todo Evaluate attribute onclick
+        evaluateAttributeScript(attr::onclick);
     }
 
     void buttonStateChanged(juce::Button*) override

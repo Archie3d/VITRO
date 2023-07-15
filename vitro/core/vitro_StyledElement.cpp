@@ -17,7 +17,7 @@ void StyledElement::updateStyleProperties()
 {
     changedStyleProperties.clear();
 
-    DBG("Style for <" << getTag() << ">");
+    //DBG("Style for <" << getTag() << ">");
 
     for (int i = 0; i < styleProperties.size(); ++i) {
         const auto name{ styleProperties.getName(i) };
@@ -29,9 +29,9 @@ void StyledElement::updateStyleProperties()
         else
             value = context.getStylesheet().getProperty(name, valueTree);
 
-        if (!value.isVoid()) {
-            DBG("    " << name << ": " << value.toString());
-        }
+        //if (!value.isVoid()) {
+        //    DBG("    " << name << ": " << value.toString());
+        //}
 
         if (styleProperties.set(name, value)) {
             // Style property has changed - register it

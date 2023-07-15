@@ -68,14 +68,15 @@ void TextEditor::update()
 
 void TextEditor::textEditorTextChanged(juce::TextEditor&)
 {
-    setAttribute(attr::text, getText(), false);
-
-    // @todo Evaluate JS onchange
+    const juce::var value{ getText() };
+    setAttribute(attr::text, value, false); // @note Here we do not notify to prevent updates when typing
+    evaluateAttributeScript(attr::onchange, value);
 }
 
 void TextEditor::textEditorReturnKeyPressed(juce::TextEditor&)
 {
-    // @todo Evaluate JS onenter
+    const juce::var value{ getText() };
+    evaluateAttributeScript(attr::onenter, value);
 }
 
 } // namespace vitro

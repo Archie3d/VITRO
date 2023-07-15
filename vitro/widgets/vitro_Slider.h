@@ -10,6 +10,9 @@ namespace vitro {
         max
         step
 
+    Callback attributes:
+        onchange
+
     Style properties:
         slider-style
         background-color

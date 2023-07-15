@@ -28,6 +28,11 @@ const Identifier active     ("active");
 const Identifier toggle     ("toggle");
 const Identifier radiogroup ("radiogroup");
 
+const Identifier onload     ("onload");
+const Identifier onclick    ("onclick");
+const Identifier onchange   ("onchange");
+const Identifier onenter    ("onenter");
+
 //==============================================================================
 namespace css {
 
