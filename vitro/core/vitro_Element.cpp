@@ -276,6 +276,33 @@ void Element::forEachChild(const std::function<void(const Element::Ptr&)>& func,
     }
 }
 
+void Element::evaluateAttributeScript(const Identifier& attr, const juce::var& data)
+{
+    const auto val{ getAttribute(attr) };
+
+    if (val.isVoid())
+        return;
+
+    auto* jsCtx{ context.getJSContext() };
+
+    if (val.isObject()) {
+        if (auto* func{ dynamic_cast<js::Function*>(val.getObject()) }) {
+            if (data.isVoid())
+                func->callThis(jsValue);
+            else
+                func->callThis(jsValue, data);
+        }
+    } else {
+        auto res{ context.evalThis(jsValue, val.toString()) };
+        if (JS_IsException(res)) {
+            jsDumpError(jsCtx, res);
+        }
+
+        if (res != JS_UNDEFINED)
+            JS_FreeValue(jsCtx, res);
+    }
+}
+
 void Element::registerConstructor(JSContext* jsCtx, JSValue proto, StringRef name, JSCFunction func, int numArgs)
 {
     JSValue clazz{ JS_NewCFunction2(jsCtx, func, name.text, numArgs, JS_CFUNC_constructor, 0) };

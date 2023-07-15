@@ -91,7 +91,7 @@ public:
     JSValue eval(juce::StringRef script, juce::StringRef fileName = "");
 
     /** Evaluate JavaScript with a given object context. */
-    JSValue evalThis(JSValue thisObj, juce::StringRef script, juce::StringRef fileName);
+    JSValue evalThis(JSValue thisObj, juce::StringRef script, juce::StringRef fileName = "");
 
     void dumpError();
 

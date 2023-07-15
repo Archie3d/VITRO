@@ -255,6 +255,9 @@ protected:
     /** Children elements iterator. */
     void forEachChild(const std::function<void(const Element::Ptr&)>& func, bool recursive = true);
 
+    /** Evaluate script or function stored as element's attribute. */
+    void evaluateAttributeScript(const juce::Identifier& attr, const juce::var& data = {});
+
     // The following are helper functions to register
     // element's JavaScript prototype object.
     using JSGetter = JSValue(*)(JSContext*, JSValueConst);
