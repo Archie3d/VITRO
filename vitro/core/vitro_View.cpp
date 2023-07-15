@@ -87,7 +87,11 @@ void View::populateFromXml(const XmlElement& xmlElement)
     if (tag != View::tag)
         return;
 
-    populateChildElementsFromXml(context, shared_from_this(), xmlElement);
+    auto ptr{ shared_from_this() };
+    copyElementAttributesFromXml(ptr, xmlElement);
+    populateChildElementsFromXml(context, ptr, xmlElement);
+
+    evaluateOnLoadScript();
 
     // Trigger the elements tree update
     forceUpdate();

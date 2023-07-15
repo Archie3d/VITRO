@@ -117,7 +117,7 @@ static void jsDumpObj(JSContext* ctx, JSValueConst val)
 // Helper function used to dump JavaScript error trace to stderr.
 static void jsDumpError(JSContext* ctx, JSValueConst exception)
 {
-    if (JS_IsError(ctx, exception)) {
+    if (JS_IsError(ctx, exception) || JS_IsException(exception)) {
         auto message = JS_GetPropertyStr(ctx, exception, "message");
 
         if (!JS_IsUndefined(message)) {
