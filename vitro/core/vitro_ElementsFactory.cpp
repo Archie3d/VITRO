@@ -21,6 +21,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::DrawableButton>();
     registerElement<vitro::Slider>();
     registerElement<vitro::TextEditor>();
+    registerElement<vitro::ScrollArea>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

@@ -71,6 +71,13 @@ public:
     */
     virtual juce::Component* getComponent() = 0;
 
+    /** Returns a container component.
+
+        This method is used to indicate container components, like
+        scroll areas or windows.
+    */
+    virtual juce::Component* getContainerComponent() { return getComponent(); }
+
     /** Return parent component element from the tree.
 
         This method travels the elements tree up from this element

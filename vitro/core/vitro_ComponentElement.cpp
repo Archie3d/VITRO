@@ -228,8 +228,11 @@ void ComponentElement::reconcileElement()
             owner->removeChildComponent(thisComponent);
     } else {
         if (thisComponent->getParentComponent() == nullptr) {
-            if (auto parentComponentElement{ getParentComponentElement() })
-                parentComponentElement->getComponent()->addAndMakeVisible(thisComponent);
+            if (auto parentComponentElement{ getParentComponentElement() }) {
+                // @note When appending to a scroll area this component must added to
+                //       the scrollable container, not to the actual parent component.
+                parentComponentElement->getContainerComponent()->addAndMakeVisible(thisComponent);
+            }
         }
     }
 }

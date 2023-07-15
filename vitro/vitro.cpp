@@ -39,3 +39,4 @@ using namespace juce;
 #include "widgets/vitro_Button.cpp"
 #include "widgets/vitro_Slider.cpp"
 #include "widgets/vitro_TextEditor.cpp"
+#include "widgets/vitro_ScrollArea.cpp"
