@@ -184,6 +184,9 @@ public:
     /** Remove this element from factory's stash. */
     void unstash();
 
+    /** Returns a duplicate of the internal JS value. */
+    JSValue duplicateJSValue();
+
     /** Returns the JS object reference counter. */
     int getJSValueRefCount() const;
 
@@ -296,6 +299,7 @@ private:
     static JSValue js_getAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
     static JSValue js_setAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
     static JSValue js_hasAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_getAttributes(JSContext* jsCtx, JSValueConst self);
     static JSValue js_getParentElement(JSContext* ctx, JSValueConst self);
     static JSValue js_getChildren(JSContext* ctx, JSValueConst self);
     static JSValue js_getElementById(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);

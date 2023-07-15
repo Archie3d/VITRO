@@ -116,6 +116,8 @@ void View::exposeToJS()
 void View::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
 {
     ComponentElement::registerJSPrototype(jsCtx, prototype);
+
+    registerJSMethod(jsCtx, prototype, "createElement",   &js_createElement);
 }
 
 void View::resized()
@@ -151,6 +153,29 @@ void View::updateEverything()
 void View::recalculateLayoutToCurrentBounds()
 {
     recalculateLayout(static_cast<float>(getWidth()), static_cast<float>(getHeight()));
+}
+
+//==============================================================================
+
+JSValue View::js_createElement(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc != 1)
+        return JS_EXCEPTION;
+
+    if (auto view{ Context::getJSNativeObject<View>(self) }) {
+        const auto* str{ JS_ToCString(ctx, arg[0]) };
+        const auto tag{ String::fromUTF8(str) };
+        JS_FreeCString(ctx, str);
+
+        if (auto child{ view->context.getElementsFactory().createElement(tag) }) {
+            child->stash();
+            return child->duplicateJSValue();
+        }
+
+        return JS_NULL;
+    }
+
+    return JS_UNDEFINED;
 }
 
 } // namespace vitro

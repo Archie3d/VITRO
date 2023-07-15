@@ -199,6 +199,7 @@ void Element::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
     registerJSProperty(jsCtx, prototype, "style",         &js_getStyle, &js_setStyle);
     registerJSProperty(jsCtx, prototype, "parentElement", &js_getParentElement);
     registerJSProperty(jsCtx, prototype, "children",      &js_getChildren);
+    registerJSProperty(jsCtx, prototype, "attributes",    &js_getAttributes);
 
     registerJSMethod(jsCtx, prototype, "getAttribute",   &js_getAttribute);
     registerJSMethod(jsCtx, prototype, "setAttribute",   &js_setAttribute);
@@ -216,6 +217,11 @@ void Element::stash()
 void Element::unstash()
 {
     context.getElementsFactory().removeStashedElement(shared_from_this());
+}
+
+JSValue Element::duplicateJSValue()
+{
+    return JS_DupValue(context.getJSContext(), jsValue);
 }
 
 int Element::getJSValueRefCount() const
@@ -435,11 +441,30 @@ JSValue Element::js_hasAttribute(JSContext* ctx, JSValueConst self, int argc, JS
     return JS_UNDEFINED;
 }
 
+JSValue Element::js_getAttributes(JSContext* ctx, JSValueConst self)
+{
+    Array<juce::var> attrs{};
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        auto& valueTree {element->valueTree };
+
+        for (int i = 0; i < valueTree.getNumProperties(); ++i) {
+            juce::DynamicObject::Ptr obj{ new juce::DynamicObject() };
+            const auto name{ valueTree.getPropertyName(i) };
+            obj->setProperty("name", name.toString());
+            obj->setProperty("value", valueTree.getProperty(name));
+            attrs.add(juce::var{ obj });
+        }
+    }
+
+    return js::varToJSValue(ctx, juce::var(attrs));
+}
+
 JSValue Element::js_getParentElement(JSContext* ctx, JSValueConst self)
 {
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         if (auto parent{ element->getParentElement() })
-            return JS_DupValue(ctx, parent->jsValue);
+            return parent->duplicateJSValue();
 
         return JS_NULL;
     }
@@ -455,7 +480,7 @@ JSValue Element::js_getChildren(JSContext* ctx, JSValueConst self)
         int index{ 0 };
 
         element->forEachChild([&](const Element::Ptr& child) {
-            JS_SetPropertyUint32(ctx, jsArr, index++, JS_DupValue(ctx, child->jsValue));
+            JS_SetPropertyUint32(ctx, jsArr, index++, child->duplicateJSValue());
         }, false);
 
         return jsArr;
@@ -475,7 +500,7 @@ JSValue Element::js_getElementById(JSContext* ctx, JSValueConst self, int argc, 
         JS_FreeCString(ctx, str);
 
         if (auto elementWithId{ element->getElementById(id) })
-            return JS_DupValue(ctx, elementWithId->jsValue);
+            return elementWithId->duplicateJSValue();
     }
 
     return JS_NULL;

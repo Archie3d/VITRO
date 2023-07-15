@@ -54,6 +54,9 @@ private:
     void updateEverything();
 
     void recalculateLayoutToCurrentBounds();
+
+    // JavaScript methods and properties
+    static JSValue js_createElement(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
 };
 
 } // namespace vitro
