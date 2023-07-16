@@ -34,8 +34,18 @@ Element::Ptr ElementsFactory::createElement(const Identifier& tag)
         element = it->second();
 
     if (element == nullptr) {
-        // Creating a default element with unknown tag
-        element = std::make_shared<vitro::Element>(tag, context);
+        const auto& tagStr{ tag.toString() };
+
+        if (tagStr.isNotEmpty()) {
+            const auto firstChar{ tagStr.substring(0, 1) };
+            if (firstChar == firstChar.toUpperCase()) {
+                // Create a panel
+                element = std::make_shared<vitro::Panel>(tag, context);
+            } else {
+                // Creating a default element with unknown tag
+                element = std::make_shared<vitro::Element>(tag, context);
+            }
+        }
     }
 
     if (element != nullptr)

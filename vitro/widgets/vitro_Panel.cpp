@@ -5,7 +5,12 @@ JSClassID Panel::jsClassID = 0;
 const Identifier Panel::tag("Panel");
 
 Panel::Panel(Context& ctx)
-    : ComponentElement(Panel::tag, ctx),
+    : Panel(Panel::tag, ctx)
+{
+}
+
+Panel::Panel(const Identifier& tag, Context& ctx)
+    : ComponentElement(tag, ctx),
       juce::Component()
 {
     registerStyleProperty(attr::css::background_color);
