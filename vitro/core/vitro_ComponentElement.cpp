@@ -80,7 +80,7 @@ void ComponentElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
 void ComponentElement::setColourFromStyleProperty(juce::Component& component, int colourId, const Identifier& propertyName)
 {
     if (const auto&& [changed, colour]{ getStylePropertyChanged(propertyName) }; changed && !colour.isVoid())
-        component.setColour(colourId, parseColourFromString (colour.toString()));
+        component.setColour(colourId, parseColourFromString(colour.toString()));
     else if (colour.isVoid())
         component.removeColour(colourId);
 }

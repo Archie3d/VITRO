@@ -10,8 +10,6 @@ ScrollArea::ScrollArea(Context& ctx)
     setViewedComponent(&container, false);
 
     registerStyleProperty(attr::css::thumb_color);
-    registerStyleProperty(attr::css::track_color);
-    registerStyleProperty(attr::css::background_color);
     registerStyleProperty(attr::css::vertical_scrollbar);
     registerStyleProperty(attr::css::horizontal_scrollbar);
     registerStyleProperty(attr::css::scrollbar_thickness);
@@ -39,10 +37,8 @@ void ScrollArea::update()
 {
     ComponentElement::update();
 
-    // @todo These have no effect on the scroll bars.
-    setColourFromStyleProperty(juce::ScrollBar::thumbColourId, attr::css::thumb_color);
-    setColourFromStyleProperty(juce::ScrollBar::trackColourId, attr::css::track_color);
-    setColourFromStyleProperty(juce::ScrollBar::backgroundColourId, attr::css::background_color);
+    setColourFromStyleProperty(getVerticalScrollBar(), juce::ScrollBar::thumbColourId, attr::css::thumb_color);
+    setColourFromStyleProperty(getHorizontalScrollBar(), juce::ScrollBar::thumbColourId, attr::css::thumb_color);
 
     bool showVeticalScrollbar{ isVerticalScrollBarShown() };
     bool showHorizontalScrollbar{ isHorizontalScrollBarShown() };
