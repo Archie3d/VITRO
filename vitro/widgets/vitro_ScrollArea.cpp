@@ -17,6 +17,8 @@ ScrollArea::ScrollArea(Context& ctx)
 
 void ScrollArea::resized()
 {
+    Viewport::resized();
+
     if (!children.empty()) {
         // Scroll area expect only one child component,
         // if there are others, they will be ignored since we do not

@@ -119,6 +119,9 @@ public:
     /** Retrieve a native pointer from JS global scope. */
     void* getGlobalJSNative(juce::StringRef name);
 
+    /** Load a JavaScript model. */
+    juce::String loadJSModule(const juce::String& moduleName);
+
     /** Reset the context.
 
         This will the script context.

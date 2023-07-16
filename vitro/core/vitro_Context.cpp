@@ -1,3 +1,6 @@
+extern "C" {
+#   include "quickjs-libc.h"
+}
 namespace vitro {
 
 // This literal is used to inject the js::Context pointer to the
@@ -140,6 +143,37 @@ static void jsDumpError(JSContext* ctx, JSValueConst exception)
 
 //==============================================================================
 
+static JSModuleDef* jsModuleLoader(JSContext *ctx, const char *module_name, void *opaque)
+{
+    Context* context{ reinterpret_cast<Context*>(opaque)};
+    const auto src{ context->loadJSModule(String::fromUTF8(module_name)) };
+
+    if (src.isEmpty())
+        return js_module_loader(ctx, module_name, opaque);
+
+    JSModuleDef* m{ nullptr };
+
+    /* compile the module */
+    auto func_val = JS_Eval(ctx, src.toRawUTF8(), src.length(), module_name,
+                            JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+
+    if (JS_IsException(func_val)) {
+        jsDumpError(ctx, func_val);
+        return NULL;
+    }
+
+    /* XXX: could propagate the exception */
+    //js_module_set_import_meta (ctx, func_val, 1, 0);
+
+    /* the module is already referenced, so we must free it */
+    m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
+    JS_FreeValue(ctx, func_val);
+
+    return m;
+}
+
+//==============================================================================
+
 // Print console.log() message via juce::Logger.
 static JSValue js_console_log(JSContext* ctx, [[maybe_unused]] JSValueConst self, int argc, JSValueConst* argv)
 {
@@ -217,6 +251,7 @@ struct Context::Impl final
           jsContext(JS_NewContext(jsRuntime.get()), JS_FreeContext),
           timerPool{ std::make_unique<TimerPool>() }
     {
+        JS_SetModuleLoaderFunc(jsRuntime.get(), nullptr, jsModuleLoader, &self);
         exposeGlobals();
     }
 
@@ -429,6 +464,14 @@ void Context::setGlobalJSNative(StringRef name, void* ptr)
 void* Context::getGlobalJSNative(StringRef name)
 {
     return d->getGlobalJSNative(name);
+}
+
+String Context::loadJSModule(const String& moduleName)
+{
+    if (moduleName.endsWith(".js"))
+        return d->loader.loadText(moduleName);
+
+    return {};
 }
 
 void Context::reset()
