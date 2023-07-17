@@ -1,7 +1,7 @@
 # VITRO
-> :construction: WIP
+> :construction: WIP :construction:
 
-Declarative UI module for JUCE.
+Declarative UI module for [JUCE](https://github.com/juce-framework/JUCE).
 
 This module uses [Yoga](https://github.com/facebook/yoga/tree/main/yoga) flexbox layout engine for positioning the UI elements, and [QuickJS](https://github.com/bellard/quickjs) JavaScript engine for UI scripting.
 
@@ -37,7 +37,7 @@ target_link_libraries(${TARGET}
 ```
 
 ## :page_facing_up: Usage
-The easiest way to instantiate the UI is via the `vitro::ViewContainer` component:
+The easiest way to instantiate the UI is via the `vitro::ViewContainer` component. It allows loading the UI description directly from embedded binary resources (or local filesystem if needed).
 ```cpp
 class MainComponent : public juce::Component
 {
