@@ -236,13 +236,13 @@ static void clampToWidthHeight(juce::Point<T>& point, T width, T height)
 ColourGradient Gradient::getColourGradient(int width, int height) const
 {
     const float fWidth{ static_cast<float>(jmax (1, width)) };
-    const float fHeight{ static_cast<float> (jmax (1, height)) };
+    const float fHeight{ static_cast<float>(jmax (1, height)) };
 
     juce::Point<float> centre(0.5f * fWidth, 0.5f * fHeight);
     float d { 0.5f * sqrt(fWidth * fWidth + fHeight * fHeight) };
 
     // Directional vector
-    const juce::Point<float> direction(sinf (angle), cosf (angle));
+    const juce::Point<float> direction(sinf(angle), cosf(angle));
     juce::Point<float> fromPoint(centre.x - d * direction.x, centre.y + d * direction.y);
     juce::Point<float> toPoint(centre.x + d * direction.x, centre.y - d * direction.y);
 
