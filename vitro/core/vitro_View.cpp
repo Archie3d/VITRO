@@ -59,7 +59,7 @@ const Identifier View::tag("View");
 JSClassID View::jsClassID = 0;
 
 View::View(Context& ctx)
-    : ComponentElement(View::tag, ctx)
+    : ComponentElementWithBackground(View::tag, ctx)
 {
 }
 
@@ -131,10 +131,18 @@ void View::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
 void View::resized()
 {
     recalculateLayoutToCurrentBounds();
+    updateGradientToComponentSize();
+}
+
+void View::paint(Graphics& g)
+{
+    paintBackground(g);
 }
 
 void View::update()
 {
+    ComponentElementWithBackground::update();
+
     triggerAsyncUpdate();
 }
 

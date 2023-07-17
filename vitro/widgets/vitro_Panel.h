@@ -14,7 +14,7 @@ namespace vitro {
         border-width
         border-radius
 */
-class Panel : public vitro::ComponentElement,
+class Panel : public vitro::ComponentElementWithBackground,
               public juce::Component
 {
 public:
@@ -39,19 +39,6 @@ protected:
     // vitro::Element
     void update() override;
 
-private:
-
-    juce::Image backgroundImage{};
-
-    std::optional<juce::Colour> backgroundColour{};
-
-    std::optional<vitro::Gradient> gradient{};
-    juce::ColourGradient colourGradient{};
-
-    std::optional<juce::Colour> borderColour{};
-
-    float borderRadius{ 0.0f };
-    float borderWidth{ 1.0f };
 };
 
 } // namespace vitro

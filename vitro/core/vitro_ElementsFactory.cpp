@@ -13,6 +13,7 @@ void ElementsFactory::reset()
 void ElementsFactory::registerDefaultElements()
 {
     registerElement<vitro::Script>();
+    registerElement<vitro::Style>();
     registerElement<vitro::View>();
     registerElement<vitro::Panel>();
     registerElement<vitro::Label>();

@@ -1,0 +1,48 @@
+namespace vitro {
+
+/** View container.
+
+    This class aggregates the UI context and the View component.
+    It handles the UI loading and reloading.
+
+    @note A context cannot be shared between different view containers.
+
+    @see Context
+    @see View
+*/
+class ViewContainer : public juce::Component
+{
+public:
+    ViewContainer();
+    ~ViewContainer();
+
+    /** Assign a local directory for the loader to look for the resources. */
+    void setLocalDirectory(const juce::File& dir);
+
+    /** Reset and (re)load the UI.
+
+        This will reset the current view and the context, and create
+        new ones loading the UI definition from the specified resources.
+    */
+    void loadFromResource(const juce::String& xmlLocation,
+                          const juce::String& cssLocation = "",
+                          const juce::String& scriptLocation = "");
+
+    // juce::Component
+    void resized() override;
+
+    /** Return the internal context pointer.
+
+        @note When reloading the UI the old context gets deleted,
+              so the pointer returned previously by this method will be invalid.
+    */
+    vitro::Context* getContext() { return context.get(); }
+
+private:
+    std::unique_ptr<vitro::Context> context{};
+    std::shared_ptr<vitro::View> view{};
+
+    juce::File localDir{};
+};
+
+} // namespace vitro

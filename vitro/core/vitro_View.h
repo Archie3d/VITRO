@@ -5,7 +5,7 @@ namespace vitro {
     The view must be the top-most element of the UI hierarchy.
 */
 
-class View : public ComponentElement,
+class View : public ComponentElementWithBackground,
              public juce::Component,
              private juce::AsyncUpdater
 {
@@ -40,6 +40,7 @@ public:
 
     // juce::Component
     void resized() override;
+    void paint(juce::Graphics& g) override;
 
 protected:
 
@@ -57,6 +58,8 @@ private:
 
     // JavaScript methods and properties
     static JSValue js_createElement(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+
+    juce::Colour backgroundColour{};
 };
 
 } // namespace vitro
