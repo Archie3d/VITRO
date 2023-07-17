@@ -211,7 +211,7 @@ struct LayoutElement::Layout final
                     }
                     return false;
                 }
-                
+
                 if (name == yoga::height) {
                     const auto h{ YGNodeStyleGetHeight(node) };
                     if (h.unit != YGUnitAuto) {
