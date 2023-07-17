@@ -200,7 +200,7 @@ public:
 
         @note The parser will ignore commented text. C-style comments are used.
 
-        @note The parser will substitute all the encounetred macros.
+        @note The parser will substitute all the encountered macros.
     */
     void populateFromString(const juce::String& text, const ImportFunction& importFunction = {});
 

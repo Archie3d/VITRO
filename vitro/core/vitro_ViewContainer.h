@@ -28,15 +28,27 @@ public:
                           const juce::String& cssLocation = "",
                           const juce::String& scriptLocation = "");
 
-    // juce::Component
-    void resized() override;
-
     /** Return the internal context pointer.
+
+        Context is used to access the resources loader, stylesheet, JavaScript engine,
+        and elements factory.
 
         @note When reloading the UI the old context gets deleted,
               so the pointer returned previously by this method will be invalid.
     */
     vitro::Context* getContext() { return context.get(); }
+
+    /** Return the internal view.
+
+        The view provides access to all the internal elements.
+
+        @note A caller must not keep the view pointer, since it may be deleted by
+              this container on reload, which will result in creation of a new view.
+    */
+    vitro::View* getView() { return view.get(); }
+
+    // juce::Component
+    void resized() override;
 
 private:
     std::unique_ptr<vitro::Context> context{};
