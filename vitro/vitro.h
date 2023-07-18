@@ -54,3 +54,4 @@ extern "C" {
 #include "widgets/vitro_Slider.h"
 #include "widgets/vitro_TextEditor.h"
 #include "widgets/vitro_ScrollArea.h"
+#include "widgets/vitro_ComboBox.h"

@@ -37,9 +37,13 @@ public:
         ~JSObjectRef();
     };
 
+    const static juce::Identifier tag;  // <Element>
+
     static JSClassID jsClassID;
 
     Element() = delete;
+
+    Element(Context& ctx);
 
     /** Construct an element.
 
@@ -285,6 +289,9 @@ protected:
     /** JavaScript object associated with this element. */
     JSValue jsValue{ JS_UNINITIALIZED };
 
+    /** This flag tells element is in destruction phase. */
+    bool inDestructor{ false };
+
 private:
 
     friend class ElementsFactory;
@@ -293,8 +300,13 @@ private:
     // Initialize the internal JS object
     void initJSValue();
 
+    // Schedule the elements tree update
+    void triggerUpdate();
+
     // juce::ValueTree::Listener
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;
+    void valueTreeChildAdded(juce::ValueTree&, juce::ValueTree&) override;
+    void valueTreeChildRemoved(juce::ValueTree&, juce::ValueTree&, int) override;
 
     // JavaScript methods and properties
     static JSValue js_getTagName(JSContext* jsCtx, JSValueConst self);

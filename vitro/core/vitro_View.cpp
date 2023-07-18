@@ -65,6 +65,8 @@ View::View(Context& ctx)
 
 View::~View()
 {
+    inDestructor = true;
+
     // We must remove all the children in order for them to be notified
     // that they are about to be deleted. This is important for some
     // element to release resources and perform cleaning up.

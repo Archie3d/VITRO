@@ -16,7 +16,14 @@ Element::JSObjectRef::~JSObjectRef()
 
 //==============================================================================
 
+const Identifier Element::tag("Element");
+
 JSClassID Element::jsClassID = 0;
+
+Element::Element(Context& ctx)
+    : Element(Element::tag, ctx)
+{
+}
 
 Element::Element(const juce::Identifier& tag, Context& ctx)
     : valueTree(tag),
@@ -28,6 +35,8 @@ Element::Element(const juce::Identifier& tag, Context& ctx)
 
 Element::~Element()
 {
+    inDestructor = true;
+
     if (jsValue != JS_UNINITIALIZED) {
         const auto classID{ JS_GetClassID(jsValue, nullptr) };
 
@@ -57,6 +66,12 @@ Element::Ptr Element::getParentElement() const
 
 Element::Ptr Element::getTopLevelElement()
 {
+    if (inDestructor) {
+        // Elements tree is currently being destroyed,
+        // we should avoid querying elements pointers.
+        return nullptr;
+    }
+
     auto parentPtr{ parent.lock() };
 
     if (parentPtr == nullptr)
@@ -121,6 +136,7 @@ void Element::removeAllChildElements()
     valueTree.removeAllChildren(nullptr);
 
     for (auto&& child : children) {
+        const auto useCnt = child.use_count();
         child->elementIsAboutToBeRemoved();
         child->notifyChildrenAboutToBeRemoved();
     }
@@ -354,14 +370,29 @@ void Element::initJSValue()
     JS_SetOpaque(jsValue, new JSObjectRef(shared_from_this()));
 }
 
-void Element::valueTreePropertyChanged(ValueTree&, const Identifier& changedAttr)
+void Element::triggerUpdate()
 {
     updatePending = true;
-    changedAttributes.insert(changedAttr);
 
-    // Trigger update on the root element.
     if (auto root{ getTopLevelElement() })
         root->update();
+}
+
+void Element::valueTreePropertyChanged(ValueTree&, const Identifier& changedAttr)
+{
+    changedAttributes.insert(changedAttr);
+
+    triggerUpdate();
+}
+
+void Element::valueTreeChildAdded(juce::ValueTree&, juce::ValueTree&)
+{
+    triggerUpdate();
+}
+
+void Element::valueTreeChildRemoved(juce::ValueTree&, juce::ValueTree&, int)
+{
+    triggerUpdate();
 }
 
 //==============================================================================

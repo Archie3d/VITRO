@@ -17,6 +17,7 @@ const Identifier readonly   ("readonly");
 
 const Identifier text       ("text");
 const Identifier value      ("value");
+const Identifier itemid     ("itemid");
 const Identifier emptytext  ("emptytext");
 const Identifier decimals   ("decimals");
 const Identifier min        ("min");

@@ -12,6 +12,10 @@ void ElementsFactory::reset()
 
 void ElementsFactory::registerDefaultElements()
 {
+    // We must register a generic element since it
+    // will be created on an unknown tag
+    registerElement<vitro::Element>();
+
     registerElement<vitro::Script>();
     registerElement<vitro::Style>();
     registerElement<vitro::View>();
@@ -23,6 +27,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::Slider>();
     registerElement<vitro::TextEditor>();
     registerElement<vitro::ScrollArea>();
+    registerElement<vitro::ComboBox>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)
