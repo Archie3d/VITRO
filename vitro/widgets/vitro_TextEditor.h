@@ -17,7 +17,7 @@ namespace vitro {
         empty-text-color
         background-color
         highlight-color
-        highlighted-text-color
+        highlight-text-color
         border-color
         focused-border-color
         shadow-color

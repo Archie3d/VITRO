@@ -6,6 +6,22 @@ namespace vitro {
 
     The items of the ComboBox are defined via the child <item> elements.
     Additional child elements are <heading> and <separator>.
+
+    Attributes:
+        emptytext
+        noselectiontext
+        selectedid
+        onchange
+
+    Style properties:
+        color
+        text-color
+        button-color
+        arrow-color
+        popup-color
+        highlight-color
+        highlight-text-color
+        text-align
 */
 class ComboBox : public vitro::ComponentElement,
                  public juce::ComboBox,

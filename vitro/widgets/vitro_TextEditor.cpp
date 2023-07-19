@@ -13,7 +13,7 @@ TextEditor::TextEditor(Context& ctx)
     registerStyleProperty(attr::css::empty_text_color);
     registerStyleProperty(attr::css::background_color);
     registerStyleProperty(attr::css::highlight_color);
-    registerStyleProperty(attr::css::highlighted_text_color);
+    registerStyleProperty(attr::css::highlight_text_color);
     registerStyleProperty(attr::css::border_color);
     registerStyleProperty(attr::css::focused_border_color);
     registerStyleProperty(attr::css::shadow_color);
@@ -49,7 +49,7 @@ void TextEditor::update()
     setColourFromStyleProperty(juce::TextEditor::backgroundColourId,      attr::css::background_color);
     setColourFromStyleProperty(juce::TextEditor::textColourId,            attr::css::text_color);
     setColourFromStyleProperty(juce::TextEditor::highlightColourId,       attr::css::highlight_color);
-    setColourFromStyleProperty(juce::TextEditor::highlightedTextColourId, attr::css::highlighted_text_color);
+    setColourFromStyleProperty(juce::TextEditor::highlightedTextColourId, attr::css::highlight_text_color);
     setColourFromStyleProperty(juce::TextEditor::outlineColourId,         attr::css::border_color);
     setColourFromStyleProperty(juce::TextEditor::focusedOutlineColourId,  attr::css::focused_border_color);
     setColourFromStyleProperty(juce::TextEditor::shadowColourId,          attr::css::shadow_color);

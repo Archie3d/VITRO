@@ -19,10 +19,12 @@ const Identifier text       ("text");
 const Identifier value      ("value");
 const Identifier itemid     ("itemid");
 const Identifier emptytext  ("emptytext");
+const Identifier noselectiontext ("noselectiontext");
 const Identifier decimals   ("decimals");
 const Identifier min        ("min");
 const Identifier max        ("max");
 const Identifier step       ("step");
+const Identifier selectedid ("selectedid");
 
 const Identifier hover      ("hover");
 const Identifier active     ("active");
@@ -43,7 +45,7 @@ const Identifier background_color          ("background-color");
 const Identifier background_color_on       ("background-color-on");
 const Identifier background_image          ("background-image");
 const Identifier highlight_color           ("highlight-color");
-const Identifier highlighted_text_color    ("highlighted-text-color");
+const Identifier highlight_text_color      ("highlight-text-color");
 
 const Identifier border_color              ("border-color");
 const Identifier border_radius             ("border-radius");
@@ -80,6 +82,9 @@ const Identifier trigger_down              ("trigger-down");
 const Identifier click_through             ("click-through");
 
 const Identifier button_style              ("button-style");
+const Identifier button_color              ("button-color");
+const Identifier arrow_color               ("arrow-color");
+const Identifier popup_color               ("popup-color");
 
 const Identifier image_normal              ("image-normal");
 const Identifier image_over                ("image-over");
@@ -99,7 +104,6 @@ const Identifier text_box_color            ("text-box-color");
 const Identifier text_box_background_color ("text-box-background-color");
 const Identifier text_box_highlight_color  ("text-box-highlight-color");
 const Identifier text_box_border_color     ("text-box-border-color");
-const Identifier popup_color               ("popup-color");
 const Identifier text_box_position         ("text-box-position");
 const Identifier text_box_read_only        ("text-box-read-only");
 const Identifier text_box_width            ("text-box-width");
