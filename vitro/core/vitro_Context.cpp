@@ -237,6 +237,7 @@ struct Context::Impl final
 
     Loader loader{};
     Stylesheet stylesheet{};
+    LookAndFeel lookAndFeel{};
     ElementsFactory elementsFactory;
 
     std::unique_ptr<JSRuntime, void(*)(JSRuntime*)> jsRuntime;
@@ -414,6 +415,16 @@ const Stylesheet& Context::getStylesheet() const
 Stylesheet& Context::getStylesheet()
 {
     return d->stylesheet;
+}
+
+const LookAndFeel& Context::getLookAndFeel() const
+{
+    return d->lookAndFeel;
+}
+
+LookAndFeel& Context::getLookAndFeel()
+{
+    return d->lookAndFeel;
 }
 
 const ElementsFactory& Context::getElementsFactory() const

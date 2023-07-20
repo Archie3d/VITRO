@@ -54,8 +54,18 @@ Element::Ptr ElementsFactory::createElement(const Identifier& tag)
         }
     }
 
-    if (element != nullptr)
+    if (element != nullptr) {
+
+        // Inject look and feel into the component element.
+        if (element->isComponentElement()) {
+            if (auto compElem{ std::dynamic_pointer_cast<ComponentElement>(element) }) {
+                if (auto* comp{ compElem->getComponent() })
+                    comp->setLookAndFeel(&context.getLookAndFeel());
+            }
+        }
+
         element->initialize();
+    }
 
     return element;
 }

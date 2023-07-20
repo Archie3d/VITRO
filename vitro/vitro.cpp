@@ -26,6 +26,7 @@ using namespace juce;
 #include "core/vitro_Loader.cpp"
 #include "core/vitro_Context.cpp"
 #include "core/vitro_Attributes.cpp"
+#include "core/vitro_LookAndFeel.cpp"
 #include "core/vitro_Script.cpp"
 #include "core/vitro_Style.cpp"
 #include "core/vitro_Element.cpp"

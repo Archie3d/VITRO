@@ -31,8 +31,12 @@ public:
     const Stylesheet& getStylesheet() const;
     Stylesheet& getStylesheet();
 
+    const LookAndFeel& getLookAndFeel() const;
+    LookAndFeel& getLookAndFeel();
+
     const ElementsFactory& getElementsFactory() const;
     ElementsFactory& getElementsFactory();
+
 
     JSRuntime* getJSRuntime();
     JSContext* getJSContext();
