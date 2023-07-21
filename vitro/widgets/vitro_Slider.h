@@ -9,6 +9,7 @@ namespace vitro {
         min
         max
         step
+        decimals
 
     Callback attributes:
         onchange

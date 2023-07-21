@@ -194,8 +194,12 @@ public:
     /** Returns the JS object reference counter. */
     int getJSValueRefCount() const;
 
-    /** Evaluate onload attribute script.*/
-    void evaluateOnLoadScript();
+    /** Evaluate onload attribute script.
+
+        If recursive flag is set, the onload will first be evaluated
+        on element's children recusrively, and then on this element.
+    */
+    void evaluateOnLoadScript(bool recursive=false);
 
 protected:
 

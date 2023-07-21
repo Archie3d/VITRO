@@ -29,6 +29,13 @@ protected:
     // vitro::Element
     void update() override;
 
+private:
+
+    void evaluate(const juce::String& script);
+
+    bool evaluatedOnce{};
+    size_t scriptHash{};
+
 };
 
 } // namespace vitro

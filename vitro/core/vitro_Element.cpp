@@ -250,8 +250,13 @@ int Element::getJSValueRefCount() const
     return -1;
 }
 
-void Element::evaluateOnLoadScript()
+void Element::evaluateOnLoadScript(bool recursive)
 {
+    if (recursive) {
+        for (auto&& child : children)
+            child->evaluateOnLoadScript(recursive);
+    }
+
     evaluateAttributeScript(attr::onload);
 }
 
@@ -315,9 +320,9 @@ void Element::evaluateAttributeScript(const Identifier& attr, const juce::var& d
         }
     } else {
         auto res{ context.evalThis(jsValue, val.toString()) };
-        if (JS_IsException(res)) {
+
+        if (JS_IsException(res))
             jsDumpError(jsCtx, res);
-        }
 
         if (res != JS_UNDEFINED)
             JS_FreeValue(jsCtx, res);

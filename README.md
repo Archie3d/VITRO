@@ -86,6 +86,9 @@ Label:hover {
 
 The script is optional as well. When provided the script is executed _before_ the UI view gets populated with the elements.
 
+## :ledger: Detailed information
+
+:point_right: [See more detailed imformation here](docs/docs.md)
 
 ## :eyes: Examples
 :point_right: [See the test project for examples.](https://github.com/Archie3d/VITRO-test/tree/master/examples)

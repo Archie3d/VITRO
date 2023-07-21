@@ -93,7 +93,8 @@ void View::populateFromXml(const XmlElement& xmlElement)
     copyElementAttributesFromXml(ptr, xmlElement);
     populateChildElementsFromXml(context, ptr, xmlElement);
 
-    evaluateOnLoadScript();
+    // Evaluate onload attribute script recursively
+    evaluateOnLoadScript(true);
 
     // Trigger the elements tree update
     forceUpdate();
