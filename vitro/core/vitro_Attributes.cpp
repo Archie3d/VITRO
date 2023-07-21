@@ -15,6 +15,11 @@ const Identifier enabled    ("enabled");
 const Identifier visible    ("visible");
 const Identifier readonly   ("readonly");
 
+const Identifier x          ("x");
+const Identifier y          ("y");
+const Identifier width      ("width");
+const Identifier height     ("height");
+
 const Identifier text       ("text");
 const Identifier value      ("value");
 const Identifier itemid     ("itemid");

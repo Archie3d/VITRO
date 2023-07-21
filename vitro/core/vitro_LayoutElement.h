@@ -61,6 +61,7 @@ public:
     */
     void recalculateLayout(float width, float height);
 
+    // @internal
     static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 
 protected:
@@ -71,6 +72,10 @@ protected:
 
 private:
 
+    // JavaScript methods and properties
+    static JSValue js_getLocalBounds(JSContext* ctx, JSValueConst self);
+
+    // Internal layout structure (referencing Yoga layout node).
     struct Layout;
     std::unique_ptr<Layout> layout;
 

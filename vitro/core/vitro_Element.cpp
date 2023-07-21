@@ -587,7 +587,7 @@ JSValue Element::js_appendChild([[maybe_unused]] JSContext* ctx, JSValueConst se
     return JS_UNDEFINED;
 }
 
-JSValue Element::js_removeChild ([[maybe_unused]] JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+JSValue Element::js_removeChild([[maybe_unused]] JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 1)
         return JS_EXCEPTION;

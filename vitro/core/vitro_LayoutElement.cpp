@@ -473,6 +473,8 @@ void LayoutElement::recalculateLayout(float width, float height)
 void LayoutElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
 {
     StyledElement::registerJSPrototype(ctx, prototype);
+
+    registerJSProperty(ctx, prototype, "localBounds", &js_getLocalBounds);
 }
 
 void LayoutElement::numberOfChildrenChanged()
@@ -496,6 +498,26 @@ void LayoutElement::reconcileElement()
             }
         }
     }
+}
+
+//==============================================================================
+
+JSValue LayoutElement::js_getLocalBounds(JSContext* ctx, JSValueConst self)
+{
+    juce::DynamicObject::Ptr rectObj{ new DynamicObject() };
+    juce::Rectangle<float> bounds{};
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (auto layoutElement{ std::dynamic_pointer_cast<LayoutElement>(element) })
+            bounds = layoutElement->getLayoutElementBounds();
+    }
+
+    rectObj->setProperty(attr::x, bounds.getX());
+    rectObj->setProperty(attr::y, bounds.getY());
+    rectObj->setProperty(attr::width, bounds.getWidth());
+    rectObj->setProperty(attr::height, bounds.getHeight());
+
+    return js::varToJSValue(ctx, juce::var(rectObj));
 }
 
 } // namespace vitro

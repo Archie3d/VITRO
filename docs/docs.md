@@ -97,6 +97,12 @@ All UI elements expose the following properties to the JavaScript interface.
 > :warning:
 > `attributes` property cannot be used to modify element's attributes. Instead `setAttribute()` anf `getAttribute()` methods should be used.
 
+#### Layout elements' properties
+
+| Property      | Access    | Description                                                 |
+|:--------------|:----------|:------------------------------------------------------------|
+| `localBounds` | read only | Element's bounds within its parent: `{x, y, width, height}` |
+
 ### Elements' common methods
 
 | Method name            | Description                      |
