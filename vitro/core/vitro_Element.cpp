@@ -485,7 +485,7 @@ JSValue Element::js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst v
 JSValue Element::js_getAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 1)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "getAttribute expects a single argument - attribute's name");
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         const auto* str{ JS_ToCString(ctx, arg[0]) };
@@ -501,7 +501,7 @@ JSValue Element::js_getAttribute(JSContext* ctx, JSValueConst self, int argc, JS
 JSValue Element::js_setAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 2)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "setAttribute expects two arguments: attribute's name and value");
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         const auto* str{ JS_ToCString(ctx, arg[0]) };
@@ -517,7 +517,7 @@ JSValue Element::js_setAttribute(JSContext* ctx, JSValueConst self, int argc, JS
 JSValue Element::js_hasAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 1)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "hasAttribute expects a single argument - attribute name");
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         const auto* str{ JS_ToCString(ctx, arg[0]) };
@@ -584,7 +584,7 @@ JSValue Element::js_getChildren(JSContext* ctx, JSValueConst self)
 JSValue Element::js_getElementById(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 1)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "getElementById expects a single argument - element's id");
 
     if (auto element{ Context::getJSNativeObject<Element>(self)}) {
         const auto* str{ JS_ToCString(ctx, arg[0]) };
@@ -601,7 +601,7 @@ JSValue Element::js_getElementById(JSContext* ctx, JSValueConst self, int argc, 
 JSValue Element::js_appendChild([[maybe_unused]] JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 1)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "appendChild expects a single argument");
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         if (auto childElem{ Context::getJSNativeObject<Element>(arg[0]) })
@@ -614,7 +614,7 @@ JSValue Element::js_appendChild([[maybe_unused]] JSContext* ctx, JSValueConst se
 JSValue Element::js_removeChild([[maybe_unused]] JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 1)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "removeChild expects a single argument");;
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         if (auto childElem{ Context::getJSNativeObject<Element>(arg[0]) })

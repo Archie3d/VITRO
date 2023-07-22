@@ -188,7 +188,7 @@ static JSValue js_console_log(JSContext* ctx, [[maybe_unused]] JSValueConst self
         const char* str{ JS_ToCStringLen(ctx, &len, argv[i]) };
 
         if (!str)
-            return JS_EXCEPTION;
+            return JS_ThrowTypeError(ctx, "console.log argument type cannot be converted to text");
 
         juceString += String::fromUTF8(str, (int)len);
         JS_FreeCString(ctx, str);
@@ -202,18 +202,18 @@ static JSValue js_console_log(JSContext* ctx, [[maybe_unused]] JSValueConst self
 static JSValue js_setTimeout(JSContext* ctx, [[maybe_unused]] JSValueConst this_val, int argc, JSValueConst* argv)
 {
     if (argc != 2)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "setTimeout expects two arguments");
 
     if (!JS_IsFunction(ctx, argv[0]))
-        return JS_EXCEPTION;
+        return JS_ThrowTypeError(ctx, "First argument of setTimeout must be a function");
 
     if (JS_VALUE_GET_TAG(argv[1]) != JS_TAG_INT)
-        return JS_EXCEPTION;
+        return JS_ThrowTypeError(ctx, "Second argument of setTimeout must be an integer (timeout in milliseconds)");
 
     auto* context{ Context::getContextFromJSContext(ctx) };
 
     if (!context)
-        return JS_EXCEPTION;
+        return JS_ThrowInternalError(ctx, "Unable to get UI context from JS context");
 
     int delay{};
     JS_ToInt32(ctx, &delay, argv[1]);
@@ -511,7 +511,6 @@ Context* Context::getContextFromJSContext(JSContext* ctx)
     JS_FreeValue(ctx, global);
 
     return contextPtr;
-
 }
 
 } // namespace vitro

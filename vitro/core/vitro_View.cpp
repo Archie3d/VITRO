@@ -179,7 +179,7 @@ void View::recalculateLayoutToCurrentBounds()
 JSValue View::js_createElement(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
 {
     if (argc != 1)
-        return JS_EXCEPTION;
+        return JS_ThrowSyntaxError(ctx, "createElement expects a single argument - element tag name");;
 
     if (auto view{ Context::getJSNativeObject<View>(self) }) {
         const auto* str{ JS_ToCString(ctx, arg[0]) };
