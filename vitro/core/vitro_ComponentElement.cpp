@@ -75,6 +75,9 @@ void ComponentElement::updateComponentBoundsToLayoutNode()
 void ComponentElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
 {
     LayoutElement::registerJSPrototype(ctx, prototype);
+
+    registerJSProperty(ctx, prototype, "viewBounds", &js_getViewBounds);
+    registerJSProperty(ctx, prototype, "screenBounds", &js_getScreenBounds);
 }
 
 void ComponentElement::setColourFromStyleProperty(juce::Component& component, int colourId, const Identifier& propertyName)
@@ -235,6 +238,58 @@ void ComponentElement::reconcileElement()
             }
         }
     }
+}
+
+//==============================================================================
+
+// Convert local bounds to the top view realtive
+JSValue ComponentElement::js_getViewBounds(JSContext* ctx, JSValueConst self)
+{
+    juce::DynamicObject::Ptr rectObj{ new DynamicObject() };
+    juce::Rectangle<float> bounds{};
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (auto rootElement{ element->getTopLevelElement() }) {
+            if (rootElement->isComponentElement()) {
+                if (auto componentRoot{ std::dynamic_pointer_cast<ComponentElement>(rootElement) }) {
+                    if (auto* rootComponent{ componentRoot->getComponent() }) {
+                        if (auto componentElement{ std::dynamic_pointer_cast<ComponentElement>(element) }) {
+                            if (auto* component{ componentElement->getComponent()})
+                                bounds = rootComponent->getLocalArea(component, componentElement->getLayoutElementBounds());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    rectObj->setProperty(attr::x, bounds.getX());
+    rectObj->setProperty(attr::y, bounds.getY());
+    rectObj->setProperty(attr::width, bounds.getWidth());
+    rectObj->setProperty(attr::height, bounds.getHeight());
+
+    return js::varToJSValue(ctx, juce::var(rectObj));
+}
+
+// Convert local bound to screen relative
+JSValue ComponentElement::js_getScreenBounds(JSContext* ctx, JSValueConst self)
+{
+    juce::DynamicObject::Ptr rectObj{ new DynamicObject() };
+    juce::Rectangle<float> bounds{};
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (auto componentElement{ std::dynamic_pointer_cast<ComponentElement>(element) }) {
+            if (auto* component{ componentElement->getComponent()})
+                bounds = component->localAreaToGlobal(componentElement->getLayoutElementBounds());
+        }
+    }
+
+    rectObj->setProperty(attr::x, bounds.getX());
+    rectObj->setProperty(attr::y, bounds.getY());
+    rectObj->setProperty(attr::width, bounds.getWidth());
+    rectObj->setProperty(attr::height, bounds.getHeight());
+
+    return js::varToJSValue(ctx, juce::var(rectObj));
 }
 
 } // namespace vitro

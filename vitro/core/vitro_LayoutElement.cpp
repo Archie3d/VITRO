@@ -474,7 +474,7 @@ void LayoutElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
 {
     StyledElement::registerJSPrototype(ctx, prototype);
 
-    registerJSProperty(ctx, prototype, "localBounds", &js_getLocalBounds);
+    registerJSProperty(ctx, prototype, "bounds", &js_getBounds);
 }
 
 void LayoutElement::numberOfChildrenChanged()
@@ -502,7 +502,7 @@ void LayoutElement::reconcileElement()
 
 //==============================================================================
 
-JSValue LayoutElement::js_getLocalBounds(JSContext* ctx, JSValueConst self)
+JSValue LayoutElement::js_getBounds(JSContext* ctx, JSValueConst self)
 {
     juce::DynamicObject::Ptr rectObj{ new DynamicObject() };
     juce::Rectangle<float> bounds{};

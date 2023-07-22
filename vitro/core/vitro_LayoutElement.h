@@ -73,7 +73,7 @@ protected:
 private:
 
     // JavaScript methods and properties
-    static JSValue js_getLocalBounds(JSContext* ctx, JSValueConst self);
+    static JSValue js_getBounds(JSContext* ctx, JSValueConst self);
 
     // Internal layout structure (referencing Yoga layout node).
     struct Layout;

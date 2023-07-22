@@ -212,6 +212,7 @@ void Element::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
 {
     registerJSProperty(jsCtx, prototype, "tagName",       &js_getTagName);
     registerJSProperty(jsCtx, prototype, "id",            &js_getId, &js_setId);
+    registerJSProperty(jsCtx, prototype, "class",         &js_getClass, &js_setClass);
     registerJSProperty(jsCtx, prototype, "style",         &js_getStyle, &js_setStyle);
     registerJSProperty(jsCtx, prototype, "parentElement", &js_getParentElement);
     registerJSProperty(jsCtx, prototype, "children",      &js_getChildren);
@@ -428,6 +429,29 @@ JSValue Element::js_setId(JSContext* jsCtx, JSValueConst self, JSValueConst val)
         if (JS_IsString(val)) {
             const auto* str{ JS_ToCString(jsCtx, val) };
             element->setId(String::fromUTF8(str));
+            JS_FreeCString(jsCtx, str);
+        }
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getClass(JSContext* jsCtx, JSValueConst self)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        const auto clazz{ element->getAttribute(attr::clazz).toString() };
+        return JS_NewStringLen(jsCtx, clazz.toRawUTF8(), clazz.length());
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_setClass(JSContext* jsCtx, JSValueConst self, JSValueConst val)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (JS_IsString(val)) {
+            const auto* str{ JS_ToCString(jsCtx, val) };
+            element->setAttribute(attr::clazz, String::fromUTF8(str));
             JS_FreeCString(jsCtx, str);
         }
     }

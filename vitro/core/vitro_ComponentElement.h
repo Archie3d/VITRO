@@ -121,6 +121,10 @@ protected:
 
 private:
 
+    // JavaScript methods and properties
+    static JSValue js_getViewBounds(JSContext* ctx, JSValueConst self);
+    static JSValue js_getScreenBounds(JSContext* ctx, JSValueConst self);
+
     // Proxy to intercept mouse events and forward them to this component element.
     std::unique_ptr<MouseEventsProxy> mouseEventsProxy{};
 

@@ -86,6 +86,7 @@ All UI elements expose the following properties to the JavaScript interface.
 |:----------------|:-----------|:-----------------------------------|
 | `tagName`       | read only  | Element's tag                      |
 | `id `           | read/write | Element's ID                       |
+| `class`         | read/write | Element'c class string             |
 | `style`         | read/write | Element's local style attribute    |
 | `parentElement` | read only  | Parent element                     |
 | `children`      | read only  | Array of child elements            |
@@ -99,9 +100,19 @@ All UI elements expose the following properties to the JavaScript interface.
 
 #### Layout elements' properties
 
-| Property      | Access    | Description                                                 |
-|:--------------|:----------|:------------------------------------------------------------|
-| `localBounds` | read only | Element's bounds within its parent: `{x, y, width, height}` |
+| Property | Access    | Description                                                 |
+|:---------|:----------|:------------------------------------------------------------|
+| `bounds` | read only | Element's bounds within its parent: `{x, y, width, height}` |
+
+#### Component element's properties
+
+These properties are exposed by the component elements (widgets).
+
+| Property       | Access    | Description                                                   |
+|:---------------|:----------|:--------------------------------------------------------------|
+| `viewBounds`   | read only | Element's bounds within the top view: `{x, y, width, height}` |
+| `screenBounds` | read only | Element's bounds within the screen: `{x, y, width, height}`   |
+
 
 ### Elements' common methods
 

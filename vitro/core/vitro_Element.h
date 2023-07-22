@@ -316,6 +316,8 @@ private:
     static JSValue js_getTagName(JSContext* jsCtx, JSValueConst self);
     static JSValue js_getId(JSContext* jsCtx, JSValueConst self);
     static JSValue js_setId(JSContext* jsCtx, JSValueConst self, JSValueConst val);
+    static JSValue js_getClass(JSContext* jsCtx, JSValueConst self);
+    static JSValue js_setClass(JSContext* jsCtx, JSValueConst self, JSValueConst val);
     static JSValue js_getStyle(JSContext* jsCtx, JSValueConst self);
     static JSValue js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst val);
     static JSValue js_getAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
