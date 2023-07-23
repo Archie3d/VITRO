@@ -55,6 +55,11 @@ void StyledElement::registerJSPrototype(JSContext* ctx, JSValue prototype)
     Element::registerJSPrototype(ctx, prototype);
 }
 
+void StyledElement::reconcileElement()
+{
+    Element::reconcileElement();
+}
+
 void StyledElement::registerStyleProperty(const juce::Identifier& name, const var& value)
 {
     styleProperties.set(name, value);

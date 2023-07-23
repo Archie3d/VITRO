@@ -57,6 +57,8 @@ public:
 
 protected:
 
+    void reconcileElement() override;
+
     /** Register element's style property.
 
         A styled element must register its style properties. These

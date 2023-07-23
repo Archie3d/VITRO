@@ -62,7 +62,6 @@ void ScrollArea::update()
     // scrollbar-thickness
     if (auto&& [changed, prop]{ getStylePropertyChanged(attr::css::scrollbar_thickness) }; changed)
         setScrollBarThickness(prop.isVoid() ? 8 : (int)prop);
-
 }
 
 } // namespace Label

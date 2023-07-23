@@ -172,6 +172,8 @@ void ComponentElement::initialize()
 
 void ComponentElement::update()
 {
+    LayoutElement::update();
+
     if (auto* comp{ getComponent() }) {
         if (const auto&& [changed, val]{ getAttributeChanged(attr::enabled) }; changed && !val.isVoid())
             comp->setEnabled(val);

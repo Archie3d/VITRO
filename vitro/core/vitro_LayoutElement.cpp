@@ -33,6 +33,12 @@ static const String margin_  ("margin-");
 static const String padding_ ("padding-");
 static const String border_  ("border-");
 
+// Edge properties
+const static Identifier left   ("left");
+const static Identifier right  ("right");
+const static Identifier top    ("top");
+const static Identifier bottom ("bottom");
+
 /* Yoga layout enums to string translation table */
 
 const static std::map<String, YGAlign> alignValues {
@@ -372,19 +378,21 @@ LayoutElement::LayoutElement(const Identifier& tag, Context& ctx)
     : StyledElement(tag, ctx),
       layout{ std::make_unique<Layout>(*this) }
 {
-    registerStyleProperty(yoga::align_items);
-    registerStyleProperty(yoga::align_content);
-    registerStyleProperty(yoga::align_self);
     registerStyleProperty(yoga::direction);
     registerStyleProperty(yoga::flex_direction);
     registerStyleProperty(yoga::justify_content);
+    registerStyleProperty(yoga::align_items);
+    registerStyleProperty(yoga::align_content);
+    registerStyleProperty(yoga::align_self);
+    registerStyleProperty(yoga::position);
     registerStyleProperty(yoga::display);
-    registerStyleProperty(yoga::overflow);
     registerStyleProperty(yoga::flex_wrap);
+    registerStyleProperty(yoga::overflow);
 
     registerStyleProperty(yoga::flex);
     registerStyleProperty(yoga::flex_grow);
     registerStyleProperty(yoga::flex_shrink);
+    registerStyleProperty(yoga::aspect_ratio);
     registerStyleProperty(yoga::flex_basis);
     registerStyleProperty(yoga::width);
     registerStyleProperty(yoga::height);
@@ -392,7 +400,11 @@ LayoutElement::LayoutElement(const Identifier& tag, Context& ctx)
     registerStyleProperty(yoga::min_height);
     registerStyleProperty(yoga::max_width);
     registerStyleProperty(yoga::max_height);
-    registerStyleProperty(yoga::aspect_ratio);
+
+    registerStyleProperty(yoga::left);
+    registerStyleProperty(yoga::right);
+    registerStyleProperty(yoga::top);
+    registerStyleProperty(yoga::bottom);
 
     for (auto it = yoga::edgeValues.cbegin(); it != yoga::edgeValues.cend(); ++it) {
         registerStyleProperty(Identifier(yoga::margin_ + it->first));
@@ -486,6 +498,8 @@ void LayoutElement::numberOfChildrenChanged()
 
 void LayoutElement::reconcileElement()
 {
+    StyledElement::reconcileElement();
+
     if (parent.lock() == nullptr) {
         if (auto* owner{ layout->node->getOwner() }) {
             YGNodeRemoveChild(owner, layout->node);

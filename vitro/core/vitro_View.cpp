@@ -128,7 +128,7 @@ void View::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
 {
     ComponentElement::registerJSPrototype(jsCtx, prototype);
 
-    registerJSMethod(jsCtx, prototype, "createElement",   &js_createElement);
+    registerJSMethod(jsCtx, prototype, "createElement", &js_createElement);
 }
 
 void View::resized()
