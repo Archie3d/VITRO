@@ -110,10 +110,10 @@ private:
 static void jsDumpObj(JSContext* ctx, JSValueConst val)
 {
     if (const char* str = JS_ToCString(ctx, val)) {
-        std::cerr << str << '\n';
+        juce::Logger::writeToLog(str);
         JS_FreeCString(ctx, str);
     } else {
-        std::cerr << "[exception]\n";
+        juce::Logger::writeToLog("[exception]");
     }
 }
 
@@ -125,7 +125,7 @@ static void jsDumpError(JSContext* ctx, JSValueConst exception)
 
         if (!JS_IsUndefined(message)) {
             if (auto* str = JS_ToCString(ctx, message)) {
-                std::cerr << str << '\n';
+                juce::Logger::writeToLog(str);
                 JS_FreeCString(ctx, str);
             }
         }

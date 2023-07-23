@@ -329,6 +329,7 @@ private:
     static JSValue js_getElementById(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
     static JSValue js_appendChild(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
     static JSValue js_removeChild(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_replaceChildren(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
 
     /// This flag indicates that the element must be updated.
     /// @see updateElementIfNeeded

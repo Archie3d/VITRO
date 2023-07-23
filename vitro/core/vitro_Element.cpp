@@ -136,9 +136,9 @@ void Element::removeAllChildElements()
     valueTree.removeAllChildren(nullptr);
 
     for (auto&& child : children) {
-        const auto useCnt = child.use_count();
         child->elementIsAboutToBeRemoved();
         child->notifyChildrenAboutToBeRemoved();
+        child->stash();
     }
 
     // This will delete the removed elements.
@@ -218,12 +218,13 @@ void Element::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
     registerJSProperty(jsCtx, prototype, "children",      &js_getChildren);
     registerJSProperty(jsCtx, prototype, "attributes",    &js_getAttributes);
 
-    registerJSMethod(jsCtx, prototype, "getAttribute",   &js_getAttribute);
-    registerJSMethod(jsCtx, prototype, "setAttribute",   &js_setAttribute);
-    registerJSMethod(jsCtx, prototype, "hasAttribute",   &js_hasAttribute);
-    registerJSMethod(jsCtx, prototype, "getElementById", &js_getElementById);
-    registerJSMethod(jsCtx, prototype, "appendChild",    &js_appendChild);
-    registerJSMethod(jsCtx, prototype, "removeChild",    &js_removeChild);
+    registerJSMethod(jsCtx, prototype, "getAttribute",    &js_getAttribute);
+    registerJSMethod(jsCtx, prototype, "setAttribute",    &js_setAttribute);
+    registerJSMethod(jsCtx, prototype, "hasAttribute",    &js_hasAttribute);
+    registerJSMethod(jsCtx, prototype, "getElementById",  &js_getElementById);
+    registerJSMethod(jsCtx, prototype, "appendChild",     &js_appendChild);
+    registerJSMethod(jsCtx, prototype, "removeChild",     &js_removeChild);
+    registerJSMethod(jsCtx, prototype, "replaceChildren", &js_replaceChildren);
 }
 
 void Element::stash()
@@ -619,6 +620,37 @@ JSValue Element::js_removeChild([[maybe_unused]] JSContext* ctx, JSValueConst se
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         if (auto childElem{ Context::getJSNativeObject<Element>(arg[0]) })
             element->removeChildElement(childElem);
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_replaceChildren([[maybe_unused]] JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg)
+{
+    if (argc > 1)
+        return JS_ThrowSyntaxError(ctx, "replaceChildren expects none or a single argument");
+
+    if (argc > 0) {
+        if (!JS_IsArray(ctx, arg[0]))
+            return JS_ThrowTypeError(ctx, "replaceChildren expects an argument of an array type");
+    }
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        element->removeAllChildElements();
+
+        if (argc > 0) {
+            int length{};
+            JS_ToInt32(ctx, &length, JS_GetPropertyStr(ctx, arg[0], "length"));
+
+            for (int i = 0; i < length; ++i) {
+                JSValue item{ JS_GetPropertyUint32(ctx, arg[0], static_cast<uint32_t>(i)) };
+
+                if (auto childElement{ Context::getJSNativeObject<Element>(item) })
+                    element->addChildElement(childElement);
+
+                JS_FreeValue(ctx, item);
+            }
+        }
     }
 
     return JS_UNDEFINED;

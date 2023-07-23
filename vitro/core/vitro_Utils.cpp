@@ -343,13 +343,13 @@ var JSValueToVar(JSContext* ctx, JSValueConst val)
     }
     case JS_TAG_OBJECT: {
         if (JS_IsFunction(ctx, val))
-            return var (new js::Function(ctx, val));
+            return var(new js::Function(ctx, val));
 
         if (JS_IsArray(ctx, val)) {
             Array<var> arr{};
             int length{};
 
-            JS_ToInt32(ctx, &length, JS_GetPropertyStr (ctx, val, "length"));
+            JS_ToInt32(ctx, &length, JS_GetPropertyStr(ctx, val, "length"));
 
             for (int i = 0; i < length; ++i) {
                 auto item{ JS_GetPropertyUint32(ctx, val, static_cast<uint32_t>(i)) };
@@ -368,7 +368,7 @@ var JSValueToVar(JSContext* ctx, JSValueConst val)
         if (JS_GetOwnPropertyNames(ctx, &props, &numProps, val, JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) == 0) {
             for (uint32_t i = 0; i < numProps; ++i) {
                 auto propKey{ JS_AtomToCString (ctx, props[i].atom) };
-                auto propVal{ JS_GetProperty (ctx, val, props[i].atom) };
+                auto propVal{ JS_GetProperty(ctx, val, props[i].atom) };
                 obj->setProperty(propKey, JSValueToVar(ctx, propVal));
 
                 JS_FreeValue(ctx, propVal);
