@@ -116,13 +116,14 @@ These properties are exposed by the component elements (widgets).
 
 ### Elements' common methods
 
-| Method name            | Description                      |
-|:-----------------------|:---------------------------------|
-| `getAttribute(name)`   | Read element's attribute value   |
-| `setAttribute(name)`   | Assign element's attribute value |
-| `hasAttribute(name)`   | Tell whether an attribute exists |
-| `appendChild(element)` | Append a child element           |
-| `removeChild(element)` | Remove a child element           |
+| Method name              | Description                      |
+|:-------------------------|:---------------------------------|
+| `getAttribute(name)`     | Read element's attribute value   |
+| `setAttribute(name)`     | Assign element's attribute value |
+| `hasAttribute(name)`     | Tell whether an attribute exists |
+| `appendChild(element)`   | Append a child element           |
+| `removeChild(element)`   | Remove a child element           |
+| `replaceChildren(array)` | Replace children with a new set  |
 
 > :information_source:
 > New elements are create via the [`view`](elements/View.md) global object (which is the instance of the global [View](elements/View.md) element):
