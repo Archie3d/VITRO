@@ -29,6 +29,8 @@ void ComponentElementWithBackground::paintBackground(Graphics& g)
     const auto width{ comp->getWidth() };
     const auto height{ comp->getHeight() };
 
+    bool hasBackground{};
+
     if (backgroundImage.isValid()) {
         if (borderRadius > 0) {
             g.saveState();
@@ -42,16 +44,21 @@ void ComponentElementWithBackground::paintBackground(Graphics& g)
             g.drawImage(backgroundImage, 0, 0, width, height,
                                          0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
         }
+        hasBackground = true;
     } else if (gradient) {
         g.setGradientFill(colourGradient);
+        hasBackground = true;
     } else if (backgroundColour) {
         g.setColour(*backgroundColour);
+        hasBackground = true;
     }
 
-    if (borderRadius > 0.0f)
-        g.fillRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, borderRadius);
-    else
-        g.fillRect(0, 0, width, height);
+    if (hasBackground) {
+        if (borderRadius > 0.0f)
+            g.fillRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, borderRadius);
+        else
+            g.fillRect(0, 0, width, height);
+    }
 
     if (borderColour && (!backgroundColour || *backgroundColour != *borderColour)) {
         g.setColour(*borderColour);
