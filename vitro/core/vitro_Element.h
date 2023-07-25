@@ -299,6 +299,7 @@ protected:
 private:
 
     friend class ElementsFactory;
+    friend class ComboBox;
     friend struct JSObjectRef;
 
     // Initialize the internal JS object

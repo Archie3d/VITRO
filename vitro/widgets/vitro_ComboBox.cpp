@@ -101,13 +101,15 @@ void ComboBox::comboBoxChanged(juce::ComboBox*)
     evaluateAttributeScript(attr::onchange);
 }
 
-void ComboBox::valueTreeChildAdded(juce::ValueTree&, juce::ValueTree&)
+void ComboBox::valueTreeChildAdded(juce::ValueTree& tree, juce::ValueTree& child)
 {
+    ComponentElement::valueTreeChildAdded(tree, child);
     itemsUpdatePending = true;
 }
 
-void ComboBox::valueTreeChildRemoved(juce::ValueTree&, juce::ValueTree&, int)
+void ComboBox::valueTreeChildRemoved(juce::ValueTree& tree, juce::ValueTree& child, int idx)
 {
+    ComponentElement::valueTreeChildRemoved(tree, child, idx);
     itemsUpdatePending = true;
 }
 
