@@ -4,6 +4,15 @@ JSClassID ScrollArea::jsClassID = 0;
 
 const Identifier ScrollArea::tag("ScrollArea");
 
+//==============================================================================
+
+void ScrollArea::Container::childBoundsChanged(juce::Component* child)
+{
+    setSize(child->getWidth(), child->getHeight());
+}
+
+//==============================================================================
+
 ScrollArea::ScrollArea(Context& ctx)
     : ComponentElement(ScrollArea::tag, ctx)
 {
@@ -13,26 +22,6 @@ ScrollArea::ScrollArea(Context& ctx)
     registerStyleProperty(attr::css::vertical_scrollbar);
     registerStyleProperty(attr::css::horizontal_scrollbar);
     registerStyleProperty(attr::css::scrollbar_thickness);
-}
-
-void ScrollArea::resized()
-{
-    Viewport::resized();
-
-    if (!children.empty()) {
-        // Scroll area expect only one child component,
-        // if there are others, they will be ignored since we do not
-        // know how to lay them out.
-        auto child{ children[0] };
-
-        if (child->isLayoutElement()) {
-            if (auto childLayout{ std::dynamic_pointer_cast<LayoutElement>(child) }) {
-                auto bounds{ childLayout->getLayoutElementBounds() };
-                auto intBounds{ bounds.toNearestInt() };
-                container.setSize(intBounds.getWidth(), intBounds.getHeight());
-            }
-        }
-    }
 }
 
 void ScrollArea::update()

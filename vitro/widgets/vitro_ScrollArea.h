@@ -31,9 +31,6 @@ public:
 
     juce::Component* getContainerComponent() override { return &container; }
 
-    // juce::Component
-    void resized() override;
-
 protected:
 
     // vitro::Element
@@ -41,8 +38,17 @@ protected:
 
 private:
 
+    // Component with the s scrollable content.
+    // This component automatically adjusts its size to its child element.
+    class Container : public juce::Component
+    {
+    public:
+        // juce::Component
+        void childBoundsChanged(juce::Component* child) override;
+    };
+
     // Scrollable component
-    juce::Component container;
+    Container container;
 
 };
 
