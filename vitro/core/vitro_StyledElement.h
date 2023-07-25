@@ -64,6 +64,9 @@ protected:
         A styled element must register its style properties. These
         properties will then be captured by the @ref updateStyleProperties method
         for further access.
+
+        If value is provided it will be passed to the default style properties set.
+        @see setDefaultStyleProperty
     */
     void registerStyleProperty(const juce::Identifier& name, const juce::var& value = {});
 
@@ -76,6 +79,13 @@ protected:
     */
     bool isStylePropertyChanged(const juce::Identifier& name) const;
 
+    /** Assign a default value for a style property.
+    
+        Whenever a local or global stylesheet return no result for a style property,
+        the default value set by this method will be used.
+    */
+    void setDefaultStyleProperty(const juce::Identifier& name, const juce::var value);
+
 private:
 
     // Local stylesheet applicable to this element only.
@@ -83,6 +93,9 @@ private:
 
     // List of style properties this element cares about.
     juce::NamedValueSet styleProperties{};
+
+    // List of default values for the style properties.
+    juce::NamedValueSet defaultStyleProperties{};
 
     // List of style properties changes since the last update.
     std::set<juce::Identifier> changedStyleProperties{};

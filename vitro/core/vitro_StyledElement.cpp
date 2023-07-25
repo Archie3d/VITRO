@@ -26,8 +26,10 @@ void StyledElement::updateStyleProperties()
 
         if (auto& local{ localStylesheet.getProperty(name, valueTree) }; !local.isVoid())
             value = local;
+        else if (auto& global{ context.getStylesheet().getProperty(name, valueTree) }; !global.isVoid())
+            value = global;
         else
-            value = context.getStylesheet().getProperty(name, valueTree);
+            value = defaultStyleProperties[name];
 
         //if (!value.isVoid()) {
         //    DBG("    " << name << ": " << value.toString());
@@ -63,12 +65,20 @@ void StyledElement::reconcileElement()
 void StyledElement::registerStyleProperty(const juce::Identifier& name, const var& value)
 {
     styleProperties.set(name, value);
+
+    if (!value.isVoid())
+        defaultStyleProperties.set(name, value);
 }
 
 bool StyledElement::isStylePropertyChanged(const juce::Identifier& name) const
 {
     const auto it{ changedStyleProperties.find(name) };
     return it != changedStyleProperties.cend();
+}
+
+void StyledElement::setDefaultStyleProperty(const juce::Identifier& name, const juce::var value)
+{
+    defaultStyleProperties.set(name, value);
 }
 
 } // namespace vitro
