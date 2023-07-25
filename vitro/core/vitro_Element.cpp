@@ -138,6 +138,9 @@ void Element::removeAllChildElements()
     for (auto&& child : children) {
         child->elementIsAboutToBeRemoved();
         child->notifyChildrenAboutToBeRemoved();
+        child->parent.reset();
+        child->reconcileElementTree();
+        valueTree.removeChild(child->valueTree, nullptr);
         child->stash();
     }
 
