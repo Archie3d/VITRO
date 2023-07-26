@@ -39,6 +39,24 @@ const static Identifier right  ("right");
 const static Identifier top    ("top");
 const static Identifier bottom ("bottom");
 
+const static Identifier margin_left   ("margin-left");
+const static Identifier margin_right  ("margin-right");
+const static Identifier margin_top    ("margin-top");
+const static Identifier margin_bottom ("margin-bottom");
+const static Identifier margin_all    ("margin-all");
+
+const static Identifier padding_left   ("padding-left");
+const static Identifier padding_right  ("padding-right");
+const static Identifier padding_top    ("padding-top");
+const static Identifier padding_bottom ("padding-bottom");
+const static Identifier padding_all    ("padding-all");
+
+const static Identifier border_left   ("border-left");
+const static Identifier border_right  ("border-right");
+const static Identifier border_top    ("border-top");
+const static Identifier border_bottom ("border-bottom");
+const static Identifier border_all    ("border-all");
+
 /* Yoga layout enums to string translation table */
 
 const static std::map<String, YGAlign> alignValues {
@@ -73,10 +91,11 @@ const static std::map<String, YGEdge> edgeValues {
     { YGEdgeToString(YGEdgeTop),        YGEdgeTop        },
     { YGEdgeToString(YGEdgeRight),      YGEdgeRight      },
     { YGEdgeToString(YGEdgeBottom),     YGEdgeBottom     },
-    { YGEdgeToString(YGEdgeStart),      YGEdgeStart      },
-    { YGEdgeToString(YGEdgeEnd),        YGEdgeEnd        },
-    { YGEdgeToString(YGEdgeHorizontal), YGEdgeHorizontal },
-    { YGEdgeToString(YGEdgeVertical),   YGEdgeVertical   },
+// @note We don't use these edge properties
+//    { YGEdgeToString(YGEdgeStart),      YGEdgeStart      },
+//    { YGEdgeToString(YGEdgeEnd),        YGEdgeEnd        },
+//    { YGEdgeToString(YGEdgeHorizontal), YGEdgeHorizontal },
+//    { YGEdgeToString(YGEdgeVertical),   YGEdgeVertical   },
     { YGEdgeToString(YGEdgeAll),        YGEdgeAll        }
 };
 
@@ -277,55 +296,51 @@ struct LayoutElement::Layout final
         return changed;
     }
 
-    bool assignEdgeFloatPropertyWithPrefix(const String& prefix,
-                                           void(*assign)(YGNodeRef, YGEdge, float),
-                                           float(*getter)(YGNodeConstRef, YGEdge))
+    bool assignEdgeFloatProperty(const Identifier& name,
+                                 YGEdge edgeEnum,
+                                 void(*assign)(YGNodeRef, YGEdge, float),
+                                 float(*getter)(YGNodeConstRef, YGEdge))
     {
         bool changed{ false };
 
-        for (const auto& [edgeName, edgeEnum] : yoga::edgeValues) {
-            const auto propertyName{ prefix + edgeName };
-            const auto& val{ self.getStyleProperty(propertyName) };
+        const auto& val{ self.getStyleProperty(name) };
 
-            if (!val.isVoid()) {
-                const float floatValue{ val };
-                const float currentValue{ getter(node, edgeEnum) };
+        if (!val.isVoid()) {
+            const float floatValue{ val };
+            const float currentValue{ getter(node, edgeEnum) };
 
-                if (floatValue != currentValue) {
-                    assign(node, edgeEnum, floatValue);
-                    changed = true;
-                }
+            if (floatValue != currentValue) {
+                assign(node, edgeEnum, floatValue);
+                changed = true;
             }
         }
 
         return changed;
     }
 
-    bool assignEdgeFloatPropertyWithPrefix(const String& prefix,
-                                           void(*assign)(YGNodeRef, YGEdge, float),
-                                           void(*assignPercent)(YGNodeRef, YGEdge, float),
-                                           YGValue(*getter)(YGNodeConstRef, YGEdge))
+    bool assignEdgeFloatProperty(const Identifier& name,
+                                 YGEdge edgeEnum,
+                                 void(*assign)(YGNodeRef, YGEdge, float),
+                                 void(*assignPercent)(YGNodeRef, YGEdge, float),
+                                 YGValue(*getter)(YGNodeConstRef, YGEdge))
     {
         bool changed{ false };
 
-        for (const auto& [edgeName, edgeEnum] : yoga::edgeValues) {
-            const auto propertyName{ prefix + edgeName };
-            const auto& val{ self.getStyleProperty(propertyName) };
+        const auto& val{ self.getStyleProperty(name) };
 
-            if (!val.isVoid()) {
-                const auto currentValue{ getter(node, edgeEnum) };
-                const float floatValue{ val };
+        if (!val.isVoid()) {
+            const auto currentValue{ getter(node, edgeEnum) };
+            const float floatValue{ val };
 
-                if (val.toString().endsWithChar('%')) {
-                    if (currentValue.unit != YGUnitPercent || currentValue.value != floatValue) {
-                        assignPercent(node, edgeEnum, floatValue);
-                        changed = true;
-                    }
-                } else {
-                    if (currentValue.unit == YGUnitPercent || currentValue.value != floatValue) {
-                        assign(node, edgeEnum, floatValue);
-                        changed = true;
-                    }
+            if (val.toString().endsWithChar('%')) {
+                if (currentValue.unit != YGUnitPercent || currentValue.value != floatValue) {
+                    assignPercent(node, edgeEnum, floatValue);
+                    changed = true;
+                }
+            } else {
+                if (currentValue.unit == YGUnitPercent || currentValue.value != floatValue) {
+                    assign(node, edgeEnum, floatValue);
+                    changed = true;
                 }
             }
         }
@@ -363,10 +378,23 @@ struct LayoutElement::Layout final
 
         changed = assignEdgeFloatProperty(YGNodeStyleSetPosition, YGNodeStyleSetPositionPercent, YGNodeStyleGetPosition) || changed;
 
-        changed = assignEdgeFloatPropertyWithPrefix(yoga::margin_,  YGNodeStyleSetMargin,  YGNodeStyleSetMarginPercent,  YGNodeStyleGetMargin)  || changed;
-        changed = assignEdgeFloatPropertyWithPrefix(yoga::padding_, YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
+        changed = assignEdgeFloatProperty(yoga::margin_left,   YGEdgeLeft,   YGNodeStyleSetMargin, YGNodeStyleSetMarginPercent, YGNodeStyleGetMargin) || changed;
+        changed = assignEdgeFloatProperty(yoga::margin_right,  YGEdgeRight,  YGNodeStyleSetMargin, YGNodeStyleSetMarginPercent, YGNodeStyleGetMargin) || changed;
+        changed = assignEdgeFloatProperty(yoga::margin_top,    YGEdgeTop,    YGNodeStyleSetMargin, YGNodeStyleSetMarginPercent, YGNodeStyleGetMargin) || changed;
+        changed = assignEdgeFloatProperty(yoga::margin_bottom, YGEdgeBottom, YGNodeStyleSetMargin, YGNodeStyleSetMarginPercent, YGNodeStyleGetMargin) || changed;
+        changed = assignEdgeFloatProperty(yoga::margin_all,    YGEdgeAll,    YGNodeStyleSetMargin, YGNodeStyleSetMarginPercent, YGNodeStyleGetMargin) || changed;
 
-        changed = assignEdgeFloatPropertyWithPrefix(yoga::border_,  YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
+        changed = assignEdgeFloatProperty(yoga::padding_left,   YGEdgeLeft,   YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
+        changed = assignEdgeFloatProperty(yoga::padding_right,  YGEdgeRight,  YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
+        changed = assignEdgeFloatProperty(yoga::padding_top,    YGEdgeTop,    YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
+        changed = assignEdgeFloatProperty(yoga::padding_bottom, YGEdgeBottom, YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
+        changed = assignEdgeFloatProperty(yoga::padding_all,    YGEdgeAll,    YGNodeStyleSetPadding, YGNodeStyleSetPaddingPercent, YGNodeStyleGetPadding) || changed;
+
+        changed = assignEdgeFloatProperty(yoga::border_left,   YGEdgeLeft,   YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
+        changed = assignEdgeFloatProperty(yoga::border_right,  YGEdgeRight,  YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
+        changed = assignEdgeFloatProperty(yoga::border_top,    YGEdgeTop,    YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
+        changed = assignEdgeFloatProperty(yoga::border_bottom, YGEdgeBottom, YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
+        changed = assignEdgeFloatProperty(yoga::border_all,    YGEdgeAll,    YGNodeStyleSetBorder, YGNodeStyleGetBorder) || changed;
 
         return changed;
     }
