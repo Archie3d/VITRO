@@ -30,6 +30,7 @@ const Identifier min        ("min");
 const Identifier max        ("max");
 const Identifier step       ("step");
 const Identifier selectedid ("selectedid");
+const Identifier syntax     ("syntax");
 
 const Identifier hover      ("hover");
 const Identifier active     ("active");
@@ -44,79 +45,81 @@ const Identifier onenter    ("onenter");
 //==============================================================================
 namespace css {
 
-const Identifier color                     ("color");
-const Identifier alpha                     ("alpha");
-const Identifier background_color          ("background-color");
-const Identifier background_color_on       ("background-color-on");
-const Identifier background_image          ("background-image");
-const Identifier highlight_color           ("highlight-color");
-const Identifier highlight_text_color      ("highlight-text-color");
+const Identifier color                        ("color");
+const Identifier alpha                        ("alpha");
+const Identifier background_color             ("background-color");
+const Identifier background_color_on          ("background-color-on");
+const Identifier background_image             ("background-image");
+const Identifier highlight_color              ("highlight-color");
+const Identifier highlight_text_color         ("highlight-text-color");
+const Identifier line_number_color            ("line-number-color");
+const Identifier line_number_background_color ("line-number-background-color");
 
-const Identifier border_color              ("border-color");
-const Identifier border_radius             ("border-radius");
-const Identifier border_width              ("border-width");
-const Identifier focused_border_color      ("focused-border-color");
+const Identifier border_color                 ("border-color");
+const Identifier border_radius                ("border-radius");
+const Identifier border_width                 ("border-width");
+const Identifier focused_border_color         ("focused-border-color");
 
-const Identifier shadow_color              ("shadow-color");
-const Identifier shadow_radius             ("shadow-radius");
-const Identifier shadow_offset_x           ("shadow-offset-x");
-const Identifier shadow_offset_y           ("shadow-offset-y");
+const Identifier shadow_color                 ("shadow-color");
+const Identifier shadow_radius                ("shadow-radius");
+const Identifier shadow_offset_x              ("shadow-offset-x");
+const Identifier shadow_offset_y              ("shadow-offset-y");
 
-const Identifier text_align                ("text-align");
-const Identifier text_color                ("text-color");
-const Identifier text_color_on             ("text-color-on");
-const Identifier text_color_off            ("text-color-off");
-const Identifier empty_text_color          ("empty-text-color");
+const Identifier text_align                   ("text-align");
+const Identifier text_color                   ("text-color");
+const Identifier text_color_on                ("text-color-on");
+const Identifier text_color_off               ("text-color-off");
+const Identifier empty_text_color             ("empty-text-color");
 
-const Identifier multiline                 ("multiline");
-const Identifier wrap                      ("wrap");
-const Identifier password_character        ("password-character");
+const Identifier multiline                    ("multiline");
+const Identifier wrap                         ("wrap");
+const Identifier password_character           ("password-character");
 
-const Identifier tick_color                ("tick-color");
-const Identifier tick_disabled_color       ("tick-disabled-color");
+const Identifier tick_color                   ("tick-color");
+const Identifier tick_disabled_color          ("tick-disabled-color");
 
-const Identifier font_family               ("font-family");
-const Identifier font_style                ("font-style");
-const Identifier font_size                 ("font-size");
-const Identifier font_kerning              ("font-kerning");
+const Identifier font_family                  ("font-family");
+const Identifier font_style                   ("font-style");
+const Identifier font_size                    ("font-size");
+const Identifier font_kerning                 ("font-kerning");
 
-const Identifier cursor                    ("cursor");
+const Identifier cursor                       ("cursor");
 
-const Identifier toggle                    ("toggle");
-const Identifier trigger_down              ("trigger-down");
-const Identifier click_through             ("click-through");
+const Identifier toggle                       ("toggle");
+const Identifier trigger_down                 ("trigger-down");
+const Identifier click_through                ("click-through");
 
-const Identifier button_style              ("button-style");
-const Identifier button_color              ("button-color");
-const Identifier arrow_color               ("arrow-color");
-const Identifier popup_color               ("popup-color");
+const Identifier button_style                 ("button-style");
+const Identifier button_color                 ("button-color");
+const Identifier arrow_color                  ("arrow-color");
+const Identifier popup_color                  ("popup-color");
 
-const Identifier image_normal              ("image-normal");
-const Identifier image_over                ("image-over");
-const Identifier image_down                ("image-down");
-const Identifier image_disabled            ("image-disabled");
-const Identifier image_normal_on           ("image-normal-on");
-const Identifier image_over_on             ("image-over-on");
-const Identifier image_down_on             ("image-down-on");
-const Identifier image_disabled_on         ("image-disabled-on");
+const Identifier image_normal                 ("image-normal");
+const Identifier image_over                   ("image-over");
+const Identifier image_down                   ("image-down");
+const Identifier image_disabled               ("image-disabled");
+const Identifier image_normal_on              ("image-normal-on");
+const Identifier image_over_on                ("image-over-on");
+const Identifier image_down_on                ("image-down-on");
+const Identifier image_disabled_on            ("image-disabled-on");
 
-const Identifier slider_style              ("slider-style");
+const Identifier slider_style                 ("slider-style");
 
-const Identifier thumb_color               ("thumb-color");
-const Identifier track_color               ("track-color");
-const Identifier fill_color                ("fill-color");
-const Identifier text_box_color            ("text-box-color");
-const Identifier text_box_background_color ("text-box-background-color");
-const Identifier text_box_highlight_color  ("text-box-highlight-color");
-const Identifier text_box_border_color     ("text-box-border-color");
-const Identifier text_box_position         ("text-box-position");
-const Identifier text_box_read_only        ("text-box-read-only");
-const Identifier text_box_width            ("text-box-width");
-const Identifier text_box_height           ("text-box-height");
+const Identifier thumb_color                  ("thumb-color");
+const Identifier track_color                  ("track-color");
+const Identifier fill_color                   ("fill-color");
+const Identifier text_box_color               ("text-box-color");
+const Identifier text_box_background_color    ("text-box-background-color");
+const Identifier text_box_highlight_color     ("text-box-highlight-color");
+const Identifier text_box_border_color        ("text-box-border-color");
+const Identifier text_box_position            ("text-box-position");
+const Identifier text_box_read_only           ("text-box-read-only");
+const Identifier text_box_width               ("text-box-width");
+const Identifier text_box_height              ("text-box-height");
 
-const Identifier vertical_scrollbar        ("vertical-scrollbar");
-const Identifier horizontal_scrollbar      ("horizontal-scrollbar");
-const Identifier scrollbar_thickness       ("scrollbar-thickness");
+const Identifier vertical_scrollbar           ("vertical-scrollbar");
+const Identifier horizontal_scrollbar         ("horizontal-scrollbar");
+const Identifier scrollbar_thickness          ("scrollbar-thickness");
 
 } // namespace css
 

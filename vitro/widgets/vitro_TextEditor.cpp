@@ -25,6 +25,10 @@ void TextEditor::update()
 {
     ComponentElement::update();
 
+    // readonly
+    if (auto&& [changed, val]{ getAttributeChanged(attr::readonly) }; changed)
+        setReadOnly(bool(val));
+
     // multiline
     if (auto&& [changed, prop]{ getStylePropertyChanged(attr::css::multiline) }; changed) {
         bool shouldMultiline{ prop.isVoid() ? false : (bool)prop };

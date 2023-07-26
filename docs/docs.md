@@ -10,6 +10,7 @@ Here is the list of all reserved elements:
 - [TextButton](elements/TextButton.md)
 - [Slider](elements/Slider.md)
 - [TextEditor](elements/TextEditor.md)
+- [CodeEditor](elements/CodeEditor.md)
 - [ComboBox](elements/ComboBox.md)
 - [ScrollArea](elements/ScrollArea.md)
 

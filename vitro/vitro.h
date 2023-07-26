@@ -25,6 +25,7 @@
 #include <juce_core/juce_core.h>
 #include <juce_data_structures/juce_data_structures.h>
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <juce_gui_extra/juce_gui_extra.h>
 
 extern "C" {
 #include "quickjs.h"
@@ -56,3 +57,4 @@ extern "C" {
 #include "widgets/vitro_TextEditor.h"
 #include "widgets/vitro_ScrollArea.h"
 #include "widgets/vitro_ComboBox.h"
+#include "widgets/vitro_CodeEditor.h"

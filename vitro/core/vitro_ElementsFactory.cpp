@@ -28,6 +28,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::TextEditor>();
     registerElement<vitro::ScrollArea>();
     registerElement<vitro::ComboBox>();
+    registerElement<vitro::CodeEditor>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)
