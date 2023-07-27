@@ -300,6 +300,7 @@ private:
 
     friend class ElementsFactory;
     friend class ComboBox;
+    friend class OpenGLView;
     friend struct JSObjectRef;
 
     // Initialize the internal JS object

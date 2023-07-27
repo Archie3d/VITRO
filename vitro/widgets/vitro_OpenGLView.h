@@ -7,7 +7,9 @@ class OpenGLView : public vitro::ComponentElement,
 {
 public:
 
-    const static juce::Identifier tag;  // <OpenGLView>
+    const static juce::Identifier tag;          // <OpenGLView>
+    const static juce::Identifier tagTexture;   // <texture>
+    const static juce::Identifier tagShader;    // <shader>
 
     static JSClassID jsClassID;
 
@@ -17,18 +19,41 @@ public:
 
     juce::Component* getComponent() override { return this; }
 
+    juce::OpenGLContext& getOpenGLContext() { return openGLContext; }
+
+    unsigned int findTextureID(const juce::String& name) const;
+
+protected:
+
+    // vitro::Element
+    void update() override;
+
 private:
 
     class RenderPass final
     {
     public:
-        RenderPass(juce::OpenGLContext& oglContext);
+        RenderPass(OpenGLView& oglView, const juce::String& passName);
+
+        juce::String getName() const { return name; }
+        bool isValid() const { return valid; }
+        void setShader(const juce::String& code);
+        void setTargetFrameBuffer(int width, int height);
+        bool hasTargetFrameBuffer() const;
+        unsigned int getTextureID() const;
+        void render();
+
     private:
-        juce::OpenGLContext& openGLContext;
-        juce::OpenGLShaderProgram shader;
+        OpenGLView& openGLView;
+        juce::String name{};
+        bool valid{};
+        juce::OpenGLShaderProgram program;
         std::unique_ptr<juce::OpenGLFrameBuffer> targetFrameBuffer{};
     };
 
+    void populateTextureElement(const Element::Ptr& elem);
+    void populateShaderElement(const Element::Ptr& elem);
+    void populateItems();
 
     // juce::OpenGLRenderer
     void newOpenGLContextCreated() override;
@@ -38,11 +63,20 @@ private:
     // juce::Timer
     void timerCallback() override;
 
+    // juce::ValueTree::Listener
+    void valueTreeChildAdded(juce::ValueTree&, juce::ValueTree&) override;
+    void valueTreeChildRemoved(juce::ValueTree&, juce::ValueTree&, int) override;
+
+
     juce::OpenGLContext openGLContext{};
 
     unsigned int quadBuffers[2];
 
-    juce::OpenGLShaderProgram program;
+    std::vector<std::unique_ptr<RenderPass>> renderPasses{};
+    std::map<juce::String, std::unique_ptr<juce::OpenGLTexture>> textures{};
+
+    std::mutex updateMutex{};
+    std::atomic<bool> itemsUpdatePending{};
 };
 
 } // namespace vitro
