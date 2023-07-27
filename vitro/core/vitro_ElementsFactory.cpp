@@ -29,6 +29,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::ScrollArea>();
     registerElement<vitro::ComboBox>();
     registerElement<vitro::CodeEditor>();
+    registerElement<vitro::OpenGLView>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

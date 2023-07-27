@@ -11,7 +11,7 @@
     website:       https://github.com/Archie3d/juce_melon
     license:       GPL/Commercial
 
-    dependencies:  juce_gui_basics, juce_gui_extra
+    dependencies:  juce_gui_basics, juce_gui_extra, juce_opengl
 
     END_JUCE_MODULE_DECLARATION
 
@@ -26,6 +26,7 @@
 #include <juce_data_structures/juce_data_structures.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
+#include <juce_opengl/juce_opengl.h>
 
 extern "C" {
 #include "quickjs.h"
@@ -58,3 +59,4 @@ extern "C" {
 #include "widgets/vitro_ScrollArea.h"
 #include "widgets/vitro_ComboBox.h"
 #include "widgets/vitro_CodeEditor.h"
+#include "widgets/vitro_OpenGLView.h"
