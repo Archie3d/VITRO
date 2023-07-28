@@ -11,6 +11,7 @@ const Identifier clazz      ("class");
 const Identifier style      ("style");
 const Identifier src        ("src");
 const Identifier name		("name");
+const Identifier type		("type");
 
 const Identifier enabled    ("enabled");
 const Identifier visible    ("visible");
