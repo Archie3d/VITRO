@@ -122,6 +122,7 @@ private:
         };
 
         Uniform(RenderPass& rp);
+        ~Uniform();
 
         void setType(Type t) { type = t; }
         Type getType() const { return type; }
@@ -129,19 +130,41 @@ private:
         void setName(const juce::String& n) { name = n; }
         juce::String getName() const { return name; }
 
+        /** Assign element associated with this uniform.
+            
+            This uniform object captures element's shared pointer in order
+            to prevent it's accidental deletion.
+        */
+        void setElement(const Element::Ptr& ptr) { element = ptr; }
+
+        /** Tells whether this uniform is a vector (i.e. not a scalar value). */
         bool isVector() const;
 
         void setValue(const juce::var& val);
         void setValueFromString(const juce::String& str);
         void setTexture(const juce::String& textureName);
 
-        void apply(juce::OpenGLShaderProgram& program);
+        /** Trigger uniform value update.
+        
+            This will assing a uniform value asynchronously.
+            This method will be called on corresponding element's value change
+            on the main thread. The value itself will be assigned on the rendering
+            thread on the next render pass.
+        */
+        void triggerValueUpdate(const juce::var& val);
 
+        /** Apply uniform value to the shader program.
+
+            @note This must be called on the render thread.
+        */
+        void apply(juce::OpenGLShaderProgram& program);
 
         /** Return uniform type from a type name. */
         static Type getTypeFromString(const juce::String& str);
 
     private:
+
+        void updateValueIfNeeded();
 
         union Value
         {
@@ -156,6 +179,12 @@ private:
         juce::String name{};
         Value value{};
         std::vector<float> floatVec{};
+
+        Element::Ptr element{};
+
+        mutable std::mutex mutex{};
+        std::atomic<bool> valueUpdatePending{};
+        juce::var valueToUpdate{};
     };
 
     void populateTextureElement(const Element::Ptr& elem);
@@ -177,7 +206,6 @@ private:
     // juce::ValueTree::Listener
     void valueTreeChildAdded(juce::ValueTree&, juce::ValueTree&) override;
     void valueTreeChildRemoved(juce::ValueTree&, juce::ValueTree&, int) override;
-
 
     juce::OpenGLContext openGLContext{};
 

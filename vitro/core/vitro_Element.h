@@ -37,6 +37,8 @@ public:
         ~JSObjectRef();
     };
 
+    using HookFunc = std::function<void(const Element::Ptr&)>;
+
     const static juce::Identifier tag;  // <Element>
 
     static JSClassID jsClassID;
@@ -201,6 +203,9 @@ public:
     */
     void evaluateOnLoadScript(bool recursive=false);
 
+    /** Assing an update hook callback function. */
+    void setUpdateHook(const HookFunc& func);
+
 protected:
 
     /** Perform element initialization.
@@ -218,7 +223,7 @@ protected:
         Normally an element will refresh it's view based on the attributes and
         style properties here.
      */
-    virtual void update() {}
+    virtual void update();
 
     /** Notify this element when adding or removing children
 
@@ -340,6 +345,11 @@ private:
     // Here the list of changed attributes is stored. This list gets cleared
     // once the element is updated.
     std::set<juce::Identifier> changedAttributes{};
+
+    // Function to be executed on element update.
+    // This is used to inject additional behavior which cannot be
+    // achieved by inheriting from the Element class.
+    HookFunc updateHook{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Element)
 };

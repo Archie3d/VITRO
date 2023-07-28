@@ -265,9 +265,20 @@ void Element::evaluateOnLoadScript(bool recursive)
     evaluateAttributeScript(attr::onload);
 }
 
+void Element::setUpdateHook(const HookFunc& func)
+{
+    updateHook = func;
+}
+
 void Element::initialize()
 {
     initJSValue();
+}
+
+void Element::update()
+{
+    if (updateHook)
+        updateHook(shared_from_this());
 }
 
 std::pair<bool, const var&> Element::getAttributeChanged(const Identifier& attr) const

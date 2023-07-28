@@ -167,6 +167,14 @@ OpenGLView::Uniform::Uniform(OpenGLView::RenderPass& rp)
 {
 }
 
+OpenGLView::Uniform::~Uniform()
+{
+    if (element != nullptr) {
+        element->setUpdateHook({});
+        element.reset();
+    }
+}
+
 bool OpenGLView::Uniform::isVector() const
 {
     return type == Type::Vec2 || type == Type::Vec3 || type == Type::Vec4 || type == Type::FloatVec;
@@ -271,6 +279,13 @@ void OpenGLView::Uniform::setTexture(const juce::String& textureName)
     value.textureIDValue = renderPass.getOpenGLView().findTextureID(textureName);
 }
 
+void OpenGLView::Uniform::triggerValueUpdate(const juce::var& val)
+{
+    std::scoped_lock lock(mutex);
+    valueToUpdate = val;
+    valueUpdatePending = true;
+}
+
 OpenGLView::Uniform::Type OpenGLView::Uniform::getTypeFromString(const String& str)
 {
     const String s{ str.trim().toLowerCase() };
@@ -286,8 +301,19 @@ OpenGLView::Uniform::Type OpenGLView::Uniform::getTypeFromString(const String& s
     return Type::Invalid;
 }
 
+void OpenGLView::Uniform::updateValueIfNeeded()
+{
+    std::scoped_lock lock(mutex);
+    if (valueUpdatePending) {
+        setValue(valueToUpdate);
+        valueUpdatePending = false;
+    }
+}
+
 void OpenGLView::Uniform::apply(juce::OpenGLShaderProgram& program)
 {
+    updateValueIfNeeded();
+
     const char* cName{ name.toRawUTF8() };
 
     switch (type) {
@@ -449,6 +475,14 @@ void OpenGLView::populateShaderUniform(RenderPass& renderPass, const Element::Pt
 
     if (const auto& val{ elem->getAttribute(attr::value) }; !val.isVoid())
         uniform->setValue(val);
+
+    uniform->setElement(elem);
+
+    elem->setUpdateHook([u = uniform.get()](const Element::Ptr& el) {
+        if (const auto&& [changed, val]{ el->getAttributeChanged(attr::value) }; changed) {
+            u->triggerValueUpdate(val);
+        } 
+    });
 
     renderPass.addUniform(std::move(uniform));
 }
