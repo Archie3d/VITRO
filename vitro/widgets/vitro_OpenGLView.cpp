@@ -128,7 +128,7 @@ void OpenGLView::RenderPass::applyDefaultUniforms()
     float h{ screenBounds.getHeight() };
 
     program.setUniform(
-        "iScreenResolution",
+        "iViewResolution",
         w > 0 ? w : 1.0f,
         h > 0 ? h : 1.0f
     );

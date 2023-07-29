@@ -13,6 +13,7 @@ Here is the list of all reserved elements:
 - [CodeEditor](elements/CodeEditor.md)
 - [ComboBox](elements/ComboBox.md)
 - [ScrollArea](elements/ScrollArea.md)
+- [OpenGLView](elements/OpenGLView.md)
 
 ### Special elements
 - [script](elements/script.md)
