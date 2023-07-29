@@ -14,6 +14,9 @@ namespace vitro {
     A <shader> element in its turm may contains <uniform> elements for the
     uniform variables to be used by the shader.
 
+    All the children component elements will be painted on top for the
+    shaders rendered 2D surface.
+
     Attributes
         fps
 */

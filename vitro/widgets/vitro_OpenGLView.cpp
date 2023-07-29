@@ -360,7 +360,8 @@ OpenGLView::OpenGLView(Context& ctx)
     );
 
     openGLContext.setRenderer(this);
-    openGLContext.setComponentPaintingEnabled(false);
+    openGLContext.setComponentPaintingEnabled(true); // Paint child components as well
+    openGLContext.setContinuousRepainting(false);
     openGLContext.attachTo(*this);
 }
 
@@ -595,8 +596,13 @@ void OpenGLView::renderOpenGL()
         }
     }
 
+    glEnable(GL_DEBUG_OUTPUT);
+
     openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadBuffers[0]);
     openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, quadBuffers[1]);
+
+    openGLContext.extensions.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    openGLContext.extensions.glEnableVertexAttribArray(0); 
 
     // Binding textures
     for (auto&& [name, texture] : textures) {
@@ -617,6 +623,17 @@ void OpenGLView::renderOpenGL()
         if (pass->isValid())
             pass->render();
     }
+
+    
+    openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, 0);
+    openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Disable debug output in JUCE part, otherwise there is a flood
+    // of debug messages on buggers reactivation.
+    glDisable(GL_DEBUG_OUTPUT);
 }
 
 void OpenGLView::openGLContextClosing()
