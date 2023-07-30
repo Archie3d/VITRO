@@ -106,7 +106,7 @@ void OpenGLView::RenderPass::render()
 
     applyDefaultUniforms();
     applyUniforms();
-    
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
 
     if (targetFrameBuffer != nullptr)
@@ -482,7 +482,7 @@ void OpenGLView::populateShaderUniform(RenderPass& renderPass, const Element::Pt
     elem->setUpdateHook([u = uniform.get()](const Element::Ptr& el) {
         if (const auto&& [changed, val]{ el->getAttributeChanged(attr::value) }; changed) {
             u->triggerValueUpdate(val);
-        } 
+        }
     });
 
     renderPass.addUniform(std::move(uniform));
@@ -527,7 +527,7 @@ void OpenGLView::newOpenGLContextCreated()
         -1.0f, -1.0f, 0.0f,
         -1.0f,  1.0f, 0.0f,
          1.0f,  1.0f, 0.0f,
-         1.0f, -1.0f, 0.0f 
+         1.0f, -1.0f, 0.0f
     };
 
     const static GLushort indices[6] = { 0, 1, 2, 0, 2, 3 };
@@ -539,7 +539,7 @@ void OpenGLView::newOpenGLContextCreated()
     openGLContext.extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     openGLContext.extensions.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    openGLContext.extensions.glEnableVertexAttribArray(0); 
+    openGLContext.extensions.glEnableVertexAttribArray(0);
 }
 
 unsigned int OpenGLView::findTextureID(const String& name) const
@@ -589,7 +589,7 @@ void OpenGLView::renderOpenGL()
 
     {
         std::scoped_lock lock{ updateMutex };
-    
+
         if (itemsUpdatePending) {
             populateItems();
             itemsUpdatePending = false;
@@ -602,7 +602,7 @@ void OpenGLView::renderOpenGL()
     openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, quadBuffers[1]);
 
     openGLContext.extensions.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    openGLContext.extensions.glEnableVertexAttribArray(0); 
+    openGLContext.extensions.glEnableVertexAttribArray(0);
 
     // Binding textures
     for (auto&& [name, texture] : textures) {
@@ -624,7 +624,7 @@ void OpenGLView::renderOpenGL()
             pass->render();
     }
 
-    
+
     openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, 0);
     openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -657,7 +657,7 @@ void OpenGLView::timerCallback()
 void OpenGLView::valueTreeChildAdded(juce::ValueTree& tree, juce::ValueTree& child)
 {
     ComponentElement::valueTreeChildAdded(tree, child);
-    
+
     std::scoped_lock lock{ updateMutex };
     itemsUpdatePending = true;
 }
@@ -665,7 +665,7 @@ void OpenGLView::valueTreeChildAdded(juce::ValueTree& tree, juce::ValueTree& chi
 void OpenGLView::valueTreeChildRemoved(juce::ValueTree& tree, juce::ValueTree& child, int idx)
 {
     ComponentElement::valueTreeChildRemoved(tree, child, idx);
-    
+
     std::scoped_lock lock{ updateMutex };
     itemsUpdatePending = true;
 }

@@ -28,7 +28,7 @@ class OpenGLView : public vitro::ComponentElement,
 public:
 
     /** Component state.
-      
+
         This is used to capture component's state on the main thread
         to pass this information to shaders on the rendering thread.
     */
@@ -77,7 +77,7 @@ private:
     class Uniform;
 
     /** Single render pass performed by a single fragment shader.
-    
+
         A render pass applies fragment shader to the target frame buffer.
         An internal framebuffer can be defined, in this case the rendering result
         is cached and can be accessed as a texture from another render pass.
@@ -113,7 +113,7 @@ private:
     };
 
     /** Shader uniform value.
-    
+
         This is a helper class that contains uinform variable value.
      */
     class Uniform final
@@ -134,7 +134,7 @@ private:
         juce::String getName() const { return name; }
 
         /** Assign element associated with this uniform.
-            
+
             This uniform object captures element's shared pointer in order
             to prevent it's accidental deletion.
         */
@@ -148,7 +148,7 @@ private:
         void setTexture(const juce::String& textureName);
 
         /** Trigger uniform value update.
-        
+
             This will assing a uniform value asynchronously.
             This method will be called on corresponding element's value change
             on the main thread. The value itself will be assigned on the rendering
