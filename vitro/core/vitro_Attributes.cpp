@@ -10,8 +10,8 @@ const Identifier id         ("id");
 const Identifier clazz      ("class");
 const Identifier style      ("style");
 const Identifier src        ("src");
-const Identifier name		("name");
-const Identifier type		("type");
+const Identifier name		    ("name");
+const Identifier type		    ("type");
 
 const Identifier enabled    ("enabled");
 const Identifier visible    ("visible");
@@ -43,6 +43,8 @@ const Identifier onload     ("onload");
 const Identifier onclick    ("onclick");
 const Identifier onchange   ("onchange");
 const Identifier onenter    ("onenter");
+const Identifier onmove     ("onmove");
+const Identifier onresize   ("onresize");
 
 //==============================================================================
 namespace css {

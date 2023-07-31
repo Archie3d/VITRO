@@ -168,6 +168,10 @@ void ComponentElement::initialize()
     LayoutElement::initialize();
 
     mouseEventsProxy = std::make_unique<MouseEventsProxy>(*this);
+
+    // Install the listener to track component move and resize.
+    if (auto* comp{ this->getComponent() })
+        comp->addComponentListener(this);
 }
 
 void ComponentElement::update()
@@ -240,6 +244,15 @@ void ComponentElement::reconcileElement()
             }
         }
     }
+}
+
+void ComponentElement::componentMovedOrResized(Component&, bool wasMoved, bool wasResized)
+{
+    if (wasMoved)
+        evaluateAttributeScript(attr::onmove);
+
+    if (wasResized)
+        evaluateAttributeScript(attr::onresize);
 }
 
 //==============================================================================

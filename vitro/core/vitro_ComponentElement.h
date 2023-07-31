@@ -21,7 +21,8 @@ namespace vitro {
         shadow-offset-x
         shadow-offset-y
 */
-class ComponentElement : public LayoutElement
+class ComponentElement : public LayoutElement,
+                         private juce::ComponentListener
 {
 public:
 
@@ -120,6 +121,9 @@ protected:
     virtual void handleMouseUp(const juce::MouseEvent&) {};
 
 private:
+
+    // juce::ComponentListener
+    void componentMovedOrResized(juce::Component&, bool wasMoved, bool wasResized) override;
 
     // JavaScript methods and properties
     static JSValue js_getViewBounds(JSContext* ctx, JSValueConst self);
