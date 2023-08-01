@@ -25,6 +25,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::ToggleButton>();
     registerElement<vitro::DrawableButton>();
     registerElement<vitro::Slider>();
+    registerElement<vitro::Svg>();
     registerElement<vitro::TextEditor>();
     registerElement<vitro::ScrollArea>();
     registerElement<vitro::ComboBox>();
