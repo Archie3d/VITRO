@@ -40,7 +40,7 @@ void Svg::resized()
 void Svg::update()
 {
     ComponentElementWithBackground::update();
-    
+
     if (const auto&& [changed, val]{ getAttributeChanged(attr::src) }; changed)
         populateFromXmlResource(val.toString());
 

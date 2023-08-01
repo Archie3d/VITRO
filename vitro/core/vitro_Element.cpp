@@ -110,7 +110,7 @@ void Element::populateFromXml(const XmlElement& xmlElement)
         forwardXmlElement(xmlElement);
     } else {
         const Identifier tag{ xmlElement.getTagName() };
-        
+
         if (tag == View::tag) {
             auto ptr{ shared_from_this() };
             copyElementAttributesFromXml(ptr, xmlElement);

@@ -502,6 +502,7 @@ void LayoutElement::recalculateLayout(float width, float height)
             componentElement->updateComponentBoundsToLayoutNode();
     }
 
+
     forEachChild([](const Element::Ptr& child) {
         if (child->isComponentElement()) {
             if (auto componentElement{ std::dynamic_pointer_cast<ComponentElement>(child) })

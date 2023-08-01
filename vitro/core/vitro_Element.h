@@ -75,7 +75,7 @@ public:
     virtual bool hasInnerXml() const { return false; }
 
     /** Populate this element from XML.
-    
+
         This will remove all existing children of the element first.
         The root XML tag must match this element's tag otherwise
         it won't be populated.
@@ -87,9 +87,9 @@ public:
     void populateFromXmlResource(const juce::String& location);
 
     /** Returns XML representation of this element's value tree.
-    
+
         @note This method does not copy element attributes that cannot
-              be represented as strings (e.g. objects, functions, etc.). 
+              be represented as strings (e.g. objects, functions, etc.).
     */
     std::unique_ptr<juce::XmlElement> createXml() const;
 
