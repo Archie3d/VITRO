@@ -74,6 +74,25 @@ public:
     */
     virtual bool hasInnerXml() const { return false; }
 
+    /** Populate this element from XML.
+    
+        This will remove all existing children of the element first.
+        The root XML tag must match this element's tag otherwise
+        it won't be populated.
+    */
+    void populateFromXml(const juce::XmlElement& xmlElement);
+
+    void populateFromXmlString(const juce::String& xmlString);
+
+    void populateFromXmlResource(const juce::String& location);
+
+    /** Returns XML representation of this element's value tree.
+    
+        @note This method does not copy element attributes that cannot
+              be represented as strings (e.g. objects, functions, etc.). 
+    */
+    std::unique_ptr<juce::XmlElement> createXml() const;
+
     /** Returns this element's tag. */
     juce::Identifier getTag() const;
 
@@ -327,6 +346,8 @@ private:
     static JSValue js_setClass(JSContext* jsCtx, JSValueConst self, JSValueConst val);
     static JSValue js_getStyle(JSContext* jsCtx, JSValueConst self);
     static JSValue js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst val);
+    static JSValue js_getInnerXml(JSContext* jsCtx, JSValueConst self);
+    static JSValue js_setInnerXml(JSContext* jsCtx, JSValueConst self, JSValueConst val);
     static JSValue js_getAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
     static JSValue js_setAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
     static JSValue js_hasAttribute(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);

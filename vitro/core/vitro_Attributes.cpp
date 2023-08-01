@@ -10,8 +10,8 @@ const Identifier id         ("id");
 const Identifier clazz      ("class");
 const Identifier style      ("style");
 const Identifier src        ("src");
-const Identifier name		    ("name");
-const Identifier type		    ("type");
+const Identifier name       ("name");
+const Identifier type       ("type");
 
 const Identifier enabled    ("enabled");
 const Identifier visible    ("visible");
@@ -21,6 +21,7 @@ const Identifier x          ("x");
 const Identifier y          ("y");
 const Identifier width      ("width");
 const Identifier height     ("height");
+const Identifier scale      ("scale");
 
 const Identifier text       ("text");
 const Identifier value      ("value");
@@ -126,6 +127,19 @@ const Identifier horizontal_scrollbar         ("horizontal-scrollbar");
 const Identifier scrollbar_thickness          ("scrollbar-thickness");
 
 } // namespace css
+
+bool isVolatile(const Identifier& attr)
+{
+    return attr == hover
+        || attr == active
+        || attr == toggle
+        || attr == onload
+        || attr == onchange
+        || attr == onclick
+        || attr == onenter
+        || attr == onmove
+        || attr == onresize;
+}
 
 } // namespace attr
 

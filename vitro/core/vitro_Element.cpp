@@ -2,6 +2,8 @@
 
 namespace vitro {
 
+//==============================================================================
+
 Element::JSObjectRef::JSObjectRef(const Element::Ptr& el)
     : element{ el }
 {
@@ -12,6 +14,61 @@ Element::JSObjectRef::~JSObjectRef()
     if (auto el{ element.lock() }) {
         el->context.getElementsFactory().removeStashedElement(el);
     }
+}
+
+//==============================================================================
+// Helpers used to create elements from XML.
+
+static void copyElementAttributesFromXml(const Element::Ptr& element, const XmlElement& xmlElement)
+{
+    for (int i = 0; i < xmlElement.getNumAttributes(); ++i) {
+        const auto& name{ xmlElement.getAttributeName(i) };
+        const auto& value{ xmlElement.getAttributeValue(i) };
+
+        element->setAttribute(name, value);
+    }
+}
+
+static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElement);
+
+static void populateChildElementsFromXml(Context& ctx, const Element::Ptr& element, const XmlElement& xmlElement)
+{
+    jassert(element != nullptr);
+
+    for (auto* child : xmlElement.getChildIterator()) {
+        if (auto childElement{ createElementFromXml(ctx, *child) })
+            element->addChildElement(childElement);
+        else
+            DBG("Unable to create element for <" << child->getTagName() << ">");
+    }
+}
+
+static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElement)
+{
+    if (xmlElement.isTextElement())
+        return nullptr;
+
+    const Identifier tag{ xmlElement.getTagName() };
+
+    auto element{ ctx.getElementsFactory().createElement(tag) };
+
+    if (element != nullptr) {
+        copyElementAttributesFromXml(element, xmlElement);
+
+        if (element->hasInnerXml()) {
+            // This element manages its inner XML. We don't need to parse the XML tree
+            // further but forward the current node to the element.
+            element->forwardXmlElement(xmlElement);
+        } else {
+            populateChildElementsFromXml(ctx, element, xmlElement);
+        }
+
+        // Call element's onload script.
+        // @note The element is not yet attached to its parent at this point
+        element->evaluateOnLoadScript();
+    }
+
+    return element;
 }
 
 //==============================================================================
@@ -43,6 +100,67 @@ Element::~Element()
         JS_FreeValue(context.getJSContext(), jsValue);
     }
 };
+
+void Element::populateFromXml(const XmlElement& xmlElement)
+{
+    removeAllChildElements();
+
+    const Identifier tag{ xmlElement.getTagName() };
+
+    if (tag != View::tag)
+        return;
+
+    auto ptr{ shared_from_this() };
+    copyElementAttributesFromXml(ptr, xmlElement);
+    populateChildElementsFromXml(context, ptr, xmlElement);
+
+    // Evaluate onload attribute script recursively
+    evaluateOnLoadScript(true);
+
+    // Trigger the elements tree update
+    forceUpdate();
+}
+
+void Element::populateFromXmlString(const String& xmlString)
+{
+    if (auto xml{ XmlDocument::parse(xmlString) })
+        populateFromXml(*xml);
+    else
+        removeAllChildElements();
+}
+
+void Element::populateFromXmlResource(const String& location)
+{
+    if (auto xml{ context.getLoader().loadXML(location) })
+        populateFromXml(*xml);
+    else
+        removeAllChildElements();
+}
+
+std::unique_ptr<XmlElement> Element::createXml() const
+{
+    auto xml{ std::make_unique<XmlElement>(valueTree.getType().toString()) };
+
+    // Copy attributes
+    for (int i = 0; i < valueTree.getNumProperties(); ++i) {
+        auto attrName{ valueTree.getPropertyName(i) };
+
+        // Skip volatile attributes
+        if (!attr::isVolatile(attrName)) {
+            const var& attrValue{ valueTree.getProperty(attrName) };
+
+            if (!attrValue.isVoid() && !attrValue.isUndefined() && !attrValue.isObject())
+                xml->setAttribute(attrName, attrValue.toString());
+        }
+    }
+
+    for (auto&& child : children) {
+        if (auto childXml{ child->createXml() })
+            xml->addChildElement(childXml.release());
+    }
+
+    return xml;
+}
 
 juce::Identifier Element::getTag() const
 {
@@ -217,6 +335,7 @@ void Element::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
     registerJSProperty(jsCtx, prototype, "id",            &js_getId, &js_setId);
     registerJSProperty(jsCtx, prototype, "class",         &js_getClass, &js_setClass);
     registerJSProperty(jsCtx, prototype, "style",         &js_getStyle, &js_setStyle);
+    registerJSProperty(jsCtx, prototype, "innerXml",      &js_getInnerXml, &js_setInnerXml);
     registerJSProperty(jsCtx, prototype, "parentElement", &js_getParentElement);
     registerJSProperty(jsCtx, prototype, "children",      &js_getChildren);
     registerJSProperty(jsCtx, prototype, "attributes",    &js_getAttributes);
@@ -440,9 +559,11 @@ JSValue Element::js_getId(JSContext* jsCtx, JSValueConst self)
 
 JSValue Element::js_setId(JSContext* jsCtx, JSValueConst self, JSValueConst val)
 {
+    if (JS_IsString(val))
+        return JS_ThrowTypeError(jsCtx, "id attribute expects a string value");
+
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        if (JS_IsString(val)) {
-            const auto* str{ JS_ToCString(jsCtx, val) };
+        if (const auto* str{ JS_ToCString(jsCtx, val) }) {
             element->setId(String::fromUTF8(str));
             JS_FreeCString(jsCtx, str);
         }
@@ -463,9 +584,11 @@ JSValue Element::js_getClass(JSContext* jsCtx, JSValueConst self)
 
 JSValue Element::js_setClass(JSContext* jsCtx, JSValueConst self, JSValueConst val)
 {
+    if (JS_IsString(val))
+        return JS_ThrowTypeError(jsCtx, "class attribute expects a string value");
+
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        if (JS_IsString(val)) {
-            const auto* str{ JS_ToCString(jsCtx, val) };
+        if (const auto* str{ JS_ToCString(jsCtx, val) }) {
             element->setAttribute(attr::clazz, String::fromUTF8(str));
             JS_FreeCString(jsCtx, str);
         }
@@ -486,10 +609,39 @@ JSValue Element::js_getStyle(JSContext* jsCtx, JSValueConst self)
 
 JSValue Element::js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst val)
 {
+    if (JS_IsString(val))
+        return JS_ThrowTypeError(jsCtx, "style attribute expects a string value");
+
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        if (JS_IsString(val)) {
-            const auto* str{ JS_ToCString(jsCtx, val) };
+        if (const auto* str{ JS_ToCString(jsCtx, val) }) {
             element->setAttribute(attr::style, String::fromUTF8(str));
+            JS_FreeCString(jsCtx, str);
+        }
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_getInnerXml(JSContext* jsCtx, JSValueConst self)
+{
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (auto xml{ element->createXml() }) {
+            const auto str{ xml->toString() };
+            return JS_NewStringLen(jsCtx, str.toRawUTF8(), str.length());
+        }
+    }
+
+    return JS_UNDEFINED;
+}
+
+JSValue Element::js_setInnerXml(JSContext* jsCtx, JSValueConst self, JSValueConst val)
+{
+    if (JS_IsString(val))
+        return JS_ThrowTypeError(jsCtx, "innerXml attribute expects a string value");
+
+    if (auto element{ Context::getJSNativeObject<Element>(self) }) {
+        if (const auto* str{ JS_ToCString(jsCtx, val) }) {
+            element->populateFromXmlString(String::fromUTF8(str));
             JS_FreeCString(jsCtx, str);
         }
     }

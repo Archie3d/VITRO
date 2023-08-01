@@ -1,59 +1,5 @@
 namespace vitro {
 
-static void copyElementAttributesFromXml(const Element::Ptr& element, const XmlElement& xmlElement)
-{
-    for (int i = 0; i < xmlElement.getNumAttributes(); ++i) {
-        const auto& name{ xmlElement.getAttributeName(i) };
-        const auto& value{ xmlElement.getAttributeValue(i) };
-
-        element->setAttribute(name, value);
-    }
-}
-
-static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElement);
-
-static void populateChildElementsFromXml(Context& ctx, const Element::Ptr& element, const XmlElement& xmlElement)
-{
-    jassert(element != nullptr);
-
-    for (auto* child : xmlElement.getChildIterator()) {
-        if (auto childElement{ createElementFromXml(ctx, *child) })
-            element->addChildElement(childElement);
-        else
-            DBG("Unable to create element for <" << child->getTagName() << ">");
-    }
-}
-
-static Element::Ptr createElementFromXml(Context& ctx, const XmlElement& xmlElement)
-{
-    if (xmlElement.isTextElement())
-        return nullptr;
-
-    const Identifier tag{ xmlElement.getTagName() };
-
-    auto element{ ctx.getElementsFactory().createElement(tag) };
-
-    if (element != nullptr) {
-        copyElementAttributesFromXml(element, xmlElement);
-
-        if (element->hasInnerXml()) {
-            // This element manages its inner XML. We don't need to parse the XML tree
-            // further but forward the current node to the element.
-            element->forwardXmlElement(xmlElement);
-        } else {
-            populateChildElementsFromXml(ctx, element, xmlElement);
-        }
-
-        // Call element's onload script.
-        // @note The element is not yet attached to its parent at this point
-        element->evaluateOnLoadScript();
-    }
-
-    return element;
-}
-
-//==============================================================================
-
 const Identifier View::tag("View");
 
 JSClassID View::jsClassID = 0;
@@ -78,42 +24,6 @@ void View::initialize()
     ComponentElement::initialize();
 
     exposeToJS();
-}
-
-void View::populateFromXml(const XmlElement& xmlElement)
-{
-    removeAllChildElements();
-
-    const Identifier tag{ xmlElement.getTagName() };
-
-    if (tag != View::tag)
-        return;
-
-    auto ptr{ shared_from_this() };
-    copyElementAttributesFromXml(ptr, xmlElement);
-    populateChildElementsFromXml(context, ptr, xmlElement);
-
-    // Evaluate onload attribute script recursively
-    evaluateOnLoadScript(true);
-
-    // Trigger the elements tree update
-    forceUpdate();
-}
-
-void View::populateFromXmlString(const String& xmlString)
-{
-    if (auto xml{ XmlDocument::parse(xmlString) })
-        populateFromXml(*xml);
-    else
-        removeAllChildElements();
-}
-
-void View::populateFromXmlResource(const String& location)
-{
-    if (auto xml{ context.getLoader().loadXML(location) })
-        populateFromXml(*xml);
-    else
-        removeAllChildElements();
 }
 
 void View::exposeToJS()
