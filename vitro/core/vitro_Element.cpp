@@ -105,14 +105,18 @@ void Element::populateFromXml(const XmlElement& xmlElement)
 {
     removeAllChildElements();
 
-    const Identifier tag{ xmlElement.getTagName() };
-
-    if (tag != View::tag)
-        return;
-
-    auto ptr{ shared_from_this() };
-    copyElementAttributesFromXml(ptr, xmlElement);
-    populateChildElementsFromXml(context, ptr, xmlElement);
+    if (hasInnerXml()) {
+        // Forward XML if element has a special way to handle it.
+        forwardXmlElement(xmlElement);
+    } else {
+        const Identifier tag{ xmlElement.getTagName() };
+        
+        if (tag == View::tag) {
+            auto ptr{ shared_from_this() };
+            copyElementAttributesFromXml(ptr, xmlElement);
+            populateChildElementsFromXml(context, ptr, xmlElement);
+        }
+    }
 
     // Evaluate onload attribute script recursively
     evaluateOnLoadScript(true);
