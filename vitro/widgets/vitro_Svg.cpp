@@ -11,7 +11,12 @@ Svg::Svg(Context& ctx)
 
 void Svg::forwardXmlElement(const juce::XmlElement& xml)
 {
-    populateFromXml(xml);
+    // xml here may represent this <Svg> element, we have to find the first <svg> child
+    if (xml.getTagName() == "svg") {
+        populateFromXml(xml);
+    } else if (auto* svgXml{ xml.getChildByName("svg") }) {
+        populateFromXml(*svgXml);
+    }
 }
 
 void Svg::paint(juce::Graphics& g)
@@ -25,7 +30,7 @@ void Svg::resized()
     if (drawable != nullptr)
         drawable->setBounds(getLocalBounds());
 
-    void updateScaleTransform();
+    updateScaleTransform();
 }
 
 void Svg::update()
