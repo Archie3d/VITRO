@@ -11,6 +11,11 @@ ComponentElement::MouseEventsProxy::MouseEventsProxy(ComponentElement& el)
         component->addMouseListener(this, true);
 }
 
+void ComponentElement::MouseEventsProxy::mouseMove(const MouseEvent& event)
+{
+    element.handleMouseMove(event);
+}
+
 void ComponentElement::MouseEventsProxy::mouseEnter(const MouseEvent& event)
 {
     element.setAttribute(attr::hover, true);
@@ -245,6 +250,31 @@ void ComponentElement::reconcileElement()
         }
     }
 }
+
+void ComponentElement::handleMouseMove(const MouseEvent&)
+{
+    evaluateAttributeScript(attr::onmousemove);
+}
+
+void ComponentElement::handleMouseEnter(const MouseEvent&)
+{
+    evaluateAttributeScript(attr::onmouseenter);
+};
+
+void ComponentElement::handleMouseExit(const MouseEvent&)
+{
+    evaluateAttributeScript(attr::onmouseexit);
+};
+
+void ComponentElement::handleMouseDown(const MouseEvent&)
+{
+    evaluateAttributeScript(attr::onmousedown);
+};
+
+void ComponentElement::handleMouseUp(const MouseEvent&)
+{
+    evaluateAttributeScript(attr::onmouseup);
+};
 
 void ComponentElement::componentMovedOrResized(Component&, bool wasMoved, bool wasResized)
 {

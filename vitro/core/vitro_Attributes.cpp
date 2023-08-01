@@ -47,6 +47,12 @@ const Identifier onenter    ("onenter");
 const Identifier onmove     ("onmove");
 const Identifier onresize   ("onresize");
 
+const Identifier onmouseenter ("onmouseenter");
+const Identifier onmouseexit  ("onmouseexit");
+const Identifier onmousemove  ("onmousemove");
+const Identifier onmousedown  ("onmousedown");
+const Identifier onmouseup    ("onmouseup");
+
 //==============================================================================
 namespace css {
 
@@ -138,7 +144,12 @@ bool isVolatile(const Identifier& attr)
         || attr == onclick
         || attr == onenter
         || attr == onmove
-        || attr == onresize;
+        || attr == onresize
+        || attr == onmouseenter
+        || attr == onmouseexit
+        || attr == onmousemove
+        || attr == onmousedown
+        || attr == onmouseup;
 }
 
 } // namespace attr

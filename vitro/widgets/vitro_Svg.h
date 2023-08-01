@@ -6,7 +6,7 @@ namespace vitro {
         src
         scale 
 */
-class Svg : public vitro::ComponentElement,
+class Svg : public ComponentElementWithBackground,
             public juce::Component
 {
 public:

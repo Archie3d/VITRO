@@ -5,7 +5,7 @@ JSClassID Svg::jsClassID = 0;
 const Identifier Svg::tag("Svg");
 
 Svg::Svg(Context& ctx)
-    : ComponentElement(Svg::tag, ctx)
+    : ComponentElementWithBackground(Svg::tag, ctx)
 {
 }
 
@@ -21,12 +21,16 @@ void Svg::forwardXmlElement(const juce::XmlElement& xml)
 
 void Svg::paint(juce::Graphics& g)
 {
+    ComponentElementWithBackground::paintBackground(g);
+
     if (drawable != nullptr)
         drawable->draw(g, 1.0f, scaleTransform);
 }
 
 void Svg::resized()
 {
+    ComponentElementWithBackground::updateGradientToComponentSize();
+
     if (drawable != nullptr)
         drawable->setBounds(getLocalBounds());
 
@@ -35,7 +39,7 @@ void Svg::resized()
 
 void Svg::update()
 {
-    ComponentElement::update();
+    ComponentElementWithBackground::update();
     
     if (const auto&& [changed, val]{ getAttributeChanged(attr::src) }; changed)
         populateFromXmlResource(val.toString());

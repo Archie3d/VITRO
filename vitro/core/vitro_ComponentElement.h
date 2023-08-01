@@ -37,7 +37,7 @@ public:
         explicit MouseEventsProxy(ComponentElement& el);
 
         // juce::MouseListener
-        //void mouseMove(const juce::MouseEvent &event) override;
+        void mouseMove(const juce::MouseEvent &event) override;
         void mouseEnter(const juce::MouseEvent &event) override;
         void mouseExit(const juce::MouseEvent &event) override;
         void mouseDown(const juce::MouseEvent &event) override;
@@ -115,10 +115,11 @@ protected:
     void reconcileElement() override;
 
     // Mouse events forwarded to this component.
-    virtual void handleMouseEnter(const juce::MouseEvent&) {};
-    virtual void handleMouseExit(const juce::MouseEvent&) {};
-    virtual void handleMouseDown(const juce::MouseEvent&) {};
-    virtual void handleMouseUp(const juce::MouseEvent&) {};
+    virtual void handleMouseMove(const juce::MouseEvent&);
+    virtual void handleMouseEnter(const juce::MouseEvent&);
+    virtual void handleMouseExit(const juce::MouseEvent&);
+    virtual void handleMouseDown(const juce::MouseEvent&);
+    virtual void handleMouseUp(const juce::MouseEvent&);
 
 private:
 
