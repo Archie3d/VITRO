@@ -605,7 +605,7 @@ JSValue Element::js_getStyle(JSContext* jsCtx, JSValueConst self)
 {
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         const auto style{ element->getAttribute(attr::style).toString() };
-        return JS_NewStringLen(jsCtx, style.toRawUTF8(), style.length());
+        return js::varToJSValue(jsCtx, style);
     }
 
     return JS_UNDEFINED;
@@ -613,14 +613,12 @@ JSValue Element::js_getStyle(JSContext* jsCtx, JSValueConst self)
 
 JSValue Element::js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst val)
 {
-    if (JS_IsString(val))
-        return JS_ThrowTypeError(jsCtx, "style attribute expects a string value");
+    if (!JS_IsString(val) && !JS_IsObject(val))
+        return JS_ThrowTypeError(jsCtx, "style attribute expects a string or dictionary value");
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        if (const auto* str{ JS_ToCString(jsCtx, val) }) {
-            element->setAttribute(attr::style, String::fromUTF8(str));
-            JS_FreeCString(jsCtx, str);
-        }
+        const var style{ js::JSValueToVar(jsCtx, val) };
+        element->setAttribute(attr::style, style);
     }
 
     return JS_UNDEFINED;
