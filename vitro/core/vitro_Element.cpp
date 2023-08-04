@@ -275,6 +275,53 @@ void Element::removeAllChildElements()
     numberOfChildrenChanged();
 }
 
+void Element::replaceChildElements(const std::vector<Element::Ptr>& newChildren)
+{
+    std::vector<bool> retainedChildren(children.size());
+
+    for (size_t i = 0; i < children.size(); ++i) {
+        bool retain{ false };
+        auto& child{ children.at(i) };
+
+        for (auto& newChild : newChildren) {
+            if (child == newChild) {
+                retain = true;
+                break;
+            }
+        }
+
+        retainedChildren[i] = retain;
+    }
+
+    for (size_t i = 0; i < children.size(); ++i) {
+        auto& child{ children.at(i) };
+
+        if (!retainedChildren[i]) {
+            child->elementIsAboutToBeRemoved();
+            child->notifyChildrenAboutToBeRemoved();
+            child->stash();
+        }
+
+        child->parent.reset();
+        child->reconcileElementTree();
+        valueTree.removeChild(child->valueTree, nullptr);
+    }
+
+    children.clear();
+
+    for (auto& newChild : newChildren) {
+        if (newChild != nullptr) {
+            newChild->parent = shared_from_this();
+            children.push_back(newChild);
+            valueTree.appendChild(newChild->valueTree, nullptr);
+            newChild->reconcileElementTree();
+            newChild->unstash();
+        }
+    }
+
+    numberOfChildrenChanged();
+}
+
 void Element::setAttribute(const Identifier& name, const var& value, bool notify)
 {
     if (isStyledElement() && name == attr::style) {
@@ -804,20 +851,23 @@ JSValue Element::js_replaceChildren([[maybe_unused]] JSContext* ctx, JSValueCons
     }
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        element->removeAllChildElements();
 
         if (argc > 0) {
             int length{};
             JS_ToInt32(ctx, &length, JS_GetPropertyStr(ctx, arg[0], "length"));
 
+            std::vector<Element::Ptr> newChildren((size_t)length);
+
             for (int i = 0; i < length; ++i) {
                 JSValue item{ JS_GetPropertyUint32(ctx, arg[0], static_cast<uint32_t>(i)) };
 
                 if (auto childElement{ Context::getJSNativeObject<Element>(item) })
-                    element->addChildElement(childElement);
+                    newChildren[i] = childElement;
 
                 JS_FreeValue(ctx, item);
             }
+
+            element->replaceChildElements(newChildren);
         }
     }
 

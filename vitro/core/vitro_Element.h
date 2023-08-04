@@ -150,6 +150,14 @@ public:
     */
     void removeAllChildElements();
 
+    /** Replace all children with a new set.
+
+        This method will retain all existing children which
+        are also present in the new set. However it will detach them
+        and rearrange to the order of the new set.
+    */
+    void replaceChildElements(const std::vector<Element::Ptr>& newChildren);
+
     /** Assign element's attribute.
 
         This will assign an attribute stored in this element.
