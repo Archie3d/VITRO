@@ -532,12 +532,16 @@ void OpenGLView::newOpenGLContextCreated()
 
     const static GLushort indices[6] = { 0, 1, 2, 0, 2, 3 };
 
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
     openGLContext.extensions.glGenBuffers(2, quadBuffers);
     openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadBuffers[0]);
     openGLContext.extensions.glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, quadBuffers[1]);
     openGLContext.extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    openGLContext.extensions.glEnableVertexAttribArray(0);
     openGLContext.extensions.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }
 
@@ -597,11 +601,7 @@ void OpenGLView::renderOpenGL()
 
     glEnable(GL_DEBUG_OUTPUT);
 
-    openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadBuffers[0]);
-    openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, quadBuffers[1]);
-
-    openGLContext.extensions.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    openGLContext.extensions.glEnableVertexAttribArray(0);
+    glBindVertexArray(VAO);
 
     // Binding textures
     for (auto&& [name, texture] : textures) {
@@ -623,9 +623,8 @@ void OpenGLView::renderOpenGL()
             pass->render();
     }
 
-
-    openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, 0);
-    openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    // Unbinf VAO and textures
+    glBindVertexArray(0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -638,7 +637,8 @@ void OpenGLView::renderOpenGL()
 void OpenGLView::openGLContextClosing()
 {
     using namespace juce::gl;
-
+    
+    openGLContext.extensions.glBindVertexArray(0);
     openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, 0);
     openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     openGLContext.extensions.glDeleteBuffers(2, quadBuffers);

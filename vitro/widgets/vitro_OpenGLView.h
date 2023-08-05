@@ -212,6 +212,7 @@ private:
 
     juce::OpenGLContext openGLContext{};
 
+    unsigned int VAO{};
     unsigned int quadBuffers[2];
 
     std::vector<std::unique_ptr<RenderPass>> renderPasses{};
