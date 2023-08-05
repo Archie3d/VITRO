@@ -80,7 +80,7 @@ protected:
     bool isStylePropertyChanged(const juce::Identifier& name) const;
 
     /** Assign a default value for a style property.
-    
+
         Whenever a local or global stylesheet return no result for a style property,
         the default value set by this method will be used.
     */
