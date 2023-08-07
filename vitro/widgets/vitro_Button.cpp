@@ -14,6 +14,8 @@ TextButton::TextButton(Context& ctx)
     registerStyleProperty(attr::css::background_color);
     registerStyleProperty(attr::css::background_color_on);
     registerStyleProperty(attr::css::border_color);
+    registerStyleProperty(attr::css::border_radius);
+    registerStyleProperty(attr::css::border_width);
 }
 
 void TextButton::update()
@@ -28,11 +30,61 @@ void TextButton::update()
     if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::trigger_down) }; !prop.isVoid())
         juce::TextButton::setTriggeredOnMouseDown(prop);
 
+    // background-color
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::background_color) }; changed) {
+        if (prop.isVoid()) {
+            // Background colour has been removed
+            gradient.reset();
+        } else {
+            const String str{ prop.toString() };
+
+            if (Gradient::isPotentiallyGradientString(str)) {
+                gradient = Gradient::fromString(str);
+                updateGradientToComponentSize();
+            } else {
+                setColourFromStyleProperty(juce::TextButton::buttonColourId,   attr::css::background_color);
+                gradient.reset();
+            }
+        }
+    }
+
     setColourFromStyleProperty(juce::TextButton::textColourOnId,   attr::css::text_color_on);
     setColourFromStyleProperty(juce::TextButton::textColourOffId,  attr::css::text_color_off);
-    setColourFromStyleProperty(juce::TextButton::buttonColourId,   attr::css::background_color);
+    // @note We use custom LAF draw for the background
+    //setColourFromStyleProperty(juce::TextButton::buttonColourId,   attr::css::background_color);
     setColourFromStyleProperty(juce::TextButton::buttonOnColourId, attr::css::background_color_on);
     setColourFromStyleProperty(juce::ComboBox::outlineColourId,    attr::css::border_color);
+
+    // border-radius
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::border_radius) }; changed)
+        borderRadius = prop;
+
+    // border-width
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::border_width) }; changed)
+        borderWidth = prop;
+}
+
+void TextButton::resized()
+{
+    ButtonBase::resized();
+
+    updateGradientToComponentSize();
+}
+
+bool TextButton::hasGradientBackground() const
+{
+    return static_cast<bool>(gradient);
+}
+
+juce::ColourGradient TextButton::getBackgroundColourGradient() const
+{
+    return colourGradient;
+}
+
+void TextButton::updateGradientToComponentSize()
+{
+    if (gradient)
+        colourGradient = gradient->getColourGradient(getWidth(), getHeight());
 }
 
 //==============================================================================

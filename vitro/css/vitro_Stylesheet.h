@@ -42,6 +42,9 @@ public:
         /** Match this attribute selector to the property from the ValueTree. */
         bool match(const juce::ValueTree& tree) const;
 
+        /** Tells whether the other attribute is more important than this one. */
+        bool isOtherMoreImportant(const Attribute& other) const;
+
         /** Returns string representation of this attribute matcher. Useful for debugging. */
         juce::String toString() const;
 

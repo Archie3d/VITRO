@@ -68,9 +68,12 @@ public:
         trigger-down
         text-color-on
         text-color-off
-        background-color
+        background-color        (can be a gradient)
         background-color-on
         border-color
+        border-radius
+        border-width
+
 */
 class TextButton : public vitro::Button<juce::TextButton>
 {
@@ -87,6 +90,28 @@ public:
     JSClassID getJSClassID() const override { return vitro::TextButton::jsClassID; }
 
     void update() override;
+
+    // juce::Component
+    void resized() override;
+
+    bool hasGradientBackground() const;
+    juce::ColourGradient getBackgroundColourGradient() const;
+
+    float getBorderRadius() const { return borderRadius; }
+    float getBorderWidth() const { return borderWidth; }
+
+    static constexpr float defaultBorderRadius = 6.0f;
+    static constexpr float defaultBorderWidth = 1.0f;
+
+private:
+
+    void updateGradientToComponentSize();
+
+    std::optional<vitro::Gradient> gradient{};
+    juce::ColourGradient colourGradient{};
+
+    float borderRadius{ defaultBorderRadius };
+    float borderWidth{ defaultBorderWidth };
 };
 
 //==============================================================================
@@ -100,7 +125,6 @@ public:
         tick-color
         tick-disabled-color
 */
-
 class ToggleButton : public vitro::Button<juce::ToggleButton>
 {
 public:

@@ -18,6 +18,8 @@ This element corresponds to Juce TextButton.
 | `trigger-down`        | Whether the click event should be registered on mouse down |
 | `text-color-on`       | Text color when button is activated                        |
 | `text-color-off`      | Default text color                                         |
-| `background-color`    | Solid background color                                     |
+| `background-color`    | Background color (solid or gradient)                       |
 | `background-color-on` | Background color when activated                            |
 | `border-color`        | Button border color                                        |
+| `border-radius`       | Border corners radius                                      |
+| `border-width`        | Border width in pixels                                     |

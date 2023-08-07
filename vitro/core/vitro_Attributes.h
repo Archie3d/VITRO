@@ -6,6 +6,7 @@ namespace attr {
 
 extern const juce::Identifier text;
 extern const juce::Identifier toggle;
+extern const juce::Identifier hover;
 extern const juce::Identifier active;
 extern const juce::Identifier radiogroup;
 

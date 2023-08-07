@@ -49,6 +49,24 @@ String Selector::Attribute::toString() const
     return {};
 }
 
+bool Selector::Attribute::isOtherMoreImportant(const Attribute& other) const
+{
+    // @todo
+    // This is a very dirty way of comparing attributes.
+    // So far we just make sure that 'active' takes priority over 'hover'.
+
+    if (name == attr::active)
+        return false;
+
+    if (name == attr::hover)
+        return other.name == attr::active;
+
+    if (op == Operator::None && other.op != Operator::None)
+        return true;
+
+    return false;
+}
+
 //==============================================================================
 
 Selector::Selector(StringRef argTag, StringRef argClass, StringRef argId)
@@ -146,6 +164,13 @@ bool Selector::isOtherMoreImportant(const Selector& other) const
 
     // We assume a selector with more attributes should take priority
     if (other.attributes.size() > attributes.size()) return true;
+
+    if (other.attributes.size() == attributes.size()) {
+        for (int i = 0; i < attributes.size(); ++i) {
+            if (attributes.getReference(i).isOtherMoreImportant(other.attributes.getReference(i)))
+                return true;
+        }
+    }
 
     return false;
 }
