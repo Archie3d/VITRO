@@ -11,6 +11,7 @@ namespace vitro {
     Style attributes:
         background-color
         background-image
+        background-image-tile
         border-color
         border-width
         border-radius
@@ -32,6 +33,7 @@ protected:
 private:
 
     juce::Image backgroundImage{};
+    bool backgroundImageTile{ false };
 
     std::optional<juce::Colour> backgroundColour{};
 

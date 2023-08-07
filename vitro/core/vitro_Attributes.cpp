@@ -61,6 +61,7 @@ const Identifier alpha                        ("alpha");
 const Identifier background_color             ("background-color");
 const Identifier background_color_on          ("background-color-on");
 const Identifier background_image             ("background-image");
+const Identifier background_image_tile        ("background-image-tile");
 const Identifier highlight_color              ("highlight-color");
 const Identifier highlight_text_color         ("highlight-text-color");
 const Identifier line_number_color            ("line-number-color");

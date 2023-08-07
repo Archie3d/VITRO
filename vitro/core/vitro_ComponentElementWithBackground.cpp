@@ -5,6 +5,7 @@ ComponentElementWithBackground::ComponentElementWithBackground(const Identifier&
 {
     registerStyleProperty(attr::css::background_color);
     registerStyleProperty(attr::css::background_image);
+    registerStyleProperty(attr::css::background_image_tile);
     registerStyleProperty(attr::css::border_color);
     registerStyleProperty(attr::css::border_radius);
     registerStyleProperty(attr::css::border_width);
@@ -29,31 +30,43 @@ void ComponentElementWithBackground::paintBackground(Graphics& g)
     const auto width{ comp->getWidth() };
     const auto height{ comp->getHeight() };
 
-    bool hasBackground{};
+    bool solidBackground{};
 
     if (backgroundImage.isValid()) {
+        g.saveState();
+
         if (borderRadius > 0) {
-            g.saveState();
-            Path path{};
-            path.addRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, borderRadius);
-            g.reduceClipRegion(path);
-            g.drawImage(backgroundImage, 0, 0, width, height,
-                                         0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
-            g.restoreState();
+            if (backgroundImageTile) {
+                g.setTiledImageFill(backgroundImage, 0.0f, 0.0f, 1.0f);
+                g.fillRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, borderRadius);
+            } else {
+                Path path{};
+                path.addRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, borderRadius);
+                g.reduceClipRegion(path);
+                g.drawImage(backgroundImage, 0, 0, width, height,
+                                             0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
+            }
         } else {
-            g.drawImage(backgroundImage, 0, 0, width, height,
-                                         0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
+            if (backgroundImageTile) {
+                g.setTiledImageFill(backgroundImage, 0.0f, 0.0f, 1.0f);
+                g.fillRect(0, 0, width, height);
+            } else {
+                g.drawImage(backgroundImage, 0, 0, width, height,
+                                             0, 0, backgroundImage.getWidth(), backgroundImage.getHeight());
+            }
+
+            g.restoreState();
         }
-        hasBackground = true;
+
     } else if (gradient) {
         g.setGradientFill(colourGradient);
-        hasBackground = true;
+        solidBackground = true;
     } else if (backgroundColour) {
         g.setColour(*backgroundColour);
-        hasBackground = true;
+        solidBackground = true;
     }
 
-    if (hasBackground) {
+    if (solidBackground) {
         if (borderRadius > 0.0f)
             g.fillRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, borderRadius);
         else
@@ -108,6 +121,10 @@ void ComponentElementWithBackground::update()
             backgroundImage = prop.isVoid() ? juce::Image()
                                             : context.getLoader().loadImage(prop.toString());
     }
+
+    // background-image-tile
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::background_image_tile) }; changed)
+        backgroundImageTile = prop.isVoid() ? false : (bool)prop;
 
     // border-color
     if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::border_color) }; changed) {
