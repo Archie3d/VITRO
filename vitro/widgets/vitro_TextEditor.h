@@ -19,6 +19,8 @@ namespace vitro {
         highlight-color
         highlight-text-color
         border-color
+        border-radius
+        border-width
         focused-border-color
         shadow-color
 */
@@ -38,6 +40,12 @@ public:
 
     juce::Component* getComponent() override { return this; }
 
+    float getBorderRadius() const { return borderRadius; }
+    float getBorderWidth() const { return borderWidth; }
+
+    static constexpr float defaultBorderRadius = 0.0f;
+    static constexpr float defaultBorderWidth = 2.0f;
+
 protected:
 
     // vitro::Element
@@ -48,6 +56,9 @@ protected:
     void textEditorReturnKeyPressed(juce::TextEditor&) override;
 
     juce::Colour emptyTextColour{};
+
+    float borderRadius{ defaultBorderRadius };
+    float borderWidth{ defaultBorderWidth };
 };
 
 } // namespace vitro

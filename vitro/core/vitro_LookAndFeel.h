@@ -11,6 +11,13 @@ public:
                               bool shouldDrawButtonAsHighlighted,
                               bool shouldDrawButtonAsDown) override;
 
+    void fillTextEditorBackground(juce::Graphics& g,
+                                  int width, int height,
+                                  juce::TextEditor& textEditor) override;
+
+    void drawTextEditorOutline(juce::Graphics& g,
+                               int width, int height,
+                               juce::TextEditor& textEditor) override;
 };
 
 } // namespace vitro

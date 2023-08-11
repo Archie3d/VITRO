@@ -59,12 +59,60 @@ void LookAndFeel::drawButtonBackground(Graphics& g,
 
         g.setColour(button.findColour(ComboBox::outlineColourId));
         g.strokePath(path, PathStrokeType(borderWidth));
-    
+
     } else {
         g.fillRoundedRectangle(bounds, cornerSize);
 
         g.setColour(button.findColour(ComboBox::outlineColourId));
         g.drawRoundedRectangle(bounds, cornerSize, borderWidth);
+    }
+}
+
+void LookAndFeel::fillTextEditorBackground(Graphics& g,
+                                           int width, int height,
+                                           juce::TextEditor& textEditor)
+{
+    if (auto* element{ dynamic_cast<vitro::TextEditor*>(&textEditor) }) {
+        const auto borderRadius{ element->getBorderRadius() };
+        const auto borderWidth{ element->getBorderWidth() };
+
+        g.setColour(textEditor.findColour(juce::TextEditor::backgroundColourId));
+
+        if (borderRadius > 0)
+            g.fillRoundedRectangle(0.5f, 0.5f, float(width) - 0.5f, float(height) - 0.5f, borderRadius + 0.5f * borderWidth);
+        else
+            g.fillRect(0, 0, width, height);
+    } else {
+        LookAndFeel_V4::fillTextEditorBackground(g, width, height, textEditor);
+    }
+}
+
+void LookAndFeel::drawTextEditorOutline(Graphics& g,
+                                        int width, int height,
+                                        juce::TextEditor& textEditor)
+{
+    if (auto* element{ dynamic_cast<vitro::TextEditor*>(&textEditor) }) {
+        const auto borderRadius{ element->getBorderRadius() };
+        const auto borderWidth{ element->getBorderWidth() };
+        const auto borderOffset{ 0.5f * (1.0f + borderWidth) };
+
+        if (textEditor.isEnabled()) {
+            if (textEditor.hasKeyboardFocus(true) && !textEditor.isReadOnly())
+                g.setColour(textEditor.findColour(TextEditor::focusedOutlineColourId));
+            else
+                g.setColour(textEditor.findColour(TextEditor::outlineColourId));
+
+            if (borderRadius > 0)
+                g.drawRoundedRectangle(borderOffset, borderOffset,
+                                      float(width) - borderWidth - 0.5f,
+                                      float(height) - borderWidth - 0.5f,
+                                      borderRadius, borderWidth);
+            else
+                g.drawRect(0.0f, 0.0f, (float)width, (float)height, borderWidth);
+        }
+
+    } else {
+        LookAndFeel_V4::drawTextEditorOutline(g, width, height, textEditor);
     }
 }
 

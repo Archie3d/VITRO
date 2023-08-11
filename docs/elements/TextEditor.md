@@ -26,4 +26,6 @@ TextEdtidor element corresponds to Juce TextEditor.
 | `highlight-color`      | Selection background color                 |
 | `highlight-text-color` | Selection text color                       |
 | `border-color`         | Border color                               |
+| `border-radius`        | Border corners radius                      |
+| `border-width`         | Border width in pixels                     |
 | `focused-border-color` | Border color when active                   |

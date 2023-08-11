@@ -17,6 +17,8 @@ TextEditor::TextEditor(Context& ctx)
     registerStyleProperty(attr::css::border_color);
     registerStyleProperty(attr::css::focused_border_color);
     registerStyleProperty(attr::css::shadow_color);
+    registerStyleProperty(attr::css::border_radius);
+    registerStyleProperty(attr::css::border_width);
 
     addListener(this);
 }
@@ -62,6 +64,14 @@ void TextEditor::update()
         emptyTextColour = prop.isVoid() ? findColour(juce::TextEditor::textColourId)
                                         : parseColourFromString(prop.toString());
     }
+
+    // border-radius
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::border_radius) }; changed)
+        borderRadius = prop;
+
+    // border-width
+    if (const auto&& [changed, prop]{ getStylePropertyChanged(attr::css::border_width) }; changed)
+        borderWidth = prop;
 
     if (auto&& [changed, val]{ getAttributeChanged(attr::text)}; changed)
         juce::TextEditor::setText(val, NotificationType::dontSendNotification);
