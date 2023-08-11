@@ -120,10 +120,11 @@ static void jsDumpObj(JSContext* ctx, JSValueConst val)
 // Helper function used to dump JavaScript error trace to stderr.
 static void jsDumpError(JSContext* ctx, JSValueConst exception)
 {
-    if (JS_IsError(ctx, exception) || JS_IsException(exception)) {
+    if (JS_IsError(ctx, exception)) {
         auto message = JS_GetPropertyStr(ctx, exception, "message");
 
         if (!JS_IsUndefined(message)) {
+
             if (auto* str = JS_ToCString(ctx, message)) {
                 juce::Logger::writeToLog(str);
                 JS_FreeCString(ctx, str);
@@ -138,6 +139,19 @@ static void jsDumpError(JSContext* ctx, JSValueConst exception)
             jsDumpObj(ctx, stack);
 
         JS_FreeValue(ctx, stack);
+
+    } else {
+
+        auto err{ JS_GetException(ctx) };
+
+        if (JS_IsError(ctx, err)) {
+            jsDumpError(ctx, err);
+        } else {
+            // If we fail to identify an exception, just log is as is.
+            jsDumpObj(ctx, exception);
+        }
+
+        JS_FreeValue(ctx, err);
     }
 }
 
