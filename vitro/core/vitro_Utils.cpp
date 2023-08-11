@@ -48,7 +48,7 @@ Colour parseColourFromString(const String& str) {
         }
     }
 
-    auto namedColour{ Colours::findColourForName(str, Colour (0x00000000)) };
+    auto namedColour{ Colours::findColourForName(str, Colour(0x00000000)) };
 
     if (namedColour.getARGB() != 0)
         return namedColour;
@@ -130,7 +130,7 @@ public:
     void parse()
     {
         if (expect("radial-gradient"))
-            gradient.setRadial (true);
+            gradient.setRadial(true);
         else if (!expect("linear-gradient"))
             return;
 
@@ -149,13 +149,13 @@ public:
         if (!expect("deg"))
             return;
 
-        gradient.setAngle(juce::MathConstants<float>::pi * static_cast<float> (angle) / 180.0f);
+        gradient.setAngle(juce::MathConstants<float>::pi * static_cast<float>(angle) / 180.0f);
 
         skipSpaces();
 
         // Colour point pairs: colour distance%
         while (pos < strLength) {
-            if (!expect (","))
+            if (!expect(","))
                 break;
 
             if (pos >= strLength)
@@ -192,7 +192,7 @@ private:
         if (strLength - pos < expectedLength)
             return false;
 
-        if (const auto actualString{ str.substring (pos, pos + expectedLength) }; actualString == expectedString) {
+        if (const auto actualString{ str.substring(pos, pos + expectedLength) }; actualString == expectedString) {
             pos += expectedLength;
             return true;
         }
@@ -269,8 +269,8 @@ static void clampToWidthHeight(juce::Point<T>& point, T width, T height)
 
 ColourGradient Gradient::getColourGradient(int width, int height) const
 {
-    const float fWidth{ static_cast<float>(jmax (1, width)) };
-    const float fHeight{ static_cast<float>(jmax (1, height)) };
+    const float fWidth{ static_cast<float>(jmax(1, width)) };
+    const float fHeight{ static_cast<float>(jmax(1, height)) };
 
     juce::Point<float> centre(0.5f * fWidth, 0.5f * fHeight);
     float d { 0.5f * sqrt(fWidth * fWidth + fHeight * fHeight) };
@@ -368,8 +368,8 @@ var JSValueToVar(JSContext* ctx, JSValueConst val)
         return x;
     }
     case JS_TAG_STRING: {
-        if (const char* s{ JS_ToCString (ctx, val) }) {
-            const auto str{ String::fromUTF8 (s) };
+        if (const char* s{ JS_ToCString(ctx, val) }) {
+            const auto str{ String::fromUTF8(s) };
             JS_FreeCString(ctx, s);
             return str;
         }
