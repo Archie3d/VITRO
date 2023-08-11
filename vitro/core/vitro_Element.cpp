@@ -332,7 +332,7 @@ void Element::setAttribute(const Identifier& name, const var& value, bool notify
     if (notify) {
         valueTree.setProperty(name, value, nullptr);
     } else {
-        if (const var* property{ valueTree.getPropertyPointer (name) }) {
+        if (const var* property{ valueTree.getPropertyPointer(name) }) {
             var* ptr = const_cast<var*>(property);
             *ptr = value;
         } else {
@@ -507,8 +507,10 @@ void Element::evaluateAttributeScript(const Identifier& attr, const juce::var& d
     } else {
         auto res{ context.evalThis(jsValue, val.toString()) };
 
-        if (JS_IsException(res))
+        if (JS_IsException(res)) {
+            DBG("Exception thrown when evaluating " << attr.toString() << " of <" << getTag().toString() << ">");
             jsDumpError(jsCtx, res);
+        }
 
         if (res != JS_UNDEFINED)
             JS_FreeValue(jsCtx, res);
@@ -626,8 +628,8 @@ JSValue Element::js_setId(JSContext* jsCtx, JSValueConst self, JSValueConst val)
 JSValue Element::js_getClass(JSContext* jsCtx, JSValueConst self)
 {
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        const auto clazz{ element->getAttribute(attr::clazz).toString() };
-        return JS_NewStringLen(jsCtx, clazz.toRawUTF8(), clazz.length());
+        const auto clazz{ element->getAttribute(attr::clazz)};
+        return js::varToJSValue(jsCtx, clazz);
     }
 
     return JS_UNDEFINED;
@@ -635,14 +637,12 @@ JSValue Element::js_getClass(JSContext* jsCtx, JSValueConst self)
 
 JSValue Element::js_setClass(JSContext* jsCtx, JSValueConst self, JSValueConst val)
 {
-    if (JS_IsString(val))
-        return JS_ThrowTypeError(jsCtx, "class attribute expects a string value");
+    if (!JS_IsString(val) && !JS_IsObject(val))
+        return JS_ThrowTypeError(jsCtx, "class attribute expects a string or dictionary value");
 
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        if (const auto* str{ JS_ToCString(jsCtx, val) }) {
-            element->setAttribute(attr::clazz, String::fromUTF8(str));
-            JS_FreeCString(jsCtx, str);
-        }
+        const var clazz{ js::JSValueToVar(jsCtx, val) };
+        element->setAttribute(attr::clazz, clazz);
     }
 
     return JS_UNDEFINED;
@@ -651,7 +651,7 @@ JSValue Element::js_setClass(JSContext* jsCtx, JSValueConst self, JSValueConst v
 JSValue Element::js_getStyle(JSContext* jsCtx, JSValueConst self)
 {
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        const auto style{ element->getAttribute(attr::style).toString() };
+        const auto style{ element->getAttribute(attr::style) };
         return js::varToJSValue(jsCtx, style);
     }
 
@@ -673,9 +673,11 @@ JSValue Element::js_setStyle(JSContext* jsCtx, JSValueConst self, JSValueConst v
 
 JSValue Element::js_getInnerXml(JSContext* jsCtx, JSValueConst self)
 {
+    const static auto xmlTextFormat{ XmlElement::TextFormat().withoutHeader() };
+
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
         if (auto xml{ element->createXml() }) {
-            const auto str{ xml->toString() };
+            const auto str{ xml->toString(xmlTextFormat).trim() };
             return JS_NewStringLen(jsCtx, str.toRawUTF8(), str.length());
         }
     }
