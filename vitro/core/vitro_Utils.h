@@ -89,6 +89,7 @@ public:
 
     JSValue getJSValue() { return jsFunc; }
 
+    /** Call this function with a list of juce::var arguments. */
     template <typename ...Ts>
     juce::var call(Ts&&... args)
     {
@@ -109,6 +110,7 @@ public:
         return retVar;
     }
 
+    /** Call this function for given 'this' object. */
     template <typename ...Ts>
     juce::var callThis(JSValue thisObj, Ts&&... args)
     {

@@ -58,10 +58,40 @@ public:
     */
     Element::Ptr createElement(const juce::Identifier& tag);
 
+    /** Add element to the stash.
+
+        The factory maintains a collection of shared pointers for the
+        elements that might be in transition between script and native context.
+        Until finalized (attached to the elements tree or garbage collected by
+        the scripting engine) the epement's pointer must be kept alive in order
+        to prevent memory access problems. Elements that live on stash only
+        will eventually be collected and deleted.
+
+        @see clearUnreferencedStashedElements
+    */
     void stashElement(const Element::Ptr& element);
+
+    /** Remove element from the stash.
+
+        This method is normally called when the element gets attached to its parent.
+        At this point the parent becomes the owner of the element, which can now
+        be removed from the stash.
+    */
     void removeStashedElement(const Element::Ptr& element);
 
+    /** Remove all stashed elements.
+
+        This will clear the stash collection. All elements that are not
+        referenced anywhere else will be deleted.
+    */
     void clearStashedElements();
+
+    /** Remove all elements that are referenced by the stash only.
+
+        This method perform "garbage collection" of the stashed elements.
+        All the elements that live in the stash only and are not referenced
+        from the script context will be deleted.
+    */
     void clearUnreferencedStashedElements();
 
 private:

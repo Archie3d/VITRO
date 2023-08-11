@@ -178,7 +178,7 @@ public:
 
     /** Tell whether an attribute exists.
 
-        @returns true if the attributre exists, false otherwise.
+        @return true if the attributre exists, false otherwise.
     */
     bool hasAttribute(const juce::Identifier& name) const;
 
