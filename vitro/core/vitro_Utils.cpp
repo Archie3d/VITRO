@@ -1,16 +1,34 @@
 namespace vitro {
 
+Colour parseColourFromRGBAString(const String& str)
+{
+    auto strList{ StringArray::fromTokens(str, ",", "\"") };
+    uint8 rgba[] = {0, 0, 0, 255};
+
+    for (int i = 0; i < jmin(strList.size(), 4); ++i)
+        rgba[i] = (uint8)jlimit(0, 255, strList[i].getIntValue());
+
+    return Colour(rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
+Colour parseColourFromHSBAString(const String& str)
+{
+    auto strList{ StringArray::fromTokens(str, ",", "\"") };
+    float hsba[] = {0.0f, 0.0f, 0.0f, 1.0f};
+
+    for (int i = 0; i < jmin(strList.size(), 4); ++i)
+        hsba[i] = jlimit(0.0f, 1.0f, strList[i].getFloatValue());
+
+    return Colour(hsba[0], hsba[1], hsba[2], hsba[3]);
+}
+
 Colour parseColourFromString(const String& str) {
+    const static StringArray prefixes{ "rgba", "rgb", "hsba", "hsb" };
+
     if (str.isEmpty())
         return {};
 
-    auto namedColour{ Colours::findColourForName(str, Colour (0x00000000)) };
-
-    if (namedColour.getARGB() != 0)
-        return namedColour;
-
-    if (str.startsWithChar('#'))
-    {
+    if (str.startsWithChar('#')) {
         auto hexStr{ str.substring(1) };
 
         if (hexStr.length() == 6)
@@ -18,6 +36,22 @@ Colour parseColourFromString(const String& str) {
 
         return Colour::fromString(hexStr);
     }
+
+    for (const auto& prefix : prefixes) {
+        if (str.startsWith(prefix)) {
+            auto rem{ str.substring(prefix.length()).trim() };
+            if (rem.startsWithChar('(') && rem.endsWithChar(')')) {
+                rem = rem.substring(1, rem.length() - 1);
+                return prefix.startsWithChar('r') ? parseColourFromRGBAString(rem)
+                                                  : parseColourFromHSBAString(rem);
+            }
+        }
+    }
+
+    auto namedColour{ Colours::findColourForName(str, Colour (0x00000000)) };
+
+    if (namedColour.getARGB() != 0)
+        return namedColour;
 
     return {};
 }
