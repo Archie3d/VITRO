@@ -29,6 +29,9 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::TextEditor>();
     registerElement<vitro::ScrollArea>();
     registerElement<vitro::ComboBox>();
+    registerElement<vitro::MenuBar>();
+    registerElement<vitro::MenuItem>();
+    registerElement<vitro::MenuSeparator>();
     registerElement<vitro::CodeEditor>();
     registerElement<vitro::OpenGLView>();
 }

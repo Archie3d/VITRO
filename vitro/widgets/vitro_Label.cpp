@@ -39,4 +39,4 @@ void Label::update()
     }
 }
 
-} // namespace Label
+} // namespace vitro

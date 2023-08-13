@@ -46,5 +46,6 @@ using namespace juce;
 #include "widgets/vitro_TextEditor.cpp"
 #include "widgets/vitro_ScrollArea.cpp"
 #include "widgets/vitro_ComboBox.cpp"
+#include "widgets/vitro_MenuBar.cpp"
 #include "widgets/vitro_CodeEditor.cpp"
 #include "widgets/vitro_OpenGLView.cpp"

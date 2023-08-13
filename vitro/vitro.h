@@ -59,5 +59,6 @@ extern "C" {
 #include "widgets/vitro_TextEditor.h"
 #include "widgets/vitro_ScrollArea.h"
 #include "widgets/vitro_ComboBox.h"
+#include "widgets/vitro_MenuBar.h"
 #include "widgets/vitro_CodeEditor.h"
 #include "widgets/vitro_OpenGLView.h"
