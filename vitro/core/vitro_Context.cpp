@@ -315,8 +315,11 @@ struct Context::Impl final
         auto* ctx{ jsContext.get() };
 
         JSValue exception{ JS_GetException(ctx) };
-        jsDumpError(ctx, exception);
-        JS_FreeValue(ctx, exception);
+
+        if (!JS_IsNull(exception)) {
+            jsDumpError(ctx, exception);
+            JS_FreeValue(ctx, exception);
+        }
     }
 
     JSValue getGlobalJSObject()
