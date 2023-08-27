@@ -49,3 +49,4 @@ using namespace juce;
 #include "widgets/vitro_MenuBar.cpp"
 #include "widgets/vitro_CodeEditor.cpp"
 #include "widgets/vitro_OpenGLView.cpp"
+#include "widgets/vitro_MidiKeyboard.cpp"

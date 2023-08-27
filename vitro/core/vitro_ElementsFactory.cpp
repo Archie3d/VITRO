@@ -34,6 +34,7 @@ void ElementsFactory::registerDefaultElements()
     registerElement<vitro::MenuSeparator>();
     registerElement<vitro::CodeEditor>();
     registerElement<vitro::OpenGLView>();
+    registerElement<vitro::MidiKeyboard>();
 }
 
 Element::Ptr ElementsFactory::createElement(const Identifier& tag)

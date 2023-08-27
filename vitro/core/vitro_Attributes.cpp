@@ -133,6 +133,8 @@ const Identifier vertical_scrollbar           ("vertical-scrollbar");
 const Identifier horizontal_scrollbar         ("horizontal-scrollbar");
 const Identifier scrollbar_thickness          ("scrollbar-thickness");
 
+const Identifier orientation                  ("orientation");
+
 } // namespace css
 
 bool isVolatile(const Identifier& attr)

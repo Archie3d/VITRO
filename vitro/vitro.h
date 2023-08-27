@@ -26,6 +26,7 @@
 #include <juce_data_structures/juce_data_structures.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
+#include <juce_audio_utils/juce_audio_utils.h>
 #include <juce_opengl/juce_opengl.h>
 
 extern "C" {
@@ -62,3 +63,4 @@ extern "C" {
 #include "widgets/vitro_MenuBar.h"
 #include "widgets/vitro_CodeEditor.h"
 #include "widgets/vitro_OpenGLView.h"
+#include "widgets/vitro_MidiKeyboard.h"
