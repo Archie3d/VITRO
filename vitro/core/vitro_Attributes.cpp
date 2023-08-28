@@ -16,6 +16,8 @@ const Identifier type       ("type");
 const Identifier enabled    ("enabled");
 const Identifier visible    ("visible");
 const Identifier readonly   ("readonly");
+const Identifier draggable  ("draggable");
+const Identifier acceptdrop ("acceptdrop");
 
 const Identifier x          ("x");
 const Identifier y          ("y");
@@ -46,6 +48,8 @@ const Identifier onchange   ("onchange");
 const Identifier onenter    ("onenter");
 const Identifier onmove     ("onmove");
 const Identifier onresize   ("onresize");
+const Identifier ondrop     ("ondrop");
+const Identifier onacceptdrop ("onacceptdrop");
 
 const Identifier onmouseenter ("onmouseenter");
 const Identifier onmouseexit  ("onmouseexit");

@@ -14,6 +14,7 @@ Here is the list of all reserved elements:
 - [ComboBox](elements/ComboBox.md)
 - [ScrollArea](elements/ScrollArea.md)
 - [OpenGLView](elements/OpenGLView.md)
+- [MidiKeyboard](elements/MidiKeyboard.md)
 
 ### Special elements
 - [script](elements/script.md)
@@ -141,6 +142,27 @@ Visual elements may trigger events that can have script attached to them (like `
         function entry() {
             console.log("UI has been loaded.");
         }
+    </script>
+</View>
+```
+
+### Drag and drop
+
+An element will be draggable when its `draggable` attribute is set to `true`. Any element can accept drops if its `acceptdrop` attribute is set to `true`. When drop gets accepted, the `ondrop` script attribute will be evaluated on the drop target element.
+
+```html
+<View>
+    <Label text="Draggable" draggable="true" />
+    <Panel acceptdrop="true" id="drop_target"/>
+
+    <script>
+        // Bind ondrop event to the drop target panel
+        var panel = view.getElementById('drop_target');
+        panel.setAttribute('ondrop', function(dropped_element) {
+            if (dropped_element.tagName == 'Label') {
+                console.log('Dropped label ' + dropped_element.getAttribute('text'));
+            }
+        });
     </script>
 </View>
 ```

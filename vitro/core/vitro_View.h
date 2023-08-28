@@ -7,6 +7,7 @@ namespace vitro {
 
 class View : public ComponentElementWithBackground,
              public juce::Component,
+             public juce::DragAndDropContainer,
              private juce::AsyncUpdater
 {
 public:
@@ -52,6 +53,7 @@ private:
 
     // JavaScript methods and properties
     static JSValue js_createElement(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
+    static JSValue js_isDragAndDropActive(JSContext* ctx, JSValueConst self, int argc, JSValueConst* arg);
 
     juce::Colour backgroundColour{};
 };

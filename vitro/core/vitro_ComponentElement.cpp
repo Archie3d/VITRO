@@ -34,6 +34,11 @@ void ComponentElement::MouseEventsProxy::mouseDown(const MouseEvent& event)
     element.handleMouseDown(event);
 }
 
+void ComponentElement::MouseEventsProxy::mouseDrag(const MouseEvent& event)
+{
+    element.handleMouseDrag(event);
+}
+
 void ComponentElement::MouseEventsProxy::mouseUp(const MouseEvent& event)
 {
     element.setAttribute(attr::active, false);
@@ -74,6 +79,89 @@ void ComponentElement::updateComponentBoundsToLayoutNode()
         auto targetBounds{ getLayoutElementBounds().toNearestInt() };
 
         component->setBounds(targetBounds);
+    }
+}
+
+bool ComponentElement::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+{
+    if (!acceptDrop)
+        return false;
+
+    bool shouldAccept{ acceptDrop };
+
+    // @todo Invoke onacceprdrop script
+    if (auto* comp{ dragSourceDetails.sourceComponent.get() }) {
+        if (auto* element{ dynamic_cast<Element*>(comp) }) {
+            const auto val{ getAttribute(attr::onacceptdrop) };
+
+            if (val.isVoid())
+                return shouldAccept;
+
+            JSValue dropJsValue{ element->duplicateJSValue() };
+            auto* jsCtx{ context.getJSContext() };
+
+            if (val.isObject()) {
+                if (auto* func{ dynamic_cast<js::Function*>(val.getObject()) }) {
+                    auto ret{ JS_Call(jsCtx, func->getJSValue(), jsValue, 1, &dropJsValue) };
+                    shouldAccept = ret == JS_TRUE;
+                    JS_FreeValue(jsCtx, ret);
+                }
+            } else {
+                auto res{ context.evalThis(jsValue, val.toString()) };
+
+                if (JS_IsException(res)) {
+                    DBG("Exception thrown when evaluating ondrop of <" << getTag().toString() << ">");
+                    jsDumpError(jsCtx, res);
+                }
+
+                shouldAccept = res == JS_TRUE;
+
+                if (res != JS_UNDEFINED)
+                    JS_FreeValue(jsCtx, res);
+            }
+
+            JS_FreeValue(jsCtx, dropJsValue);
+        }
+    }
+
+    return shouldAccept;
+}
+
+void ComponentElement::itemDropped(const SourceDetails &dragSourceDetails)
+{
+    if (!acceptDrop)
+        return;
+
+    // Handle dropped component
+    if (auto* comp{ dragSourceDetails.sourceComponent.get() }) {
+        if (auto* element{ dynamic_cast<Element*>(comp) }) {
+            const auto val{ getAttribute(attr::ondrop) };
+
+            if (val.isVoid())
+                return;
+
+            JSValue dropJsValue{ element->duplicateJSValue() };
+            auto* jsCtx{ context.getJSContext() };
+
+            if (val.isObject()) {
+                if (auto* func{ dynamic_cast<js::Function*>(val.getObject()) }) {
+                    auto ret{ JS_Call(jsCtx, func->getJSValue(), jsValue, 1, &dropJsValue) };
+                    JS_FreeValue(jsCtx, ret); // Ignore returned value
+                }
+            } else {
+                auto res{ context.evalThis(jsValue, val.toString()) };
+
+                if (JS_IsException(res)) {
+                    DBG("Exception thrown when evaluating ondrop of <" << getTag().toString() << ">");
+                    jsDumpError(jsCtx, res);
+                }
+
+                if (res != JS_UNDEFINED)
+                    JS_FreeValue(jsCtx, res);
+            }
+
+            JS_FreeValue(jsCtx, dropJsValue);
+        }
     }
 }
 
@@ -197,6 +285,13 @@ void ComponentElement::update()
             comp->setInterceptsMouseClicks(val.isVoid() ? true : bool(val), false);
     }
 
+    // Drag and drop attributes
+    if (const auto&& [changed, val]{ getAttributeChanged(attr::draggable) }; changed)
+        draggable = (bool)val;
+
+    if (const auto&& [changed, val]{ getAttributeChanged(attr::acceptdrop) }; changed)
+        acceptDrop = (bool)val;
+
     // cursor
     setMouseCursorFromStyleProperties();
 
@@ -259,22 +354,46 @@ void ComponentElement::handleMouseMove(const MouseEvent&)
 void ComponentElement::handleMouseEnter(const MouseEvent&)
 {
     evaluateAttributeScript(attr::onmouseenter);
-};
+}
 
 void ComponentElement::handleMouseExit(const MouseEvent&)
 {
     evaluateAttributeScript(attr::onmouseexit);
-};
+}
 
 void ComponentElement::handleMouseDown(const MouseEvent&)
 {
     evaluateAttributeScript(attr::onmousedown);
-};
+}
 
 void ComponentElement::handleMouseUp(const MouseEvent&)
 {
     evaluateAttributeScript(attr::onmouseup);
-};
+}
+
+void ComponentElement::handleMouseDrag(const juce::MouseEvent&)
+{
+    if (!isComponentElementDraggable())
+        return;
+
+    auto* thisComponent{ getComponent() };
+
+    if (thisComponent == nullptr)
+        return;
+
+    if (auto topElement{ getTopLevelElement() }; topElement != nullptr) {
+        if (!topElement->isComponentElement())
+            return;
+
+        if (auto topComponent{ std::dynamic_pointer_cast<ComponentElement>(topElement) }) {
+            if (auto* comp{ topComponent->getComponent() }) {
+                if (auto* dragContainer{ dynamic_cast<juce::DragAndDropContainer*>(comp) }) {
+                    dragContainer->startDragging({}, thisComponent);
+                }
+            }
+        }
+    }
+}
 
 void ComponentElement::componentMovedOrResized(Component&, bool wasMoved, bool wasResized)
 {

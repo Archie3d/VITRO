@@ -9,9 +9,10 @@ View element has the same styling properties as [Panel](Panel.md).
 
 ## Scripting
 
-| Method name               | Description                          |
-|:--------------------------|:-------------------------------------|
-| `createElement(tag_name)` | Create a new element for a given tag |
+| Method name               | Description                                      |
+|:--------------------------|:-------------------------------------------------|
+| `createElement(tag_name)` | Create a new element for a given tag             |
+| `isDragAndDropAcive()`    | `true` if drag and drop is currently in progress |
 
 Since `view` is a root element it can be used to look for an element by id globally:
 

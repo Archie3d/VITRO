@@ -22,6 +22,7 @@ namespace vitro {
         shadow-offset-y
 */
 class ComponentElement : public LayoutElement,
+                         public juce::DragAndDropTarget,
                          private juce::ComponentListener
 {
 public:
@@ -41,7 +42,7 @@ public:
         void mouseEnter(const juce::MouseEvent &event) override;
         void mouseExit(const juce::MouseEvent &event) override;
         void mouseDown(const juce::MouseEvent &event) override;
-        //void mouseDrag(const juce::MouseEvent &event) override;
+        void mouseDrag(const juce::MouseEvent &event) override;
         void mouseUp(const juce::MouseEvent &event) override;
         //void mouseDoubleClick(const juce::MouseEvent &event) override;
 
@@ -95,6 +96,14 @@ public:
     */
     void updateComponentBoundsToLayoutNode();
 
+    // juce::DragAndDropTarget
+    bool isInterestedInDragSource(const SourceDetails& dragSourceDetails) override;
+    void itemDropped(const SourceDetails &dragSourceDetails) override;
+
+    bool isComponentElementDraggable() const { return draggable; }
+
+    bool doesComponentElementAccepDrop() const { return acceptDrop; }
+
     static void registerJSPrototype(JSContext* ctx, JSValue prototype);
 
 protected:
@@ -119,6 +128,7 @@ protected:
     virtual void handleMouseEnter(const juce::MouseEvent&);
     virtual void handleMouseExit(const juce::MouseEvent&);
     virtual void handleMouseDown(const juce::MouseEvent&);
+    virtual void handleMouseDrag(const juce::MouseEvent&);
     virtual void handleMouseUp(const juce::MouseEvent&);
 
 private:
@@ -136,6 +146,10 @@ private:
     // Shadow effect.
     juce::DropShadow shadow{};
     std::unique_ptr<juce::DropShadower> dropShadower{};
+
+    // Drag and drop
+    bool draggable{};
+    bool acceptDrop{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ComponentElement)
 };

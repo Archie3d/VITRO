@@ -39,6 +39,7 @@ void View::registerJSPrototype(JSContext* jsCtx, JSValue prototype)
     ComponentElement::registerJSPrototype(jsCtx, prototype);
 
     registerJSMethod(jsCtx, prototype, "createElement", &js_createElement);
+    registerJSMethod(jsCtx, prototype, "isDragAndDropActive", &js_isDragAndDropActive);
 }
 
 void View::resized()
@@ -105,6 +106,14 @@ JSValue View::js_createElement(JSContext* ctx, JSValueConst self, int argc, JSVa
     }
 
     return JS_UNDEFINED;
+}
+
+JSValue View::js_isDragAndDropActive(JSContext* ctx, JSValueConst self, int, JSValueConst*)
+{
+    if (auto view{ Context::getJSNativeObject<View>(self) })
+        return view->isDragAndDropActive() ? JS_TRUE : JS_FALSE;
+
+    return JS_FALSE;
 }
 
 } // namespace vitro
