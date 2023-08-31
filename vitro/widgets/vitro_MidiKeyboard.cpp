@@ -1,30 +1,46 @@
 namespace vitro {
 
+CustomMidiKeyboard::CustomMidiKeyboard(juce::MidiKeyboardState& state,
+                                       juce::MidiKeyboardComponent::Orientation orientation)
+    : juce::MidiKeyboardComponent(state, orientation)
+{
+}
+
+void CustomMidiKeyboard::drawWhiteNote(int midiNoteNumber,
+                                       juce::Graphics& g, juce::Rectangle<float> area,
+                                       bool isDown, bool isOver,
+                                       juce::Colour lineColour, juce::Colour textColour)
+{
+    juce::MidiKeyboardComponent::drawWhiteNote(midiNoteNumber, g, area, isDown, isOver, lineColour, textColour);
+}
+
+void CustomMidiKeyboard::drawBlackNote(int midiNoteNumber,
+                                       juce::Graphics& g, juce::Rectangle<float> area,
+                                       bool isDown, bool isOver,
+                                       juce::Colour noteFillColour)
+{
+    juce::MidiKeyboardComponent::drawBlackNote(midiNoteNumber, g, area, isDown, isOver, noteFillColour);
+}
+
+//==============================================================================
+
 JSClassID MidiKeyboard::jsClassID = 0;
 
 const Identifier MidiKeyboard::tag("MidiKeyboard");
 
 MidiKeyboard::MidiKeyboard(Context& ctx)
     : ComponentElement(MidiKeyboard::tag, ctx),
-      juce::MidiKeyboardComponent(keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard)
+      keyboardState{},
+      keyboard(keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard)
 {
     registerStyleProperty(attr::css::orientation);
+
+    addAndMakeVisible(keyboard);
 }
 
-void MidiKeyboard::drawWhiteNote(int midiNoteNumber,
-                                 juce::Graphics& g, juce::Rectangle<float> area,
-                                 bool isDown, bool isOver,
-                                 juce::Colour lineColour, juce::Colour textColour)
+void MidiKeyboard::resized()
 {
-    juce::MidiKeyboardComponent::drawWhiteNote(midiNoteNumber, g, area, isDown, isOver, lineColour, textColour);
-}
-
-void MidiKeyboard::drawBlackNote(int midiNoteNumber,
-                                 juce::Graphics& g, juce::Rectangle<float> area,
-                                 bool isDown, bool isOver,
-                                 juce::Colour noteFillColour)
-{
-    juce::MidiKeyboardComponent::drawBlackNote(midiNoteNumber, g, area, isDown, isOver, noteFillColour);
+    keyboard.setBounds(getLocalBounds());
 }
 
 void MidiKeyboard::update()
@@ -36,11 +52,11 @@ void MidiKeyboard::update()
         const String orientation{ prop.toString().toLowerCase() };
 
         if (orientation == "horizontal")
-            setOrientation(MidiKeyboardComponent::horizontalKeyboard);
+            keyboard.setOrientation(MidiKeyboardComponent::horizontalKeyboard);
         else if (orientation == "vertical left")
-            setOrientation(MidiKeyboardComponent::verticalKeyboardFacingLeft);
+            keyboard.setOrientation(MidiKeyboardComponent::verticalKeyboardFacingLeft);
         else if (orientation == "vertical right")
-            setOrientation(MidiKeyboardComponent::verticalKeyboardFacingRight);
+            keyboard.setOrientation(MidiKeyboardComponent::verticalKeyboardFacingRight);
     }
 
 }
