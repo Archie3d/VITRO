@@ -124,11 +124,11 @@ void MenuItem::invokeOnClickHandler()
 
 std::shared_ptr<MenuBar> MenuItem::getMenuBar()
 {
-    if (auto parent{ getParentElement() }) {
-        if (auto parentMenuBar{ std::dynamic_pointer_cast<MenuBar>(parent) })
+    if (auto parentElement{ getParentElement() }) {
+        if (auto parentMenuBar{ std::dynamic_pointer_cast<MenuBar>(parentElement) })
             return parentMenuBar;
     
-        if (auto parentMenuItem{ std::dynamic_pointer_cast<MenuItem>(parent) })
+        if (auto parentMenuItem{ std::dynamic_pointer_cast<MenuItem>(parentElement) })
             return parentMenuItem->getMenuBar();
 
     }

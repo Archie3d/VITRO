@@ -94,10 +94,10 @@ JSValue View::js_createElement(JSContext* ctx, JSValueConst self, int argc, JSVa
 
     if (auto view{ Context::getJSNativeObject<View>(self) }) {
         const auto* str{ JS_ToCString(ctx, arg[0]) };
-        const auto tag{ String::fromUTF8(str) };
+        const auto elementTag{ String::fromUTF8(str) };
         JS_FreeCString(ctx, str);
 
-        if (auto child{ view->context.getElementsFactory().createElement(tag) }) {
+        if (auto child{ view->context.getElementsFactory().createElement(elementTag) }) {
             child->stash();
             return child->duplicateJSValue();
         }

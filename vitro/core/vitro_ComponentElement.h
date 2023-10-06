@@ -59,7 +59,7 @@ public:
 
     static JSClassID jsClassID;
 
-    ComponentElement(const juce::Identifier& tag, Context& ctx);
+    ComponentElement(const juce::Identifier& elementTag, Context& ctx);
 
     // vitro::Element
     bool isComponentElement() const override { return true; }

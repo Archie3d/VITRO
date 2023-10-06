@@ -20,8 +20,8 @@ class Button : public vitro::ComponentElement,
 {
 public:
 
-    Button(const juce::Identifier& tag, Context& ctx)
-        : ComponentElement(tag, ctx),
+    Button(const juce::Identifier& elementTag, Context& ctx)
+        : ComponentElement(elementTag, ctx),
           ButtonClass("")
     {
         ButtonClass::addListener(this);

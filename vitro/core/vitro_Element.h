@@ -52,7 +52,7 @@ public:
         @param tag Tag to be assigned to this element.
         @param ctx Global context reference.
     */
-    Element(const juce::Identifier& tag, Context& ctx);
+    Element(const juce::Identifier& elementTag, Context& ctx);
 
     virtual ~Element();
 

@@ -1,7 +1,7 @@
 namespace vitro {
 
-ComponentElementWithBackground::ComponentElementWithBackground(const Identifier& tag, Context& ctx)
-    : ComponentElement(tag, ctx)
+ComponentElementWithBackground::ComponentElementWithBackground(const Identifier& elementTag, Context& ctx)
+    : ComponentElement(elementTag, ctx)
 {
     registerStyleProperty(attr::css::background_color);
     registerStyleProperty(attr::css::background_image);
@@ -37,7 +37,7 @@ void ComponentElementWithBackground::paintBackground(Graphics& g)
 
         if (borderRadius > 0) {
             if (backgroundImageTile) {
-                g.setTiledImageFill(backgroundImage, 0.0f, 0.0f, 1.0f);
+                g.setTiledImageFill(backgroundImage, 0, 0, 1.0f);
                 g.fillRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, borderRadius);
             } else {
                 Path path{};
@@ -48,7 +48,7 @@ void ComponentElementWithBackground::paintBackground(Graphics& g)
             }
         } else {
             if (backgroundImageTile) {
-                g.setTiledImageFill(backgroundImage, 0.0f, 0.0f, 1.0f);
+                g.setTiledImageFill(backgroundImage, 0, 0, 1.0f);
                 g.fillRect(0, 0, width, height);
             } else {
                 g.drawImage(backgroundImage, 0, 0, width, height,

@@ -13,7 +13,7 @@ public:
 
     static JSClassID jsClassID;
 
-    LayoutElement(const juce::Identifier& tag, Context& ctx);
+    LayoutElement(const juce::Identifier& elementTag, Context& ctx);
 
     ~LayoutElement();
 

@@ -115,14 +115,14 @@ void OpenGLView::RenderPass::render()
 
 void OpenGLView::RenderPass::applyDefaultUniforms()
 {
-    auto& state{ openGLView.getState() };
+    auto& viewState{ openGLView.getState() };
 
-    state.lock();
-    const auto screenBounds{ state.screenBounds };
-    const auto mouse{ state.mouse };
-    const auto frame{ state.frame };
-    const auto timeDelta{ state.timeDelta };
-    state.unlock();
+    viewState.lock();
+    const auto screenBounds{ viewState.screenBounds };
+    const auto mouse{ viewState.mouse };
+    const auto frame{ viewState.frame };
+    const auto timeDelta{ viewState.timeDelta };
+    viewState.unlock();
 
     float w{ screenBounds.getWidth() };
     float h{ screenBounds.getHeight() };
@@ -134,8 +134,8 @@ void OpenGLView::RenderPass::applyDefaultUniforms()
     );
 
     if (targetFrameBuffer != nullptr) {
-        w = targetFrameBuffer->getWidth();
-        h = targetFrameBuffer->getHeight();
+        w = (float)targetFrameBuffer->getWidth();
+        h = (float)targetFrameBuffer->getHeight();
     }
 
     program.setUniform(
@@ -352,10 +352,14 @@ OpenGLView::OpenGLView(Context& ctx)
     : ComponentElement(OpenGLView::tag, ctx)
 {
     openGLContext.setOpenGLVersionRequired(
-#ifdef __APPLE__
+#if JUCE_VERSION >= 0x070000
+#   ifdef __APPLE__
         OpenGLContext::openGL4_1
-#else
+#   else
         OpenGLContext::openGL4_3
+#   endif
+#else
+        OpenGLContext::openGL3_2
 #endif
     );
 

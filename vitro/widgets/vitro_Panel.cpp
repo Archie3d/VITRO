@@ -9,8 +9,8 @@ Panel::Panel(Context& ctx)
 {
 }
 
-Panel::Panel(const Identifier& tag, Context& ctx)
-    : ComponentElementWithBackground(tag, ctx),
+Panel::Panel(const Identifier& elementTag, Context& ctx)
+    : ComponentElementWithBackground(elementTag, ctx),
       juce::Component()
 {
 }

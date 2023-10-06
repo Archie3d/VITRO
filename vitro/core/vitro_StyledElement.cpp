@@ -2,8 +2,8 @@ namespace vitro {
 
 JSClassID StyledElement::jsClassID = 0;
 
-StyledElement::StyledElement(const Identifier& tag, Context& ctx)
-    : Element(tag, ctx)
+StyledElement::StyledElement(const Identifier& elementTag, Context& ctx)
+    : Element(elementTag, ctx)
 {
 }
 

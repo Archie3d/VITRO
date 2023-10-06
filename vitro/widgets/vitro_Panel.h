@@ -24,7 +24,7 @@ public:
     static JSClassID jsClassID;
 
     Panel(Context& ctx);
-    Panel(const juce::Identifier& tag, Context& ctx);
+    Panel(const juce::Identifier& elementTag, Context& ctx);
 
     JSClassID getJSClassID() const override { return vitro::Panel::jsClassID; }
 

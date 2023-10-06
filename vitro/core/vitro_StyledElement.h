@@ -15,7 +15,7 @@ public:
 
     static JSClassID jsClassID;
 
-    StyledElement(const juce::Identifier& tag, Context& ctx);
+    StyledElement(const juce::Identifier& elementTag, Context& ctx);
 
     // vitro::Element
     bool isStyledElement() const override { return true; }

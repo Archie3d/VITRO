@@ -47,8 +47,8 @@ void ComponentElement::MouseEventsProxy::mouseUp(const MouseEvent& event)
 
 //==============================================================================
 
-ComponentElement::ComponentElement(const Identifier& tag, Context& ctx)
-    : LayoutElement(tag, ctx)
+ComponentElement::ComponentElement(const Identifier& elementTag, Context& ctx)
+    : LayoutElement(elementTag, ctx)
 {
     registerStyleProperty(attr::css::alpha);
     registerStyleProperty(attr::css::click_through);

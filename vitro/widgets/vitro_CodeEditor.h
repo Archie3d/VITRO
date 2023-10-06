@@ -44,6 +44,9 @@ public:
     // juce::Component
     void resized() override;
 
+    juce::CodeDocument& getDocument() { return document; }
+    const juce::CodeDocument& getDocument() const { return document; }
+
 protected:
 
     // vitro::Element

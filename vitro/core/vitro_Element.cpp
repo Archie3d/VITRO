@@ -82,8 +82,8 @@ Element::Element(Context& ctx)
 {
 }
 
-Element::Element(const juce::Identifier& tag, Context& ctx)
-    : valueTree(tag),
+Element::Element(const juce::Identifier& elementTag, Context& ctx)
+    : valueTree(elementTag),
       context{ ctx }
 {
     updatePending = true;
@@ -95,7 +95,7 @@ Element::~Element()
     inDestructor = true;
 
     if (jsValue != JS_UNINITIALIZED) {
-        const auto classID{ JS_GetClassID(jsValue, nullptr) };
+        JS_GetClassID(jsValue, nullptr);
 
         JS_FreeValue(context.getJSContext(), jsValue);
     }
@@ -109,9 +109,9 @@ void Element::populateFromXml(const XmlElement& xmlElement)
         // Forward XML if element has a special way to handle it.
         forwardXmlElement(xmlElement);
     } else {
-        const Identifier tag{ xmlElement.getTagName() };
+        const Identifier elementTag{ xmlElement.getTagName() };
 
-        if (tag == View::tag) {
+        if (elementTag == View::tag) {
             auto ptr{ shared_from_this() };
             copyElementAttributesFromXml(ptr, xmlElement);
             populateChildElementsFromXml(context, ptr, xmlElement);
@@ -593,8 +593,8 @@ void Element::valueTreeChildRemoved(juce::ValueTree&, juce::ValueTree&, int)
 JSValue Element::js_getTagName(JSContext* jsCtx, JSValueConst self)
 {
     if (auto element{ Context::getJSNativeObject<Element>(self) }) {
-        const auto tag{ element->getTag().toString() };
-        return JS_NewStringLen(jsCtx, tag.toRawUTF8(), tag.length());
+        const auto elementTag{ element->getTag().toString() };
+        return JS_NewStringLen(jsCtx, elementTag.toRawUTF8(), elementTag.length());
     }
 
     return JS_UNDEFINED;

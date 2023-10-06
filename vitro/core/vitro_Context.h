@@ -81,6 +81,7 @@ public:
     {
         void* opaque{ nullptr };
         const JSClassID classID{ JS_GetClassID(obj, &opaque) };
+        juce::ignoreUnused(classID);
 
         // @todo We have to check that classID is among registered ones
 

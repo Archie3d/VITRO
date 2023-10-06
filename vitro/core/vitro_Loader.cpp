@@ -1,3 +1,7 @@
+#if JUCE_TARGET_HAS_BINARY_DATA
+#   include "BinaryData.h"
+#endif
+
 namespace vitro {
 
 static const char* getBinaryDataResourceNameForFile(const String& filename)

@@ -20,7 +20,7 @@ class ComponentElementWithBackground : public vitro::ComponentElement
 {
 public:
 
-    ComponentElementWithBackground(const juce::Identifier& tag, Context& ctx);
+    ComponentElementWithBackground(const juce::Identifier& elementTag, Context& ctx);
 
 protected:
 

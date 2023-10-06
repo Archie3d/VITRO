@@ -402,8 +402,8 @@ struct LayoutElement::Layout final
 
 //==============================================================================
 
-LayoutElement::LayoutElement(const Identifier& tag, Context& ctx)
-    : StyledElement(tag, ctx),
+LayoutElement::LayoutElement(const Identifier& elementTag, Context& ctx)
+    : StyledElement(elementTag, ctx),
       layout{ std::make_unique<Layout>(*this) }
 {
     registerStyleProperty(yoga::direction);
@@ -474,9 +474,9 @@ bool LayoutElement::updateLayout()
     jassert(layout != nullptr);
     jassert(layout->node != nullptr);
 
-    const auto numChildren{ YGNodeGetChildCount(layout->node) };
+    const uint32_t numChildren{ YGNodeGetChildCount(layout->node) };
 
-    for (auto i = 0; i < numChildren; ++i) {
+    for (uint32_t i = 0; i < numChildren; ++i) {
         YGNodeRef childNode{ YGNodeGetChild(layout->node, i) };
         jassert(childNode != nullptr);
 
