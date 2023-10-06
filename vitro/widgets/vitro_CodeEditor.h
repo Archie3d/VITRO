@@ -24,6 +24,7 @@ namespace vitro {
         syntax-string-color
         syntax-bracket-color
         syntax-punctuation-color
+        scrollbar-thickness
 */
 class CodeEditor : public vitro::ComponentElement,
                    public juce::Component,
