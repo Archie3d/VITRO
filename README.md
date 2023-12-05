@@ -92,3 +92,8 @@ The script is optional as well. When provided the script is executed _before_ th
 
 ## :eyes: Examples
 :point_right: [See the test project for examples.](https://github.com/Archie3d/VITRO-test/tree/master/examples)
+
+## :briefcase: License
+VITRO is licensed under MIT terms. However it depends on external librarlies:
+- JUCE has a dual Commertcial/GPL licence
+- QuickJS is licensed under MIT
