@@ -11,6 +11,18 @@ ViewContainer::~ViewContainer()
     context.reset();
 }
 
+void ViewContainer::addListener(Listener* listener)
+{
+    jassert(listener != nullptr);
+    listeners.add(listener);
+}
+
+void ViewContainer::removeListener(Listener* listener)
+{
+    jassert(listener != nullptr);
+    listeners.remove(listener);
+}
+
 void ViewContainer::setLocalDirectory(const File& dir)
 {
     localDir = dir;
@@ -28,6 +40,8 @@ void ViewContainer::loadFromResource(const String& xmlLocation,
     view.reset();
 
     context = std::make_unique<vitro::Context>();
+
+    listeners.call([&](Listener& listener){ listener.onContectCreated(context.get()); });
 
     auto& loader{context->getLoader() };
     loader.setLocalDirectory(localDir);
@@ -60,6 +74,8 @@ void ViewContainer::loadFromResource(const String& xmlLocation,
 
     // This will remove all current children in the view
     view->populateFromXmlResource(xmlLocation);
+
+    listeners.call([&](Listener& listener){ listener.onViewLoaded(view.get()); });
 
     // Need to call resized so that the new view gets adjusted to the container
     resized();

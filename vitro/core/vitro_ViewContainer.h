@@ -13,8 +13,20 @@ namespace vitro {
 class ViewContainer : public juce::Component
 {
 public:
+
+    class Listener
+    {
+    public:
+        virtual void onContectCreated(vitro::Context* ctx) {}
+        virtual void onViewLoaded(vitro::View*) {}
+        virtual ~Listener() = default;
+    };
+
     ViewContainer();
     ~ViewContainer();
+
+    void addListener(Listener* listener);
+    void removeListener(Listener* listener);
 
     /** Assign a local directory for the loader to look for the resources. */
     void setLocalDirectory(const juce::File& dir);
@@ -55,6 +67,8 @@ private:
     std::shared_ptr<vitro::View> view{};
 
     juce::File localDir{};
+
+    juce::ListenerList<Listener> listeners{};
 };
 
 } // namespace vitro
