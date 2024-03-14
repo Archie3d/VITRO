@@ -18,6 +18,8 @@ ComboBox::ComboBox(Context& ctx)
     registerStyleProperty(attr::css::highlight_color);
     registerStyleProperty(attr::css::highlight_text_color);
     registerStyleProperty(attr::css::text_align);
+
+    juce::ComboBox::addListener(this);
 }
 
 void ComboBox::update()
