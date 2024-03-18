@@ -65,6 +65,13 @@ typedef sig_t sighandler_t;
 #endif
 #endif /* __APPLE__ */
 
+#if defined(__linux__)
+#if !defined(environ)
+#define environ __environ
+typedef __sighandler_t sighandler_t;
+#endif
+#endif
+
 #endif
 
 #if !defined(_WIN32)

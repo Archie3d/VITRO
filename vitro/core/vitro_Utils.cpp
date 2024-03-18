@@ -360,7 +360,7 @@ var JSValueToVar(JSContext* ctx, JSValueConst val)
     case JS_TAG_INT: {
         int64_t x;
         JS_ToInt64(ctx, &x, val);
-        return x;
+        return var((int64)x);
     }
     case JS_TAG_FLOAT64: {
         double x{};
@@ -433,7 +433,7 @@ JSValue varToJSValue(JSContext* ctx, const var& val)
     if (val.isInt())
         return JS_NewInt32(ctx, int32_t(val));
     if (val.isInt64())
-        return JS_NewInt64(ctx, int64_t(val));
+        return JS_NewInt64(ctx, int64_t((int64)val));
     if (val.isDouble())
         return JS_NewFloat64(ctx, double(val));
     if (val.isString())
