@@ -17,7 +17,7 @@ public:
     class Listener
     {
     public:
-        virtual void onContectCreated(vitro::Context* ctx) {}
+        virtual void onContextCreated(vitro::Context* ctx) {}
         virtual void onViewLoaded(vitro::View*) {}
         virtual ~Listener() = default;
     };

@@ -41,7 +41,7 @@ void ViewContainer::loadFromResource(const String& xmlLocation,
 
     context = std::make_unique<vitro::Context>();
 
-    listeners.call([&](Listener& listener){ listener.onContectCreated(context.get()); });
+    listeners.call(&Listener::onContextCreated, context.get());
 
     auto& loader{context->getLoader() };
     loader.setLocalDirectory(localDir);
