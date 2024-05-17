@@ -28,6 +28,12 @@ juce::DrawableButton::ButtonStyle parseDrawableButtonStyleFromString(const juce:
 */
 juce::Slider::TextEntryBoxPosition parseSliderTextBoxPositionFromString(const juce::String& str);
 
+/** Convert Mouse event to var object.
+
+    This function is used to pass mouse events to JS context.
+*/
+juce::var mouseEventToVar(const juce::MouseEvent& event);
+
 /** Linear or radial gradient.
 
     This class hold a gradient description and provides means

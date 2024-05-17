@@ -56,6 +56,7 @@ const Identifier onmouseexit  ("onmouseexit");
 const Identifier onmousemove  ("onmousemove");
 const Identifier onmousedown  ("onmousedown");
 const Identifier onmouseup    ("onmouseup");
+const Identifier onmousedrag  ("onmousedrag");
 
 //==============================================================================
 namespace css {

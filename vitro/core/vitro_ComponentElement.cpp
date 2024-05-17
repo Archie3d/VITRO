@@ -346,35 +346,37 @@ void ComponentElement::reconcileElement()
     }
 }
 
-void ComponentElement::handleMouseMove(const MouseEvent&)
+void ComponentElement::handleMouseMove(const MouseEvent& event)
 {
-    evaluateAttributeScript(attr::onmousemove);
+    evaluateAttributeScript(attr::onmousemove, mouseEventToVar(event));
 }
 
-void ComponentElement::handleMouseEnter(const MouseEvent&)
+void ComponentElement::handleMouseEnter(const MouseEvent& event)
 {
-    evaluateAttributeScript(attr::onmouseenter);
+    evaluateAttributeScript(attr::onmouseenter, mouseEventToVar(event));
 }
 
-void ComponentElement::handleMouseExit(const MouseEvent&)
+void ComponentElement::handleMouseExit(const MouseEvent& event)
 {
-    evaluateAttributeScript(attr::onmouseexit);
+    evaluateAttributeScript(attr::onmouseexit, mouseEventToVar(event));
 }
 
-void ComponentElement::handleMouseDown(const MouseEvent&)
+void ComponentElement::handleMouseDown(const MouseEvent& event)
 {
-    evaluateAttributeScript(attr::onmousedown);
+    evaluateAttributeScript(attr::onmousedown, mouseEventToVar(event));
 }
 
-void ComponentElement::handleMouseUp(const MouseEvent&)
+void ComponentElement::handleMouseUp(const MouseEvent& event)
 {
-    evaluateAttributeScript(attr::onmouseup);
+    evaluateAttributeScript(attr::onmouseup, mouseEventToVar(event));
 }
 
-void ComponentElement::handleMouseDrag(const juce::MouseEvent&)
+void ComponentElement::handleMouseDrag(const juce::MouseEvent& event)
 {
-    if (!isComponentElementDraggable())
+    if (!isComponentElementDraggable()) {
+        evaluateAttributeScript(attr::onmousedrag, mouseEventToVar(event));
         return;
+    }
 
     auto* thisComponent{ getComponent() };
 

@@ -113,6 +113,20 @@ juce::Slider::TextEntryBoxPosition parseSliderTextBoxPositionFromString(const St
     return it->second;
 }
 
+juce::var mouseEventToVar(const juce::MouseEvent& event)
+{
+    auto* obj{ new DynamicObject() };
+
+    obj->setProperty("x", event.getPosition().x);
+    obj->setProperty("y", event.getPosition().y);
+    obj->setProperty("down_x", event.getMouseDownX());
+    obj->setProperty("down_y", event.getMouseDownY());
+    obj->setProperty("drag_x", event.getDistanceFromDragStartX());
+    obj->setProperty("drag_y", event.getDistanceFromDragStartY());
+
+    return obj;
+}
+
 //==============================================================================
 
 class GradientParser
