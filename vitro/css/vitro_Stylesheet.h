@@ -57,6 +57,10 @@ public:
 
     Selector(const juce::StringRef argTag = "", const juce::StringRef argClass = "", const juce::StringRef argId = "");
 
+    /** Compare selectors ignoring attributes. */
+    const bool operator ==(const Selector& other) const;
+    const bool operator !=(const Selector& other) const;
+
     void addAttribute(const Attribute& attr);
     void addAttribute(Attribute&& attr);
 
@@ -111,6 +115,9 @@ public:
     void addSelector(const Selector& selector);
     void addSelector(Selector&& selector);
 
+    void addExtendSelector(const Selector& selector);
+    void addExtendSelector(Selector&& selector);
+
     bool hasProperty(const juce::Identifier& name) const;
     void setProperty(const juce::Identifier& name, const juce::var& value);
     void setProperty(const juce::Identifier& name, juce::var&& value);
@@ -127,6 +134,8 @@ public:
 
     bool match(const juce::ValueTree& tree) const;
 
+    bool match(const Selector& otherSelector) const;
+
     /** Check whether the other style should take priority.
 
         @return true if the most important selector of the other style given by the agument
@@ -134,10 +143,13 @@ public:
     */
     bool isOtherMoreImportant(const Style& style) const;
 
+    const juce::Array<Selector>& getExtendSelectors() const { return extendSelectors; }
+
 private:
     const Selector* getMostImportantSelector() const;
 
     juce::Array<Selector> selectors{};
+    juce::Array<Selector> extendSelectors{};
     juce::NamedValueSet properties{};
 };
 
@@ -207,9 +219,19 @@ public:
     */
     void populateFromString(const juce::String& text, const ImportFunction& importFunction = {});
 
+    /** Parse CSS string or dynamic object properties.
+
+        This method is used to parse CSS from a var value, which normally represents
+        an Element's style attribute. This can be either a CSS string, or a dynamic object.
+        In the latter case the style properties will be fetched from the corresponding properties
+        of the dynamic object.
+    */
     void populateFromVar(const juce::var& val, const ImportFunction& inportFunction = {});
 
 private:
+
+    /** @internal Match an extended style for the style and property name. */
+    const css::Style* matchExtendStyle(const css::Style& style, const juce::Identifier& name) const;
 
     juce::NamedValueSet macroDefinitions{};
     juce::Array<css::Style> styles{};

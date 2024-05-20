@@ -76,6 +76,20 @@ Selector::Selector(StringRef argTag, StringRef argClass, StringRef argId)
 {
 }
 
+const bool Selector::operator ==(const Selector& other) const
+{
+    return tag == other.tag
+        && clazz == other.clazz
+        && id == other.id;
+}
+
+const bool Selector::operator !=(const Selector& other) const
+{
+    return tag != other.tag
+        || clazz != other.clazz
+        || id != other.id;
+}
+
 void Selector::addAttribute(const Selector::Attribute& attr)
 {
     if (!attr.isEmpty())
@@ -207,6 +221,16 @@ void Style::addSelector(Selector&& selector)
     selectors.add(std::move(selector));
 }
 
+void Style::addExtendSelector(const Selector& selector)
+{
+    extendSelectors.add(selector);
+}
+
+void Style::addExtendSelector(Selector&& selector)
+{
+    extendSelectors.add(std::move(selector));
+}
+
 bool Style::hasProperty(const Identifier& name) const
 {
     return properties.contains(name);
@@ -246,6 +270,16 @@ bool Style::match(const ValueTree& tree) const
 {
     for (const auto& selector : selectors) {
         if (selector.match(tree))
+            return true;
+    }
+
+    return false;
+}
+
+bool Style::match(const Selector& otherSelector) const
+{
+    for (const auto& selector : selectors) {
+        if (selector == otherSelector)
             return true;
     }
 
@@ -314,13 +348,27 @@ const var& Stylesheet::getProperty(const Identifier& name,
                                    const ValueTree& tree) const
 {
     const css::Style* matchedStyle{ nullptr };
+    const css::Style* matchedExtendStyle{ nullptr };
 
     for (const auto& style : styles) {
-        if (style.hasProperty(name) && style.match(tag, classes, id, tree)) {
-            if (matchedStyle == nullptr || matchedStyle->isOtherMoreImportant(style))
-                matchedStyle = &style;
+        if (style.match(tag, classes, id, tree)) {
+            if (style.hasProperty(name)) {
+                if (matchedStyle == nullptr || matchedStyle->isOtherMoreImportant(style))
+                    matchedStyle = &style;
+            } else {
+                // Follow the extend selectors
+                if (const css::Style* extendStyle{ matchExtendStyle(style, name) }) {
+                    if (matchedStyle == nullptr || matchedStyle->isOtherMoreImportant(style)) {
+                        matchedStyle = &style;
+                        matchedExtendStyle = extendStyle;
+                    }
+                }
+            }
         }
     }
+
+    if (matchedExtendStyle != nullptr)
+        return matchedExtendStyle->getProperty(name);
 
     if (matchedStyle != nullptr)
         return matchedStyle->getProperty(name);
@@ -331,13 +379,27 @@ const var& Stylesheet::getProperty(const Identifier& name,
 const var& Stylesheet::getProperty(const Identifier& name, const ValueTree& tree) const
 {
     const css::Style* matchedStyle{ nullptr };
+    const css::Style* matchedExtendStyle{ nullptr };
 
     for (const auto& style : styles) {
-        if (style.hasProperty(name) && style.match(tree)) {
-            if (matchedStyle == nullptr || matchedStyle->isOtherMoreImportant(style))
-                matchedStyle = &style;
+        if (style.match(tree)) {
+            if (style.hasProperty(name)) {
+                if (matchedStyle == nullptr || matchedStyle->isOtherMoreImportant(style))
+                    matchedStyle = &style;
+            } else {
+                // Follow the extend selectors
+                if (const css::Style* extendStyle{ matchExtendStyle(style, name) }) {
+                    if (matchedStyle == nullptr || matchedStyle->isOtherMoreImportant(style)) {
+                        matchedStyle = &style;
+                        matchedExtendStyle = extendStyle;
+                    }
+                }
+            }
         }
     }
+
+    if (matchedExtendStyle != nullptr)
+        return matchedExtendStyle->getProperty(name);
 
     if (matchedStyle != nullptr)
         return matchedStyle->getProperty(name);
@@ -375,6 +437,21 @@ void Stylesheet::populateFromVar(const var& val, const ImportFunction& importFun
             addStyle(std::move(style));
         }
     }
+}
+
+const css::Style* Stylesheet::matchExtendStyle(const css::Style& style, const Identifier& name) const
+{
+    for (const auto& extendSelector : style.getExtendSelectors()) {
+        for (const auto& extendStyle : styles) {
+            // Skip over the current style
+            if (&extendStyle != &style) {
+                if (extendStyle.match(extendSelector) && extendStyle.hasProperty(name))
+                    return &extendStyle;
+            }
+        }
+    }
+
+    return nullptr;
 }
 
 } // namespace vitro

@@ -576,15 +576,39 @@ bool CSSParser::parseStyleOrMacroDefinition(css::Style& style, juce::NamedValueS
         if (ctx->source[ctx->pos] == '}') {
             ctx->pos += 1;
         } else {
-            String name{};
-            String value{};
+            if (ctx->expect("@extend")) {
+                // Parse extend selector
+                ctx->skipSpacesAndComments();
 
-            if (!ctx->parseProperty(name, value))
-                return false;
+                String tag{};
+                String clazz{};
+                String id{};
+                css::Selector extendSelector{};
 
-            value = substituteMacros(value, macros);
-            style.setProperty(name, value);
-            keepGoing = true;
+                if (ctx->parseSelectorTagClassId(tag, clazz, id))
+                    extendSelector = css::Selector(tag, clazz, id);
+
+                ctx->skipSpacesAndComments();
+
+                if (!ctx->expect(";"))
+                    return false;
+
+                style.addExtendSelector(extendSelector);
+
+                keepGoing = true;
+
+            } else {
+                // Parse key: value property.
+                String name{};
+                String value{};
+
+                if (!ctx->parseProperty(name, value))
+                    return false;
+
+                value = substituteMacros(value, macros);
+                style.setProperty(name, value);
+                keepGoing = true;
+            }
         }
     }
 
