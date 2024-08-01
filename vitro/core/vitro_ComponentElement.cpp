@@ -237,7 +237,7 @@ void ComponentElement::setMouseCursorFromStyleProperties()
         { "wait",      MouseCursor::WaitCursor         },
         { "pointer",   MouseCursor::PointingHandCursor },
         { "hand",      MouseCursor::PointingHandCursor },
-        { "crisshair", MouseCursor::CrosshairCursor    },
+        { "crosshair", MouseCursor::CrosshairCursor    },
         { "copy",      MouseCursor::CopyingCursor      },
         { "drag",      MouseCursor::DraggingHandCursor }
     };
