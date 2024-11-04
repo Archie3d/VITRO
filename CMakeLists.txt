@@ -11,36 +11,38 @@ endmacro()
 
 #===========================================================
 
-#[[
+message(STATUS "JUCE version: ${JUCE_VERSION}")
 
-add_library(quickjs STATIC)
+if(VITRO_USE_INTERNAL_QUICK_JS)
 
-file(GLOB_RECURSE quickjs_src
-    ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.c
-)
+    add_library(quickjs STATIC)
 
-make_source_group("${quickjs_src}")
+    file(GLOB_RECURSE quickjs_src
+        ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.c
+    )
 
-target_include_directories(quickjs
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/quickjs
-)
+    make_source_group("${quickjs_src}")
 
-target_sources(quickjs
-    PRIVATE
-        ${quickjs_src}
-)
+    target_include_directories(quickjs
+        PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/quickjs
+    )
 
-target_compile_definitions(quickjs
-    PUBLIC
-        _CRT_SECURE_NO_WARNINGS
-        JS_STRICT_NAN_BOXING=1
-        CONFIG_BIGNUM=1
-        CONFIG_JSX=1
-)
+    target_sources(quickjs
+        PRIVATE
+            ${quickjs_src}
+    )
 
-]]
+    target_compile_definitions(quickjs
+        PUBLIC
+            _CRT_SECURE_NO_WARNINGS
+            JS_STRICT_NAN_BOXING=1
+            CONFIG_BIGNUM=1
+            CONFIG_JSX=1
+    )
+
+endif()
 
 #===========================================================
 
@@ -54,12 +56,17 @@ target_include_directories(vitro
         ${CMAKE_CURRENT_SOURCE_DIR}/vitro
 )
 
-#[[
-target_link_libraries(vitro
-    INTERFACE
-        quickjs
-)
-]]
+if(VITRO_USE_INTERNAL_QUICK_JS)
+    target_link_libraries(vitro
+        INTERFACE
+            quickjs
+    )
+
+    target_compile_definitions(virto
+        PUBLIC
+            VITRO_USE_INTERNAL_QUICK_JS=1
+    )
+endif()
 
 file(GLOB_RECURSE vitro_src
     ${CMAKE_CURRENT_SOURCE_DIR}/vitro/*.h
