@@ -31,9 +31,14 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 #include <juce_opengl/juce_opengl.h>
 
+/*
 extern "C" {
 #include "quickjs.h"
 }
+*/
+
+#include <juce_core/javascript/choc/javascript/choc_javascript_QuickJS.h>
+using namespace choc::javascript::quickjs;
 
 #include "css/vitro_Stylesheet.h"
 #include "css/vitro_CSSParser.h"

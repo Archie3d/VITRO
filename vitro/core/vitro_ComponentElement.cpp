@@ -103,7 +103,7 @@ bool ComponentElement::isInterestedInDragSource(const SourceDetails& dragSourceD
             if (val.isObject()) {
                 if (auto* func{ dynamic_cast<js::Function*>(val.getObject()) }) {
                     auto ret{ JS_Call(jsCtx, func->getJSValue(), jsValue, 1, &dropJsValue) };
-                    shouldAccept = ret == JS_TRUE;
+                    shouldAccept = JS_VALUE_GET_BOOL(ret);
                     JS_FreeValue(jsCtx, ret);
                 }
             } else {
@@ -114,9 +114,9 @@ bool ComponentElement::isInterestedInDragSource(const SourceDetails& dragSourceD
                     jsDumpError(jsCtx, res);
                 }
 
-                shouldAccept = res == JS_TRUE;
+                shouldAccept = JS_VALUE_GET_BOOL(res);
 
-                if (res != JS_UNDEFINED)
+                if (JS_VALUE_GET_TAG(res) != JS_TAG_UNDEFINED)
                     JS_FreeValue(jsCtx, res);
             }
 
@@ -156,7 +156,7 @@ void ComponentElement::itemDropped(const SourceDetails &dragSourceDetails)
                     jsDumpError(jsCtx, res);
                 }
 
-                if (res != JS_UNDEFINED)
+                if (JS_VALUE_GET_TAG(res) != JS_TAG_UNDEFINED)
                     JS_FreeValue(jsCtx, res);
             }
 

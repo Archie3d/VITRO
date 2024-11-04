@@ -11,6 +11,8 @@ endmacro()
 
 #===========================================================
 
+#[[
+
 add_library(quickjs STATIC)
 
 file(GLOB_RECURSE quickjs_src
@@ -38,6 +40,8 @@ target_compile_definitions(quickjs
         CONFIG_JSX=1
 )
 
+]]
+
 #===========================================================
 
 juce_add_modules(
@@ -50,11 +54,12 @@ target_include_directories(vitro
         ${CMAKE_CURRENT_SOURCE_DIR}/vitro
 )
 
+#[[
 target_link_libraries(vitro
     INTERFACE
         quickjs
 )
-
+]]
 
 file(GLOB_RECURSE vitro_src
     ${CMAKE_CURRENT_SOURCE_DIR}/vitro/*.h
