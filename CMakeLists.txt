@@ -11,7 +11,7 @@ endmacro()
 
 #===========================================================
 
-message(STATUS "JUCE version: ${JUCE_VERSION}")
+set(VITRO_USE_INTERNAL_QUICK_JS OFF CACHE BOOL "" FORCE)
 
 if(VITRO_USE_INTERNAL_QUICK_JS)
 
