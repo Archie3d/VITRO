@@ -1,6 +1,8 @@
+/*
 extern "C" {
 #   include "quickjs-libc.h"
 }
+*/
 namespace vitro {
 
 // This literal is used to inject the js::Context pointer to the
@@ -162,8 +164,8 @@ static JSModuleDef* jsModuleLoader(JSContext *ctx, const char *module_name, void
     Context* context{ reinterpret_cast<Context*>(opaque)};
     const auto src{ context->loadJSModule(String::fromUTF8(module_name)) };
 
-    if (src.isEmpty())
-        return js_module_loader(ctx, module_name, opaque);
+    //if (src.isEmpty())
+    //    return js_module_loader(ctx, module_name, opaque);
 
     JSModuleDef* m{ nullptr };
 

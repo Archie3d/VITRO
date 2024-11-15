@@ -3,6 +3,18 @@ namespace vitro {
 class ElementsFactory;
 class Loader;
 
+#ifndef VITRO_USE_INTERNAL_QUICKJS
+JSClassID JS_GetClassID(JSValueConst obj, void** ppopaque) {
+  JSObject *p;
+  if (JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT)
+    return 0;
+  p = JS_VALUE_GET_OBJ(obj);
+  if(ppopaque)
+    *ppopaque = p->u.opaque;
+  return p->class_id;
+}
+#endif
+
 /** UI Context.
 
     UI Context aggregates global UI functionalityes like

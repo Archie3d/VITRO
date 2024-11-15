@@ -11,32 +11,41 @@ endmacro()
 
 #===========================================================
 
-add_library(quickjs STATIC)
+# Up to JUCE 8.0.3 QuickJS is compiled by default in JUCE,
+# Later it will be removed, so this code will need to be updated
+# to default to internal QuickJS
+set(VITRO_USE_INTERNAL_QUICK_JS OFF CACHE BOOL "" FORCE)
 
-file(GLOB_RECURSE quickjs_src
-    ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.c
-)
+if(VITRO_USE_INTERNAL_QUICK_JS)
 
-make_source_group("${quickjs_src}")
+    add_library(quickjs STATIC)
 
-target_include_directories(quickjs
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/quickjs
-)
+    file(GLOB_RECURSE quickjs_src
+        ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/quickjs/*.c
+    )
 
-target_sources(quickjs
-    PRIVATE
-        ${quickjs_src}
-)
+    make_source_group("${quickjs_src}")
 
-target_compile_definitions(quickjs
-    PUBLIC
-        _CRT_SECURE_NO_WARNINGS
-        JS_STRICT_NAN_BOXING=1
-        CONFIG_BIGNUM=1
-        CONFIG_JSX=1
-)
+    target_include_directories(quickjs
+        PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/quickjs
+    )
+
+    target_sources(quickjs
+        PRIVATE
+            ${quickjs_src}
+    )
+
+    target_compile_definitions(quickjs
+        PUBLIC
+            _CRT_SECURE_NO_WARNINGS
+            JS_STRICT_NAN_BOXING=1
+            CONFIG_BIGNUM=1
+            CONFIG_JSX=1
+    )
+
+endif()
 
 #===========================================================
 
@@ -50,11 +59,17 @@ target_include_directories(vitro
         ${CMAKE_CURRENT_SOURCE_DIR}/vitro
 )
 
-target_link_libraries(vitro
-    INTERFACE
-        quickjs
-)
+if(VITRO_USE_INTERNAL_QUICK_JS)
+    target_link_libraries(vitro
+        INTERFACE
+            quickjs
+    )
 
+    target_compile_definitions(virto
+        PUBLIC
+            VITRO_USE_INTERNAL_QUICK_JS=1
+    )
+endif()
 
 file(GLOB_RECURSE vitro_src
     ${CMAKE_CURRENT_SOURCE_DIR}/vitro/*.h

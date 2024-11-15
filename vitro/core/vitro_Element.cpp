@@ -94,7 +94,7 @@ Element::~Element()
 {
     inDestructor = true;
 
-    if (jsValue != JS_UNINITIALIZED) {
+    if (JS_VALUE_GET_TAG(jsValue) != JS_TAG_UNINITIALIZED) {
         JS_GetClassID(jsValue, nullptr);
 
         JS_FreeValue(context.getJSContext(), jsValue);
@@ -512,7 +512,7 @@ void Element::evaluateAttributeScript(const Identifier& attr, const juce::var& d
             jsDumpError(jsCtx, res);
         }
 
-        if (res != JS_UNDEFINED)
+        if (JS_VALUE_GET_TAG(res) != JS_TAG_UNDEFINED)
             JS_FreeValue(jsCtx, res);
     }
 }
