@@ -11,6 +11,9 @@ endmacro()
 
 #===========================================================
 
+# Up to JUCE 8.0.3 QuickJS is compiled by default in JUCE,
+# Later it will be removed, so this code will need to be updated
+# to default to internal QuickJS
 set(VITRO_USE_INTERNAL_QUICK_JS OFF CACHE BOOL "" FORCE)
 
 if(VITRO_USE_INTERNAL_QUICK_JS)
