@@ -3,7 +3,7 @@ namespace vitro {
 class ElementsFactory;
 class Loader;
 
-#ifndef VITRO_USE_INTERNAL_QUICKJS
+#ifndef VITRO_USE_INTERNAL_QUICK_JS
 JSClassID JS_GetClassID(JSValueConst obj, void** ppopaque) {
   JSObject *p;
   if (JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT)
