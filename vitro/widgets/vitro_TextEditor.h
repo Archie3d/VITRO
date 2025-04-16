@@ -23,6 +23,10 @@ namespace vitro {
         border-width
         focused-border-color
         shadow-color
+        font-family
+        font-style
+        font-size
+        font-kerning
 */
 class TextEditor : public vitro::ComponentElement,
                    public juce::TextEditor,

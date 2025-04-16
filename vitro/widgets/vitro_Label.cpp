@@ -29,7 +29,7 @@ void Label::update()
     setColourFromStyleProperty(juce::Label::outlineColourId,    attr::css::border_color);
 
     auto labelFont{ getFont() };
-    populateFontFromStyleProperties( labelFont );
+    populateFontFromStyleProperties(labelFont);
     setFont(labelFont);
 
     // text-align

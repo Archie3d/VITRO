@@ -29,3 +29,7 @@ TextEdtidor element corresponds to Juce TextEditor.
 | `border-radius`        | Border corners radius                      |
 | `border-width`         | Border width in pixels                     |
 | `focused-border-color` | Border color when active                   |
+| `font-family`          | Font type name                             |
+| `font-style`           | Font style (bold, italic, underline)       |
+| `font-size`            | Font size                                  |
+| `font-kerning`         | Kerning value                              |

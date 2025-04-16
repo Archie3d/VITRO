@@ -19,6 +19,10 @@ TextEditor::TextEditor(Context& ctx)
     registerStyleProperty(attr::css::shadow_color);
     registerStyleProperty(attr::css::border_radius);
     registerStyleProperty(attr::css::border_width);
+    registerStyleProperty(attr::css::font_family);
+    registerStyleProperty(attr::css::font_style);
+    registerStyleProperty(attr::css::font_size);
+    registerStyleProperty(attr::css::font_kerning);
 
     addListener(this);
 }
@@ -59,6 +63,10 @@ void TextEditor::update()
     setColourFromStyleProperty(juce::TextEditor::outlineColourId,         attr::css::border_color);
     setColourFromStyleProperty(juce::TextEditor::focusedOutlineColourId,  attr::css::focused_border_color);
     setColourFromStyleProperty(juce::TextEditor::shadowColourId,          attr::css::shadow_color);
+
+    auto labelFont{ getFont() };
+    populateFontFromStyleProperties(labelFont);
+    setFont(labelFont);
 
     if (auto&& [changed, prop]{ getStylePropertyChanged(attr::css::empty_text_color) }; changed) {
         emptyTextColour = prop.isVoid() ? findColour(juce::TextEditor::textColourId)
