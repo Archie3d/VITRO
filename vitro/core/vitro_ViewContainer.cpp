@@ -6,6 +6,8 @@ ViewContainer::ViewContainer()
 
 ViewContainer::~ViewContainer()
 {
+    notifyContextAboutToBeDeleted();
+
     // The view must be deleted before the context, otherwise JS context will leak.
     view.reset();
     context.reset();
@@ -36,6 +38,8 @@ void ViewContainer::loadFromResource(const String& xmlLocation,
                                      const String& cssLocation,
                                      const String& scriptLocation)
 {
+    notifyContextAboutToBeDeleted();
+
     // Delete the view before the context
     view.reset();
 
@@ -86,5 +90,14 @@ void ViewContainer::resized()
     if (view)
         view->setBounds(getLocalBounds());
 }
+
+void ViewContainer::notifyContextAboutToBeDeleted()
+{
+    if (context == nullptr)
+        return;
+
+    listeners.call(&Listener::onContextAboutToBeDeleted, context.get());
+}
+
 
 } // namespace vitro

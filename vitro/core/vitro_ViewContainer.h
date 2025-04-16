@@ -18,6 +18,7 @@ public:
     {
     public:
         virtual void onContextCreated(vitro::Context* ctx) {}
+        virtual void onContextAboutToBeDeleted(vitro::Context* ctx) {}
         virtual void onViewLoaded(vitro::View*) {}
         virtual ~Listener() = default;
     };
@@ -63,6 +64,9 @@ public:
     void resized() override;
 
 private:
+
+    void notifyContextAboutToBeDeleted();
+
     std::unique_ptr<vitro::Context> context{};
     std::shared_ptr<vitro::View> view{};
 
