@@ -1,6 +1,4 @@
 # VITRO
-> :construction: WIP :construction:
-
 Declarative UI module for [JUCE](https://github.com/juce-framework/JUCE).
 
 This module uses [Yoga](https://github.com/facebook/yoga/tree/main/yoga) flexbox layout engine for positioning the UI elements, and [QuickJS](https://github.com/bellard/quickjs) JavaScript engine for UI scripting.
